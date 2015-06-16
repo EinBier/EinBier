@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#ifdef HAVE_MPI && HAVE_PETSC
+#if defined(HAVE_MPI) && defined(HAVE_PETSC)
 #include <mpi.h>
 #include <petscvec.h>
 

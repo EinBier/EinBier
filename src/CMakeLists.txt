@@ -6,7 +6,7 @@ EinBier.cpp)
 
 #unsure if this is good 
 if(HAVE_MPI)
-	target_link_libraries(Test ${MPI_CXX_LIBRARIES} ${PETSC_LIBRARIES})
+	target_link_libraries(EinBier ${MPI_CXX_LIBRARIES} ${PETSC_LIBRARIES})
 else(HAVE_MPI)
-	target_link_libraries(Test ${PETSC_LIBRARIES})
+	target_link_libraries(EinBier ${PETSC_LIBRARIES})
 endif(HAVE_MPI)

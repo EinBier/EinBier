@@ -54,7 +54,7 @@ void Message::Initialize(int argc, char *argv[])
   bool showHelp = 0;
   while (i < argc) {
     if (argv[i][0] == '-') {
-      if (!strcmp(argv[i] + 1, "help"))    { showHelp = 0; i++;}
+      if (!strcmp(argv[i] + 1, "-help"))    { showHelp = 1; i++;}
       else if (!strcmp(argv[i] + 1, "v"))  { m_verbosity = atoi(argv[i+1]); i+=2; Message::InfoRoot("Verbosity set to: %d",m_verbosity);}
       else{ Warning("What the hell is this option (skipping) ? (%s)", argv[i] + 1); i++; }
     }

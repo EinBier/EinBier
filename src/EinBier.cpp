@@ -2,23 +2,21 @@
 #include <vector>
 #if defined(HAVE_MPI) && defined(HAVE_PETSC)
 #include <mpi.h>
-#include <petscvec.h>
+#include <petsc.h>
+
+#include <Common/Message.h>
 
 //static char help[] = "Appends to an ASCII file.\n\n";
 
 int main(int argc, char *argv[])
 {
-  std::cout << "------- Begin" << std::endl;
-  //  MPI_Init(&argc, &argv);
-  PetscInitialize(&argc, &argv, PETSC_NULL, PETSC_NULL);
-  int mpirank, mpisize;
-  MPI_Comm_rank(MPI_COMM_WORLD, &mpirank);
-  MPI_Comm_size(MPI_COMM_WORLD, &mpisize);
+  Message::Info("------- Begin");
+  Message::Initialize(argc, argv);
   
-  std::cout << "MPI rank " << mpirank << " / " << (mpisize-1) << std::endl;
-
-    PetscErrorCode ierr;
+  PetscErrorCode ierr;
   Vec v;
+  int mpirank = Message::GetRank();
+  int mpisize = Message::GetNProc();
   int m = 10;
   int m_loc = m/mpisize;
   int m_start = m_loc * mpirank;
@@ -40,7 +38,7 @@ int main(int argc, char *argv[])
       ind[i] = static_cast<PetscInt>(i);
     }
 
-  std::cout << "MPI rank " << mpirank << "; m_start = " << m_start << " and m_loc= "<< m_loc<< std::endl;
+  Message::Info("MPI rank %d, m_start = %d, m_loc =%d", mpirank,m_start, m_loc);
 
   VecCreate(PETSC_COMM_WORLD, &v);
   VecSetSizes(v, m_loc, m);
@@ -55,10 +53,8 @@ int main(int argc, char *argv[])
   // Test class
   MPI_Barrier(MPI_COMM_WORLD);
 
-
-  PetscFinalize();
-  
-  std::cout << "End-------" << std::endl;
+  Message::InfoRoot("End-------");
+  Message::Finalize(EXIT_SUCCESS);
   return 0;
 }
 

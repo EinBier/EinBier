@@ -8,7 +8,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake-modules/ )
 
 # ==============
-project(EinBier CXX)
+project(EinBier CXX C)
 # ==============
 
 set (PETSC_EXECUTABLE_RUNS YES CACHE BOOL "Disable checking if this setup works" FORCE)

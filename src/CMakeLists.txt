@@ -1,6 +1,6 @@
 add_definitions (${PETSC_DEFINITIONS})
 include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/Src/Common)
+include_directories(${CMAKE_SOURCE_DIR}/src/Common)
 
 #Build subdirectories
 add_subdirectory(Common)

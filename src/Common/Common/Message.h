@@ -1,6 +1,4 @@
-#ifndef _MESSAGE_H_
-#define _MESSAGE_H_
-
+#pragma once
 
 // a class to manage messages
 class Message{
@@ -36,4 +34,3 @@ class Message{
   static void Barrier();
 };
 
-#endif

@@ -5,6 +5,8 @@
 #include <petsc.h>
 
 #include <Common/Message.h>
+#include <Geometry/Geometry.h>
+#include <Geometry/Circle.h>
 
 //static char help[] = "Appends to an ASCII file.\n\n";
 
@@ -51,8 +53,14 @@ int main(int argc, char *argv[])
   VecDestroy(&v);
 
   // Test class
-  MPI_Barrier(MPI_COMM_WORLD);
+  Message::Barrier();
 
+  //Test Circle
+  double r = 1;
+  double x = 0.5, y = 0.1;
+  Circle c(r, x, y);
+  c.Print();
+  //
   Message::InfoRoot("End-------");
   Message::Finalize(EXIT_SUCCESS);
   return 0;

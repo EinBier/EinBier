@@ -4,7 +4,7 @@
 #include <mpi.h>
 #include <petsc.h>
 
-#include <Common/Message.h>
+#include <Common/Common/Message.h>
 
 //static char help[] = "Appends to an ASCII file.\n\n";
 

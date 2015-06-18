@@ -241,7 +241,7 @@ void Message::Error(int level, const char *format, ...)
   const char *c0 = "", *c1 = "";
   c0 = "\33[1m\33[31m"; c1 = "\33[0m";
   //
-  fprintf(stdout, "%sError[%d] : %s\n", c0, p_myRank,str, c1);
+  fprintf(stdout, "%sError[%d] : %s%s\n", c0, p_myRank,str, c1);
 //Bert: Should we abord here ?
   return;
 }

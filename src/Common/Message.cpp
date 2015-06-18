@@ -214,6 +214,34 @@ void Message::DebugRoot(int level, const char *format, ...)
   Debug(level, str);
 }
 
+void Message::Error(const char *format, ...)
+{
+  char str[1024];
+  va_list args;
+  va_start (args, format);
+  vsnprintf (str, 1024, format, args);
+  va_end (args);
+  Error(0, str);
+}
+
+//with verbosity
+void Message::Error(int level, const char *format, ...)
+{
+  if(level > m_verbosity) return;
+  char str[1024];
+  va_list args;
+  va_start (args, format);
+  vsnprintf (str, 1024, format, args);
+  va_end (args);
+  //to write in bold (\33[1m) + red (\33[31m)
+  const char *c0 = "", *c1 = "";
+  c0 = "\33[1m\33[31m"; c1 = "\33[0m";
+  //
+  fprintf(stdout, "%sError[%d] : %s\n", c0, m_myRank,str, c1);
+  return;
+}
+
+
 // Show help of MonteCarlo (options, ...)
 void Message::Help()
 {

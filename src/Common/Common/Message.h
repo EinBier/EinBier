@@ -3,10 +3,10 @@
 // a class to manage messages
 class Message{
  private:
-  static int m_verbosity;
-  static int m_myRank;
-  static int m_nb_proc;
-  static int m_nb_threads;
+  static int p_verbosity;
+  static int p_myRank;
+  static int p_nb_proc;
+  static int p_nb_threads;
 
  public:
   static void Initialize(int argc, char *argv[]);
@@ -25,11 +25,11 @@ class Message{
   static void Error(int level, const char *format, ...);
   static void Error(const char *format, ...);
   static int Precision(){return 17;} //set decimal precision for output file
-  static int GetRank(){return m_myRank;};
-  static int GetNProc(){return m_nb_proc;};
-  static int GetNumThreads(){return  m_nb_threads;};
+  static int GetRank(){return p_myRank;};
+  static int GetNProc(){return p_nb_proc;};
+  static int GetNumThreads(){return  p_nb_threads;};
   static int GetThreadNum();
-  static bool RootMpi(){return (m_myRank == 0);}
+  static bool RootMpi(){return (p_myRank == 0);}
   static void Finalize(int status);
   static void Help();
   //MPI

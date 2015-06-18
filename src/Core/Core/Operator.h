@@ -1,8 +1,7 @@
+#pragma once
+
 #include <vector>
 #include <list>
-
-// ??
-#pragma once
 
 
 typedef struct{

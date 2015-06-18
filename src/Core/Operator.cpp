@@ -6,14 +6,17 @@ Operator::Operator()
 {
     _Operator(0, 0);
 }
+
 Operator::Operator(Coord s)
 {
     _Operator(s.row, s.col);
 }
+
 Operator::Operator(int r, int c)
 {
     _Operator(r, c);
 }
+
 void Operator::_Operator(int r, int c)
 {
     shape.row = r;

@@ -58,10 +58,17 @@ int main(int argc, char *argv[])
   Message::Barrier();
 
   //Test Circle
-  double r = 1;
-  double x = 0.5, y = 0.1;
-  Circle c(r, x, y);
-  c.Print();
+  double r1 = 1;
+  double x1 = 0.5, y1 = 0.1;
+  Circle c1(r1, x1, y1);
+  c1.Print();
+
+  //Test intersection
+  double r2 = 1;
+  double x2 = 10.5, y2 = 0.1;
+  Circle c2(r2, x2, y2);
+  c2.Print();
+  Message::Info("Intersection ? %d", static_cast<int>(c1.Intersect(&c2)));
   //
 
   // Test Operator

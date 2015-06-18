@@ -8,6 +8,8 @@
 #include <Geometry/Geometry.h>
 #include <Geometry/Circle.h>
 
+#include <Core/Operator.h>
+
 //static char help[] = "Appends to an ASCII file.\n\n";
 
 int main(int argc, char *argv[])
@@ -61,6 +63,43 @@ int main(int argc, char *argv[])
   Circle c(r, x, y);
   c.Print();
   //
+
+  // Test Operator
+  Operator op;
+  op.Print();
+
+  Operator A(2, 2);
+  A.Print();
+  Operator AA(4, 4);
+
+  Coord rc;
+  rc.row = 2; rc.col = 4;
+  Operator B(rc);
+  B.Print();
+
+  Operator C(4, 4);
+  C.Print();
+
+  Message::Warning(" == Start addBlock ==");
+
+  Message::Info("add A");
+  op.addBlock(0, 0, &A);
+  op.Print();
+
+  Message::Info("add AA (error?)");
+  op.addBlock(0, 0, &AA);
+  op.Print();
+
+  Message::Info("add B");
+  op.addBlock(0, 1, &B);
+  op.Print();
+
+  Message::Info("add C");
+  op.addBlock(1, 1, &C);
+  op.Print();
+
+  //
+
   Message::InfoRoot("End-------");
   Message::Finalize(EXIT_SUCCESS);
   return 0;

@@ -2,42 +2,32 @@
 
 #include <Core/Operator.h>
 
-Operator::Operator()
+Operator::Operator(int r, int c)
 {
-    _Operator(0, 0);
+  shape.row = r;
+  shape.col = c;
+  Shape.row = 0;
+  Shape.col = 0;
+  banded_rows.push_back(-1);
+  banded_cols.push_back(-1);
 }
 
 Operator::Operator(Coord s)
 {
-    _Operator(s.row, s.col);
+  Operator(s.row, s.col);
 }
 
-Operator::Operator(int r, int c)
-{
-    _Operator(r, c);
-}
-
-void Operator::_Operator(int r, int c)
-{
-    shape.row = r;
-    shape.col = c;
-    Shape.row = 0;
-    Shape.col = 0;
-    banded_rows.push_back(-1);
-    banded_cols.push_back(-1);
-    return;
-}
  
 void Operator::addBlock(int r, int c, Operator *op)
 {
-    if (_isInList(r, rows) && _isInList(c, cols))
+    if (isInList(r, rows) && isInList(c, cols))
     {
         Message::Error("occupied!");
         return;
     }
     else
     {
-        if (!_isCheckAndUpdate_shapes(r, c, op->get_shape()))
+        if (!isCheckAndUpdate_shapes(r, c, op->get_shape()))
         {
             Message::Error("wrong size!");
             return;
@@ -49,7 +39,7 @@ void Operator::addBlock(int r, int c, Operator *op)
     return;
 }
 
-bool Operator::_isInList(int i, std::list<int> l)
+bool Operator::isInList(int i, std::list<int> l)
 {
     std::list<int>::iterator itr;
     for(itr=l.begin(); itr!=l.end(); itr++)
@@ -62,7 +52,7 @@ bool Operator::_isInList(int i, std::list<int> l)
     return false;
 }
 
-bool Operator::_isCheckAndUpdate_shapes(int r, int c, Coord coord)
+bool Operator::isCheckAndUpdate_shapes(int r, int c, Coord coord)
 {
     int rr = coord.row;
     int cc = coord.col;
@@ -78,7 +68,7 @@ bool Operator::_isCheckAndUpdate_shapes(int r, int c, Coord coord)
 
     if (banded_rows[r] == -1)
     {
-        banded_rows.insert(banded_rows.begin()+r, rr);
+	  banded_rows.insert(banded_rows.begin()+r, rr);
     }
     else
     {
@@ -126,7 +116,6 @@ bool Operator::_isCheckAndUpdate_shapes(int r, int c, Coord coord)
 //
 void Operator::Print()
 {
-  Message::Warning("Print");
   Message::Info("shape: %d %d", shape.row, shape.col);
   Message::Info("Shape: %d %d", Shape.row, Shape.col);
   return;

@@ -78,11 +78,15 @@ int main(int argc, char *argv[])
   Operator A(2, 2);
   A.Print();
   Operator AA(4, 4);
+  AA.Print();
 
+  Message::Warning("== Constructor that call a constructor ==");
   Coord rc;
   rc.row = 2; rc.col = 4;
   Operator B(rc);
   B.Print();
+  Message::Info("==== Failed! expected: shape:2x4 ; Shape:0x0  :-(");
+
 
   Operator C(4, 4);
   C.Print();

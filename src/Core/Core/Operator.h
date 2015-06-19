@@ -16,15 +16,13 @@ public:
     Coord shape;
     Coord Shape;
 
-    Operator();
+    Operator(int r=0, int c=0);
     Operator(Coord);
-    Operator(int, int);
 
     void addBlock(int, int, Operator*);
 
     void Print();
 
-private:
     Coord get_shape(){return shape;};
     Coord get_Shape(){return Shape;};
 
@@ -38,8 +36,7 @@ private:
     std::vector<int> banded_rows;
     std::vector<int> banded_cols;
 
-    void _Operator(int, int);
-    bool _isInList(int, std::list<int>);
-    bool _isCheckAndUpdate_shapes(int, int, Coord);
+    bool isInList(int, std::list<int>);
+    bool isCheckAndUpdate_shapes(int, int, Coord);
 };
 

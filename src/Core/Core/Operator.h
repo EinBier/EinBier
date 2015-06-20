@@ -11,15 +11,19 @@ class Operator
 {
 public:
     Coord shape;
-    Coord Shape;
+    Coord Shape; // (0,0) by Coord constructor
 
 	BIO *bio;
 
+    void createOperator(int, int);
     Operator(int r=0, int c=0);
     Operator(Coord);
 
     void addBlock(int, int, Operator*);
-	void addBlock(int, int, BIO*);
+    void addBlock(int, int, BIO*);
+
+    void addBlock(Coord, Operator*);
+    void addBlock(Coord, BIO*);
 
     void Print();
 

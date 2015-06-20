@@ -82,8 +82,7 @@ int main(int argc, char *argv[])
   AA.Print();
 
   Message::Warning("== Constructor that call a constructor ==");
-  Coord rc;
-  rc.nrow = 2; rc.ncol = 4;
+  Coord rc(2, 4);
   Operator B(rc);
   B.Print();
   Message::Info("==== Failed! expected: shape:2x4 ; Shape:0x0  :-(");
@@ -133,13 +132,14 @@ int main(int argc, char *argv[])
   fromOp.Print();
 
   Operator fromBIO;
-  fromBIO.addBlock(0, 0, &bio);
-  fromBIO.addBlock(1, 1, &biov);
+  Coord coord(0,0);
+  fromBIO.addBlock(coord, &bio);
+  fromBIO.addBlock(Coord(1,1), &biov);
   fromBIO.addBlock(2, 2, &zero);
   fromBIO.addBlock(3, 3, &eye);
   fromBIO.Print();
   fromBIO.addBlock(2, 2, &c);
-  fromBIO.addBlock(0, 0, &eye);
+  fromBIO.addBlock(Coord(0, 0), &eye);
   
 
   Message::InfoRoot("End-------");

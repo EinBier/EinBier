@@ -3,20 +3,37 @@
 //#include <BIO/BIO.h>
 #include <Core/Operator.h>
 
-Operator::Operator(int r, int c)
+void Operator::createOperator(int r, int c)
 {
-	shape.nrow = r;
-	shape.ncol = c;
-	Shape.nrow = 0;
-	Shape.ncol = 0;
+	shape = Coord(r, c);
+	// Shape.row = 0;
+	// Shape.col = 0;
 	banded_rows.push_back(-1);
 	banded_cols.push_back(-1);
-//	bio = 0;
+	bio = 0;
+    return;
 }
 
-Operator::Operator(Coord s)
+Operator::Operator(int r, int c)
 {
-  Operator(s.nrow, s.ncol);
+    createOperator(r, c);
+}
+
+Operator::Operator(Coord ij)
+{
+    createOperator(ij.row, ij.col);
+}
+
+void Operator::addBlock(Coord ij, BIO *bio)
+{
+	addBlock(ij.row, ij.col, bio);
+	return;
+}
+
+void Operator::addBlock(Coord ij, Operator *op)
+{
+	addBlock(ij.row, ij.col, op);
+	return;
 }
 
 void Operator::addBlock(int r, int c, BIO *bio)
@@ -25,7 +42,6 @@ void Operator::addBlock(int r, int c, BIO *bio)
 	addBlock(r, c, &op);
 	return;
 }
-
 
 void Operator::addBlock(int r, int c, Operator *op)
 {
@@ -55,8 +71,8 @@ bool Operator::isInList(int i, std::list<int> l)
 
 bool Operator::isCheckAndUpdate_shapes(int r, int c, Coord coord)
 {
-	int rr = coord.nrow;
-	int cc = coord.ncol;
+	int rr = coord.get_row();
+	int cc = coord.get_col();
 
 	if (banded_rows.size() < r)
 		banded_rows.resize(r, -1);
@@ -82,10 +98,10 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Coord coord)
 			Message::Error("Panic !! impossible case");
 		}
 	}
-	if (Shape.nrow <= r)
-		Shape.nrow = r+1;
-	if (Shape.ncol <= c)
-		Shape.ncol = c+1;
+	if (Shape.get_row() <= r)
+		Shape.set_row(r+1);
+	if (Shape.get_col() <= c)
+		Shape.set_col(c+1);
 
 	std::vector<int>::iterator itr;
 	int sumr = 1;
@@ -96,16 +112,15 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Coord coord)
 	for(itr=banded_rows.begin(); itr!=banded_rows.end(); ++itr) {
 		sumc += *itr;
 	}
-	shape.nrow = sumr;
-	shape.ncol = sumc;
+	shape = Coord(sumr, sumc);
 	return true;
 }
 
 //
 void Operator::Print()
 {
-	Message::Info("shape: %d %d", shape.nrow, shape.ncol);
-	Message::Info("Shape: %d %d", Shape.nrow, Shape.ncol);
+    Message::Info("shape: %d %d", shape.row, shape.col);
+    Message::Info("Shape: %d %d", Shape.row, Shape.col);
 	return;
 }
 

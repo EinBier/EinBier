@@ -5,15 +5,13 @@
 
 BIO::BIO(int r, int c)
 {
-	shape.nrow = r;
-	shape.ncol = c;
+	shape = Coord(r, c);
 }
 
 Operator BIO::create()
 {
-	Operator Op(shape.nrow, shape.ncol);
-	Op.Shape.nrow = 1;
-	Op.Shape.ncol = 1;
+	Operator Op(shape);
+	Op.Shape = Coord(1, 1);
 	Op.bio = this;
 	return Op;
 }

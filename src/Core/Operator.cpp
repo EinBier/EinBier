@@ -82,10 +82,10 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Coord coord)
 			Message::Error("Panic !! impossible case");
 		}
 	}
-	if (Shape.nrow < r)
-		Shape.nrow = r;
-	if (Shape.ncol < c)
-		Shape.ncol = c;
+	if (Shape.nrow <= r)
+		Shape.nrow = r+1;
+	if (Shape.ncol <= c)
+		Shape.ncol = c+1;
 
 	std::vector<int>::iterator itr;
 	int sumr = 1;

@@ -123,6 +123,8 @@ int main(int argc, char *argv[])
   Operator c = zero.create();
   Operator d = eye.create();
 
+  a.Print();
+  
   Operator fromOp;
   fromOp.addBlock(0, 0, &a);
   fromOp.addBlock(1, 1, &b);
@@ -132,10 +134,13 @@ int main(int argc, char *argv[])
 
   Operator fromBIO;
   fromBIO.addBlock(0, 0, &bio);
-  fromBIO.addBlock(1, 1, &b);
-  fromBIO.addBlock(2, 2, &c);
-  fromBIO.addBlock(3, 3, &d);
+  fromBIO.addBlock(1, 1, &biov);
+  fromBIO.addBlock(2, 2, &zero);
+  fromBIO.addBlock(3, 3, &eye);
   fromBIO.Print();
+  fromBIO.addBlock(2, 2, &c);
+  fromBIO.addBlock(0, 0, &eye);
+  
 
   Message::InfoRoot("End-------");
   Message::Finalize(EXIT_SUCCESS);

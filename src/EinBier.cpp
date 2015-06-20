@@ -9,6 +9,7 @@
 #include <Geometry/Circle.h>
 
 #include <Core/Operator.h>
+#include <BIO/BIOUtils.h>
 
 //static char help[] = "Appends to an ASCII file.\n\n";
 
@@ -82,7 +83,7 @@ int main(int argc, char *argv[])
 
   Message::Warning("== Constructor that call a constructor ==");
   Coord rc;
-  rc.row = 2; rc.col = 4;
+  rc.nrow = 2; rc.ncol = 4;
   Operator B(rc);
   B.Print();
   Message::Info("==== Failed! expected: shape:2x4 ; Shape:0x0  :-(");
@@ -110,6 +111,31 @@ int main(int argc, char *argv[])
   op.Print();
 
   //
+
+  Message::Warning(" == Start BIO ==");
+  BIO bio(3, 3);
+  BIOVal biov(2, 2, 2);
+  BIOZero zero(4, 4);
+  BIOEye eye(5, 5);
+
+  Operator a = bio.create();
+  Operator b = biov.create();
+  Operator c = zero.create();
+  Operator d = eye.create();
+
+  Operator fromOp;
+  fromOp.addBlock(0, 0, &a);
+  fromOp.addBlock(1, 1, &b);
+  fromOp.addBlock(2, 2, &c);
+  fromOp.addBlock(3, 3, &d);
+  fromOp.Print();
+
+  Operator fromBIO;
+  fromBIO.addBlock(0, 0, &bio);
+  fromBIO.addBlock(1, 1, &b);
+  fromBIO.addBlock(2, 2, &c);
+  fromBIO.addBlock(3, 3, &d);
+  fromBIO.Print();
 
   Message::InfoRoot("End-------");
   Message::Finalize(EXIT_SUCCESS);

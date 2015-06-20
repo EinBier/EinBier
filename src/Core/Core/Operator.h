@@ -3,11 +3,8 @@
 #include <vector>
 #include <list>
 
-
-typedef struct{
-    int row;
-    int col;
-} Coord;
+#include <Common/Type.h>
+#include <BIO/BIO.h>
 
 
 class Operator
@@ -16,10 +13,13 @@ public:
     Coord shape;
     Coord Shape;
 
+	BIO *bio;
+
     Operator(int r=0, int c=0);
     Operator(Coord);
 
     void addBlock(int, int, Operator*);
+	void addBlock(int, int, BIO*);
 
     void Print();
 

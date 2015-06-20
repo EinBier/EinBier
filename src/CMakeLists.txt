@@ -2,6 +2,7 @@ add_definitions (${PETSC_DEFINITIONS})
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/Common)
 include_directories(${CMAKE_SOURCE_DIR}/src/Geometry)
+include_directories(${CMAKE_SOURCE_DIR}/src/BIO)
 include_directories(${CMAKE_SOURCE_DIR}/src/Core)
 
 #Build subdirectories

@@ -11,13 +11,15 @@
 #include <Core/Operator.h>
 #include <BIO/BIOUtils.h>
 
+#include <Core/Matrix.h>
+
 //static char help[] = "Appends to an ASCII file.\n\n";
 
 int main(int argc, char *argv[])
 {
   Message::Info("------- Begin");
   Message::Initialize(argc, argv);
-  
+
   PetscErrorCode ierr;
   Vec v;
   int mpirank = Message::GetRank();
@@ -123,7 +125,7 @@ int main(int argc, char *argv[])
   Operator d = eye.create();
 
   a.Print();
-  
+
   Operator fromOp;
   fromOp.addBlock(0, 0, &a);
   fromOp.addBlock(1, 1, &b);
@@ -140,7 +142,19 @@ int main(int argc, char *argv[])
   fromBIO.Print();
   fromBIO.addBlock(2, 2, &c);
   fromBIO.addBlock(Coord(0, 0), &eye);
-  
+
+  Message::Warning(" == Start Matrix ==");
+  Matrix myMat(Coord(3, 3));
+  int i, j;
+  for (i=0; i<3; i++) {
+      for (j=0; j<3; j++) {
+          myMat.insert(i, j, -1);
+      }
+  }
+  myMat.Print();
+
+  Matrix M = (eye.create()).assemb();
+  M.Print();
 
   Message::InfoRoot("End-------");
   Message::Finalize(EXIT_SUCCESS);

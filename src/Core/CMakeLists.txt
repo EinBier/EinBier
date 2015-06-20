@@ -6,6 +6,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Core)
 
 add_library(Core
 Operator.cpp
+Matrix.cpp
 )
 
 target_link_libraries (Core ${PETSC_LIBRARIES})

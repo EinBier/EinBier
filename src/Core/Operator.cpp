@@ -116,6 +116,22 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Coord coord)
 	return true;
 }
 
+Matrix Operator::assemb()
+{
+    int r, c;
+    if (Shape==Coord(1, 1)) {
+        Matrix m(shape);
+        for (r=0; r<shape.get_row(); r++) {
+            for (c=0; c<shape.get_col(); c++) {
+                m.insert(r, c, bio->getValue(r, c));
+            }
+        }
+        return m;
+    } else {
+        return Matrix(Coord(0, 0));
+    }
+}
+
 //
 void Operator::Print()
 {
@@ -123,4 +139,4 @@ void Operator::Print()
     Message::Info("Shape: %d %d", Shape.row, Shape.col);
 	return;
 }
-
+//

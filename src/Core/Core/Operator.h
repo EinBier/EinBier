@@ -6,6 +6,8 @@
 #include <Common/Type.h>
 #include <BIO/BIO.h>
 
+#include <Core/Matrix.h>
+
 
 class Operator
 {
@@ -24,6 +26,8 @@ public:
 
     void addBlock(Coord, Operator*);
     void addBlock(Coord, BIO*);
+
+    Matrix assemb();
 
     void Print();
 

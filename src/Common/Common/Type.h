@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#define MyMin(a, b) ((a) < (b) ? (a) : (b))
+
 class Coord
 {
 public:
@@ -25,6 +27,15 @@ public:
             return false;
         }
     }
+	bool operator<(Coord other)
+	{
+		if (this->get_row()<other.get_row()
+            || this->get_col()<other.get_col()) {
+            return true;
+        } else {
+            return false;
+        }
+	};
     int get_row(){return row;};
     int get_col(){return col;};
     void set_row(int ii){row=ii;};

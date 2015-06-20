@@ -1,3 +1,6 @@
+#ifndef OPERATOR_H
+#define OPERATOR_H
+
 #pragma once
 
 #include <vector>
@@ -7,7 +10,7 @@
 #include <BIO/BIO.h>
 
 #include <Core/Matrix.h>
-
+#include <Core/Node.h>
 
 class Operator
 {
@@ -28,6 +31,10 @@ public:
     void addBlock(Coord, BIO*);
 
     Matrix assemb();
+	Node node;
+
+	Operator operator+(Operator);
+	Operator operator*(double);
 
     void Print();
 
@@ -48,3 +55,4 @@ public:
     bool isCheckAndUpdate_shapes(int, int, Coord);
 };
 
+#endif

@@ -2,6 +2,8 @@
 
 //#include <BIO/BIO.h>
 #include <Core/Operator.h>
+#include <Core/Node.h>
+
 
 void Operator::createOperator(int r, int c)
 {
@@ -46,7 +48,7 @@ void Operator::addBlock(int r, int c, BIO *bio)
 void Operator::addBlock(int r, int c, Operator *op)
 {
 	if (isInList(r, rows) && isInList(c, cols)) {
-		Message::Error("occupied!");
+		Message::Warning("occupied!");
 		return;
 	} else if (!isCheckAndUpdate_shapes(r, c, op->get_shape())) {
 		Message::Error("wrong size!");
@@ -83,9 +85,11 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Coord coord)
 		banded_rows.insert(banded_rows.begin()+r, rr);
 	} else {
 		if (banded_rows[r] != rr) {
+			Message::Info("Already blocks at row:%d [shape.row:%d !=%d]", r, rr,
+						  banded_rows[r]);
 			return false;
 		} else {
-			Message::Error("Panic !! impossible case");
+			Message::Info("Already blocks at row:%d [shape.row:%d ok]", r, rr);
 		}
 	}
 
@@ -93,9 +97,11 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Coord coord)
 		banded_cols.insert(banded_cols.begin()+c, cc);
 	} else {
 		if (banded_cols[c] != cc) {
+			Message::Info("Already blocks at col:%d [shape.col:%d !=%d]", c, cc,
+						  banded_cols[c]);
 			return false;
 		} else {
-			Message::Error("Panic !! impossible case");
+			Message::Info("Already blocks at col:%d [shape.col:%d ok]", c, cc);
 		}
 	}
 	if (Shape.get_row() <= r)
@@ -119,7 +125,9 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Coord coord)
 Matrix Operator::assemb()
 {
     int r, c;
-    if (Shape==Coord(1, 1)) {
+	if (Shape == Coord(0, 0)) {
+			Message::Error("No BIO attached.");
+	} else if (Shape==Coord(1, 1)) {
         Matrix m(shape);
         for (r=0; r<shape.get_row(); r++) {
             for (c=0; c<shape.get_col(); c++) {
@@ -127,16 +135,59 @@ Matrix Operator::assemb()
             }
         }
         return m;
+	} else if (Shape < Coord(0, 0)) {
+		Message::Info("Operator composed: %d(+) and %d(*)", -Shape.get_row(), -Shape.get_col());
+		std::string op = node.op;
+		Matrix L = (node.left)->assemb();
+		if (op == "+") {
+			Matrix R = (node.right)->assemb();
+			return L + R;
+		} else if (op == "*") {
+			return L * (*node.scalar);
+		}
     } else {
         return Matrix(Coord(0, 0));
     }
 }
 
+Operator Operator::operator+(Operator other)
+{
+	Operator tmp(shape);
+	if (shape == other.shape) {
+		int nleftAdd;
+		int nrightAdd;
+		if (Shape.get_row()<0)
+			nleftAdd = -Shape.get_row();
+		if (other.Shape.get_row()<0)
+			nrightAdd = -other.Shape.get_row();
+		tmp.Shape.set_row(-(nleftAdd + nrightAdd +1));
+		tmp.node.compute("+", this, &other);
+	} else {
+		Message::Error("Addition impossible, wrong shape (%d,%d)(%d,%d)",
+					   shape.row, shape.col,
+					   other.shape.row, other.shape.col);
+	}
+	return tmp;
+}
+
+Operator Operator::operator*(double v)
+{
+	Operator tmp(shape);
+	if (Shape.get_col()<0){
+		tmp.Shape.set_col(Shape.get_col()-1);
+	} else {
+		tmp.Shape.set_col(-1);
+	}
+	tmp.node.compute("*", this, &v);
+	return tmp;
+}
+
 //
 void Operator::Print()
 {
-    Message::Info("shape: %d %d", shape.row, shape.col);
-    Message::Info("Shape: %d %d", Shape.row, Shape.col);
+    Message::Info("Operator: \tshape: %d %d\tShape: %d %d",
+				  shape.row, shape.col,
+				  Shape.row, Shape.col);
 	return;
 }
 //

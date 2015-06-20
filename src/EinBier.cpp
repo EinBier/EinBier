@@ -74,26 +74,18 @@ int main(int argc, char *argv[])
   Message::Info("Intersection ? %d", static_cast<int>(c1.Intersect(&c2)));
   //
 
-  // Test Operator
-  Operator op;
-  op.Print();
-
-  Operator A(2, 2);
-  A.Print();
-  Operator AA(4, 4);
-  AA.Print();
-
-  Message::Warning("== Constructor that call a constructor ==");
-  Coord rc(2, 4);
-  Operator B(rc);
-  B.Print();
-  Message::Info("==== Failed! expected: shape:2x4 ; Shape:0x0  :-(");
-
-
-  Operator C(4, 4);
-  C.Print();
 
   Message::Warning(" == Start addBlock ==");
+  Operator op;
+  //op.Print();
+  Operator A(5, 5);
+  //A.Print();
+  Operator AA(4, 4);
+  //AA.Print();
+  Coord rc(5, 7);
+  Operator B(rc);
+  Operator C(Coord(2, 2));
+  //C.Print();
 
   Message::Info("add A");
   op.addBlock(0, 0, &A);
@@ -101,19 +93,19 @@ int main(int argc, char *argv[])
 
   Message::Info("add AA (error?)");
   op.addBlock(0, 0, &AA);
-  op.Print();
+  //op.Print();
 
   Message::Info("add B");
   op.addBlock(0, 1, &B);
-  op.Print();
+  //op.Print();
 
   Message::Info("add C");
   op.addBlock(1, 1, &C);
-  op.Print();
+  //op.Print();
 
   //
 
-  Message::Warning(" == Start BIO ==");
+  Message::Warning(" == Start BIO and first Operator Assembling ==");
   BIO bio(3, 3);
   BIOVal biov(2, 2, 2);
   BIOZero zero(4, 4);
@@ -154,12 +146,66 @@ int main(int argc, char *argv[])
   myMat.Print();
 
   Matrix M = (eye.create()).assemb();
-  M.Print();
+  //M.Print();
+  BIOVal two(5, 5, 2);
+  Matrix N = (two.create()).assemb();
+  //N.Print();
+  Matrix Add = M + N;
+  //Add.Print();
+  Matrix Min = -Add;
+  //Min.Print();
+  Matrix Diff = M - N;
+  //Diff.Print();
+  double t = 5;
+  Matrix MulSca = Diff*t; // ya precedence sucks!
+  MulSca.Print();
+
+  Message::Warning(" == Start Operator Assembling ==");
+  Operator Two = two.create();
+  Message::Info("TrueOp + TrueOp");
+  Operator zz = Two + Two;
+  zz.Print();
+  Matrix ZZ = zz.assemb();
+  ZZ.Print();
+  Message::Info("res-add1 + TrueOp");
+  Operator yy = zz + Two;
+  yy.Print();
+  Matrix YY = yy.assemb();
+  YY.Print();
+  Message::Info("res-add1 + res-add2");
+  Operator xx = zz + yy;
+  xx.Print();
+  Matrix XX = xx.assemb();
+  XX.Print();
+  Message::Info("TrueOp * double");
+  Operator zzz = Two * 21.;
+  zzz.Print();
+  Matrix ZZZ = zzz.assemb();
+  ZZZ.Print();
+
+  Message::Warning(" == Bug Operator Assembling ==");
+  Message::Info("TrueOp + TrueOp + TrueOp");
+  //Operator ww = (Two + Two) + Two;
+  Operator ww;
+  ww = (Two + Two) + Two;
+  ww.Print();
+  Matrix WW = ww.assemb();
+  WW.Print();
+
+  Message::Info("res-mul1 * double");
+  Operator yyy = zzz * 1.;
+  yyy.Print();
+  Matrix YYY = yyy.assemb();
+  YYY.Print();
+
+
+//  Matrix moMulAdd = (((eye.create() + two.create())*2) + two.create()).assemb();
+//  moMulAdd.Print();
 
   Message::InfoRoot("End-------");
   Message::Finalize(EXIT_SUCCESS);
-  return 0;
-}
+  return 0;}
+
 
 #else
 int main(int argc, char *argv[])

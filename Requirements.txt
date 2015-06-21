@@ -1,0 +1,5 @@
+ - CMake 2.8.12 (or higher)
+
+# Recommended
+ - PETSc 3.6  # Mat/Vec operations
+ - MPI        # Parallel computations

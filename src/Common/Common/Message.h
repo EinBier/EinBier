@@ -1,4 +1,10 @@
+#ifndef MESSAGE_H
+#define MESSAGE_H
+
 #pragma once
+
+#include <stdlib.h> // provides EXIT_*
+
 
 // a class to manage messages
 class Message{
@@ -36,3 +42,4 @@ class Message{
   static void Barrier();
 };
 
+#endif

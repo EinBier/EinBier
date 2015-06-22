@@ -5,9 +5,11 @@
 #include <Geometry/Geometry.h>
 #include <Geometry/Circle.h>
 
-#include <Core/Operator.h>
+#include <BIO/BIO.h>
 #include <BIO/BIOUtils.h>
 
+#include <Core/Node.h>
+#include <Core/Operator.h>
 #include <Core/Matrix.h>
 
 #if defined(HAVE_MPI) && defined(HAVE_PETSC)
@@ -206,7 +208,7 @@ int main(int argc, char *argv[])
 //  moMulAdd.Print();
 
     Message::InfoRoot("End-------");
-    Message::Finalize(EXIT_SUCCESS);
-    return 0;
+    return Message::Finalize(EXIT_SUCCESS);
+
 }
 

@@ -2,7 +2,8 @@
 #define NODE_H
 
 #include <string>
-#include <Core/Operator.h>
+//#include <Core/Operator.h>
+class Operator;
 
 class Node
 {

@@ -7,7 +7,9 @@
 #include <list>
 
 #include <Common/Type.h>
-#include <BIO/BIO.h>
+
+//#include <BIO/BIO.h>
+class BIO;  // to prevent circle hell dependencies
 
 #include <Core/Matrix.h>
 #include <Core/Node.h>

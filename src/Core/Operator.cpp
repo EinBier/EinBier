@@ -1,6 +1,7 @@
 #include <Common/Message.h>
 
-//#include <BIO/BIO.h>
+#include <BIO/BIO.h>
+
 #include <Core/Operator.h>
 #include <Core/Node.h>
 
@@ -8,12 +9,13 @@
 void Operator::createOperator(int r, int c)
 {
 	shape = Coord(r, c);
-	// Shape.row = 0;
-	// Shape.col = 0;
+	Shape.row = 0;
+	Shape.col = 0;
 	banded_rows.push_back(-1);
 	banded_cols.push_back(-1);
 	bio = 0;
-    return;
+    Message::Info("Operator created. [%p]", this);
+   return;
 }
 
 Operator::Operator(int r, int c)
@@ -124,16 +126,18 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Coord coord)
 
 Matrix Operator::assemb()
 {
-    int r, c;
+    int r = 0, c = 0;
 	if (Shape == Coord(0, 0)) {
 			Message::Error("No BIO attached.");
 	} else if (Shape==Coord(1, 1)) {
+        Message::Info("Operator assembling... [%p]", this);
         Matrix m(shape);
         for (r=0; r<shape.get_row(); r++) {
             for (c=0; c<shape.get_col(); c++) {
                 m.insert(r, c, bio->getValue(r, c));
             }
         }
+        Message::Info("Operator assembled -> return Matrix. [%p] -> [%p]", this, &m);
         return m;
 	} else if (Shape < Coord(0, 0)) {
 		Message::Info("Operator composed: %d(+) and %d(*)", -Shape.get_row(), -Shape.get_col());
@@ -154,8 +158,8 @@ Operator Operator::operator+(Operator other)
 {
 	Operator tmp(shape);
 	if (shape == other.shape) {
-		int nleftAdd;
-		int nrightAdd;
+		int nleftAdd = 0;
+		int nrightAdd = 0;
 		if (Shape.get_row()<0)
 			nleftAdd = -Shape.get_row();
 		if (other.Shape.get_row()<0)

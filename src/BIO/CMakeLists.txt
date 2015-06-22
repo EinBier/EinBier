@@ -4,7 +4,6 @@ endif(HAVE_PETSC)
 
 add_library(BIO
   BIO.cpp
-  BIOUtils.cpp
   )
 
 target_link_libraries(BIO) # ${PETSC_LIBRARIES}

@@ -6,10 +6,10 @@
 #include <Geometry/Circle.h>
 
 #include <BIO/BIO.h>
-#include <BIO/BIOUtils.h>
 
 #include <Core/Node.h>
 #include <Core/Operator.h>
+#include <Core/OperatorUtils.h>
 #include <Core/Matrix.h>
 
 #if defined(HAVE_MPI) && defined(HAVE_PETSC)
@@ -122,9 +122,9 @@ int main(int argc, char *argv[])
 
     Message::Debug(" == Start BIO and first Operator Assembling ==");
     BIO bio(3, 3);
-    BIOVal biov(2, 2, 2);
-    BIOZero zero(4, 4);
-    BIOEye eye(5, 5);
+    OperatorVal biov(2, 2, 2);
+    OperatorZero zero(4, 4);
+    OperatorEye eye(5, 5);
 
     bio.Print();
     eye.Print();
@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 
     Matrix M = eye.assemb();
 	M.Print();
-    BIOVal two(5, 5, 2);
+    OperatorVal two(5, 5, 2);
     Matrix N = two.assemb();
     //N.Print();
     Matrix Add = M + N;

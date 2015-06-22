@@ -4,6 +4,7 @@ endif(HAVE_PETSC)
 
 add_library(Core
 Operator.cpp
+OperatorUtils.cpp
 Matrix.cpp
 )
 

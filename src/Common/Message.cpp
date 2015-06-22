@@ -258,17 +258,17 @@ void Message::Help()
 }
 
 //To quit properly like a boss
-void Message::Finalize(int status)
+int Message::Finalize(int status)
 {
 #if defined(HAVE_MPI)
   MPI_Barrier(MPI_COMM_WORLD);
   MPI_Finalize();
 #endif
   if(status == EXIT_SUCCESS)
-    Message::Info("Exit with success");
+      Message::Info("Exit with success (status %d)", status);
   else
     Message::Warning("Exit with error (status %d)", status);
-  exit(status);
+  return status;
 }
 
 

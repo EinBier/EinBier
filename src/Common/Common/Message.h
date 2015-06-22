@@ -36,7 +36,7 @@ class Message{
   static int GetNumThreads(){return  p_nb_threads;};
   static int GetThreadNum();
   static bool RootMpi(){return (p_myRank == 0);}
-  static void Finalize(int status);
+  static int Finalize(int status);
   static void Help();
   //MPI
   static void Barrier();

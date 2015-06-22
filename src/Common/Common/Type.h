@@ -12,6 +12,8 @@ public:
     int col;
     Coord(int ii=0, int jj=0){row=ii; col=jj;};
 
+    // perhaps not useful because the compiler already provides an assign
+    //// more or less T & operator=(const T &)
     Coord & operator=(Coord other)
     {
         std::swap(row, other.row);
@@ -26,7 +28,16 @@ public:
         } else {
             return false;
         }
-    }
+    };
+    bool  operator!=(Coord other)
+    {
+        if (this->get_row()!=other.get_row()
+            || this->get_col()!=other.get_col()) {
+            return true;
+        } else {
+            return false;
+        }
+    };
 	bool operator<(Coord other)
 	{
 		if (this->get_row()<other.get_row()
@@ -36,6 +47,7 @@ public:
             return false;
         }
 	};
+
     int get_row(){return row;};
     int get_col(){return col;};
     void set_row(int ii){row=ii;};

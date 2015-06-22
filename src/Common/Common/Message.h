@@ -1,6 +1,3 @@
-#ifndef MESSAGE_H
-#define MESSAGE_H
-
 #pragma once
 
 #include <stdlib.h> // provides EXIT_*
@@ -41,5 +38,3 @@ class Message{
   //MPI
   static void Barrier();
 };
-
-#endif

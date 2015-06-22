@@ -1,3 +1,5 @@
+#pragma once
+
 #include <BIO/BIO.h>
 
 class BIOVal : public BIO

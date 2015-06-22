@@ -1,5 +1,4 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+#pragma once
 
 #include <Common/Type.h>
 
@@ -19,5 +18,3 @@ public:
 	Matrix  operator-(Matrix);
 	Matrix  operator*(double);
 };
-
-#endif

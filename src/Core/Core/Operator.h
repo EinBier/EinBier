@@ -1,6 +1,3 @@
-#ifndef OPERATOR_H
-#define OPERATOR_H
-
 #pragma once
 
 #include <vector>
@@ -20,7 +17,7 @@ public:
     Coord shape;
     Coord Shape; // (0,0) by Coord constructor
 
-	BIO *bio;
+    BIO *bio;
 
     void createOperator(int, int);
     Operator(int r=0, int c=0);
@@ -33,10 +30,10 @@ public:
     void addBlock(Coord, BIO*);
 
     Matrix assemb();
-	Node node;
-
-	Operator operator+(Operator);
-	Operator operator*(double);
+    Node node;
+    
+    Operator operator+(Operator);
+    Operator operator*(double);
 
     void Print();
 
@@ -56,5 +53,3 @@ public:
     bool isInList(int, std::list<int>);
     bool isCheckAndUpdate_shapes(int, int, Coord);
 };
-
-#endif

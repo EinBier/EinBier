@@ -1,6 +1,3 @@
-#ifndef BIO_H
-#define BIO_H
-
 #pragma once
 
 #include <Common/Type.h>
@@ -18,4 +15,3 @@ public:
 	virtual double getValue(int, int){}; // do not forget {}, so weird c++ !!
 };
 
-#endif

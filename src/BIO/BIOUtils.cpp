@@ -4,32 +4,33 @@
 
 BIOVal::BIOVal(int r, int c, double v) : BIO(r, c), val(v)
 {
-	// weird C++
-}	
+    // weird C++
+}
+
 double BIOVal::getValue(int, int)
 {
-	return val;
+    return val;
 }
 
 BIOZero::BIOZero(int r, int c) : BIOVal(r, c, 0.)
 {
-	// weird C++
+    // weird C++
 }
 double BIOZero::getValue(int, int)
 {
-	return 0.;
+    return 0.;
 }
 
 BIOEye::BIOEye(int r, int c) : BIO(r, c)
 {
-	// weird C++
+    // weird C++
 }
 double BIOEye::getValue(int i, int j)
 {
-	if (i == j) {
-		return 1.;
-	} else {
-		return 0.;
-	}
+    if (i == j) {
+	return 1.;
+    } else {
+	return 0.;
+    }
 }
 

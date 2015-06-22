@@ -9,14 +9,14 @@
 
 void Operator::createOperator(int r, int c)
 {
-	shape = Coord(r, c);
-	Shape.row = 0;
-	Shape.col = 0;
-	banded_rows.push_back(-1);
-	banded_cols.push_back(-1);
-	bio = 0;
+    shape = Coord(r, c);
+    Shape.row = 0;
+    Shape.col = 0;
+    banded_rows.push_back(-1);
+    banded_cols.push_back(-1);
+    bio = 0;
     Message::Info("Operator created. [%p]", this);
-   return;
+    return;
 }
 
 Operator::Operator(int r, int c)
@@ -31,8 +31,8 @@ Operator::Operator(Coord ij)
 
 void Operator::addBlock(Coord ij, BIO *bio)
 {
-	addBlock(ij.row, ij.col, bio);
-	return;
+    addBlock(ij.row, ij.col, bio);
+    return;
 }
 
 void Operator::addBlock(Coord ij, Operator *op)
@@ -128,9 +128,10 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Coord coord)
 Matrix Operator::assemb()
 {
     int r = 0, c = 0;
-	if (Shape == Coord(0, 0)) {
-			Message::Error("No BIO attached.");
-	} else if (Shape==Coord(1, 1)) {
+    if (Shape == Coord(0, 0)) {
+	Message::Error("No BIO attached.");
+    } 
+    else if (Shape==Coord(1, 1)) {
         Message::Info("Operator assembling... [%p]", this);
         Matrix m(shape);
         for (r=0; r<shape.get_row(); r++) {
@@ -140,16 +141,16 @@ Matrix Operator::assemb()
         }
         Message::Info("Operator assembled -> return Matrix. [%p] -> [%p]", this, &m);
         return m;
-	} else if (Shape < Coord(0, 0)) {
-		Message::Info("Operator composed: %d(+) and %d(*)", -Shape.get_row(), -Shape.get_col());
-		std::string op = node.op;
-		Matrix L = (node.left)->assemb();
-		if (op == "+") {
-			Matrix R = (node.right)->assemb();
-			return L + R;
-		} else if (op == "*") {
-			return L * (*node.scalar);
-		}
+    } else if (Shape < Coord(0, 0)) {
+	Message::Info("Operator composed: %d(+) and %d(*)", -Shape.get_row(), -Shape.get_col());
+	std::string op = node.m_op;
+	Matrix L = (node.m_left)->assemb();
+	if (op == "+") {
+	    Matrix R = (node.m_right)->assemb();
+	    return L + R;
+	} else if (op == "*") {
+	    return L * (*node.m_scalar);
+	}
     } else {
         return Matrix(Coord(0, 0));
     }

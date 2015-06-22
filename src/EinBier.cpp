@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 
     Message::Info("");
     Message::Info("\n");
-    Message::Warning(" == Start addBlock ==");
+    Message::Debug(" == Start addBlock ==");
 
     //// to prevent a circular dependency
     BIO tmp;
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 
     //
 
-    Message::Warning(" == Start BIO and first Operator Assembling ==");
+    Message::Debug(" == Start BIO and first Operator Assembling ==");
     BIO bio(3, 3);
     BIOVal biov(2, 2, 2);
     BIOZero zero(4, 4);
@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
     fromBIO.addBlock(2, 2, &c);
     fromBIO.addBlock(Coord(0, 0), &eye);
 
-    Message::Warning(" == Start Matrix ==");
+    Message::Debug(" == Start Matrix ==");
     Matrix myMat(Coord(3, 3));
     int i, j;
     for (i=0; i<3; i++) {
@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
     Matrix MulSca = Diff*t; // ya precedence sucks!
     MulSca.Print();
 
-    Message::Warning(" == Start Operator Assembling ==");
+    Message::Debug(" == Start Operator Assembling ==");
     Operator Two = two.create();
     Message::Info("TrueOp + TrueOp");
     Operator zz = Two + Two;
@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
     Matrix ZZZ = zzz.assemb();
     ZZZ.Print();
 
-    Message::Warning(" == Bug Operator Assembling ==");
+    Message::Debug(" == Bug Operator Assembling ==");
     Message::Info("TrueOp + TrueOp + TrueOp");
     //Operator ww = (Two + Two) + Two;
     Operator ww;

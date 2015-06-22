@@ -1,5 +1,4 @@
-#ifndef TYPE_H
-#define TYPE_H
+#pragma once
 
 #include <memory>
 
@@ -53,5 +52,3 @@ public:
     void set_row(int ii){row=ii;};
     void set_col(int ii){col=ii;};
 };
-
-#endif

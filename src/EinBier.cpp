@@ -126,19 +126,8 @@ int main(int argc, char *argv[])
     BIOZero zero(4, 4);
     BIOEye eye(5, 5);
 
-    Operator a = bio.create();
-    Operator b = biov.create();
-    Operator c = zero.create();
-    Operator d = eye.create();
-
-    a.Print();
-
-    Operator fromOp;
-    fromOp.addBlock(0, 0, &a);
-    fromOp.addBlock(1, 1, &b);
-    fromOp.addBlock(2, 2, &c);
-    fromOp.addBlock(3, 3, &d);
-    fromOp.Print();
+    bio.Print();
+    eye.Print();
 
     Operator fromBIO;
     Coord coord(0,0);
@@ -147,7 +136,6 @@ int main(int argc, char *argv[])
     fromBIO.addBlock(2, 2, &zero);
     fromBIO.addBlock(3, 3, &eye);
     fromBIO.Print();
-    fromBIO.addBlock(2, 2, &c);
     fromBIO.addBlock(Coord(0, 0), &eye);
 
     Message::Debug(" == Start Matrix ==");
@@ -160,10 +148,10 @@ int main(int argc, char *argv[])
     }
     myMat.Print();
 
-    Matrix M = (eye.create()).assemb();
-    //M.Print();
+    Matrix M = eye.assemb();
+	M.Print();
     BIOVal two(5, 5, 2);
-    Matrix N = (two.create()).assemb();
+    Matrix N = two.assemb();
     //N.Print();
     Matrix Add = M + N;
     //Add.Print();
@@ -176,7 +164,7 @@ int main(int argc, char *argv[])
     MulSca.Print();
 
     Message::Debug(" == Start Operator Assembling ==");
-    Operator Two = two.create();
+    Operator Two = two;
     Message::Info("TrueOp + TrueOp");
     Operator zz = Two + Two;
     zz.Print();
@@ -220,4 +208,3 @@ int main(int argc, char *argv[])
     return Message::Finalize(EXIT_SUCCESS);
 
 }
-

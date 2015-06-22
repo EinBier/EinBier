@@ -17,21 +17,18 @@ public:
     Coord shape;
     Coord Shape; // (0,0) by Coord constructor
 
-    BIO *bio;
+	virtual double getValue(int, int){}; // do not forget {}, so weird c++ !!
 
     void createOperator(int, int);
     Operator(int r=0, int c=0);
     Operator(Coord);
 
     void addBlock(int, int, Operator*);
-    void addBlock(int, int, BIO*);
-
     void addBlock(Coord, Operator*);
-    void addBlock(Coord, BIO*);
 
     Matrix assemb();
     Node node;
-    
+
     Operator operator+(Operator);
     Operator operator*(double);
 

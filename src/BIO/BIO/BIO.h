@@ -2,16 +2,13 @@
 
 #include <Common/Type.h>
 
-//#include <Core/Operator.h>
-class Operator; // to prevent circle hell dependencies
+#include <Core/Operator.h>
 
-class BIO
+class BIO : public Operator
 {
 public:
-	Coord shape;
 	BIO(int r=0, int c=0);
+//	BIO(Trace, Trace);
 
-	Operator create();
 	virtual double getValue(int, int){}; // do not forget {}, so weird c++ !!
 };
-

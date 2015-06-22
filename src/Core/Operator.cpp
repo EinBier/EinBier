@@ -14,7 +14,6 @@ void Operator::createOperator(int r, int c)
     Shape.col = 0;
     banded_rows.push_back(-1);
     banded_cols.push_back(-1);
-    bio = 0;
     Message::Info("Operator created. [%p]", this);
     return;
 }
@@ -29,22 +28,9 @@ Operator::Operator(Coord ij)
     createOperator(ij.row, ij.col);
 }
 
-void Operator::addBlock(Coord ij, BIO *bio)
-{
-    addBlock(ij.row, ij.col, bio);
-    return;
-}
-
 void Operator::addBlock(Coord ij, Operator *op)
 {
 	addBlock(ij.row, ij.col, op);
-	return;
-}
-
-void Operator::addBlock(int r, int c, BIO *bio)
-{
-	Operator op = bio->create();
-	addBlock(r, c, &op);
 	return;
 }
 
@@ -130,13 +116,13 @@ Matrix Operator::assemb()
     int r = 0, c = 0;
     if (Shape == Coord(0, 0)) {
 	Message::Error("No BIO attached.");
-    } 
+    }
     else if (Shape==Coord(1, 1)) {
         Message::Info("Operator assembling... [%p]", this);
         Matrix m(shape);
         for (r=0; r<shape.get_row(); r++) {
             for (c=0; c<shape.get_col(); c++) {
-                m.insert(r, c, bio->getValue(r, c));
+                m.insert(r, c, getValue(r, c));
             }
         }
         Message::Info("Operator assembled -> return Matrix. [%p] -> [%p]", this, &m);

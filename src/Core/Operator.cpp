@@ -2,8 +2,9 @@
 
 #include <BIO/BIO.h>
 
-#include <Core/Operator.h>
 #include <Core/Node.h>
+
+#include <Core/Operator.h>
 
 
 void Operator::createOperator(int r, int c)

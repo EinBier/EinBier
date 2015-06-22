@@ -7,12 +7,15 @@
 Matrix::Matrix(Coord s)
 {
     shape = s;
-    coeffs = (double**)malloc(shape.get_row() * sizeof(double*));
+    coeffs = (double**)calloc(shape.get_row(), sizeof(double*));
     int i;
     for (i=0; i<shape.get_row(); i++) {
-        coeffs[i] = (double*)malloc(shape.get_col() * sizeof(double));
+        coeffs[i] = (double*)calloc(shape.get_col(), sizeof(double));
     }
-    printf("call Matrix constructor. [allocate+assign]\n");
+    int mem = shape.get_row()*shape.get_col()*sizeof(double);
+    printf("Matrix allocator: %dx%d = %d bytes [%p]\n",
+           shape.get_row(), shape.get_col(), mem, this);
+
 }
 
 void Matrix::insert(int r, int c, double v)

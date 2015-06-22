@@ -79,9 +79,18 @@ int main(int argc, char *argv[])
     //
 
 
+
     Message::Info("");
     Message::Info("\n");
     Message::Warning(" == Start addBlock ==");
+
+    //// to prevent a circular dependency
+    BIO tmp;
+    //// otherwise the linker failed:  undefined reference to `BIO::create()'
+    //// note: the circular dependency with forward declaration is well-known
+    //// and it could be a problem, source of bug ?
+    //// It is claimed that the mutual dependency is done by unexperimented programmer.
+
     Operator op;
     //op.Print();
     Operator A(5, 5);

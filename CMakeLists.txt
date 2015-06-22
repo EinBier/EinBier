@@ -19,7 +19,7 @@ project(EinBier CXX C)
 # ==============
 
 #should be mandatory ?
-option(ENABLE_PETSC "Enable PETSc linear solver" ON)
+option(ENABLE_PETSC "Compile with PETSc (Mat/Vec+LinSol)" ON)
 option(ENABLE_MPI "Compile with MPI" OFF)
 option(ENABLE_OMP "Compile with OpenMP" OFF)
 
@@ -29,6 +29,8 @@ if(ENABLE_PETSC)
     add_definitions(-DHAVE_PETSC)
     find_package(PETSc)
     include_directories(${PETSC_INCLUDES})
+    #To see the library path for PETSc
+    mark_as_advanced(PETSC_LIBS)
 endif(ENABLE_PETSC)
 
 if(ENABLE_MPI)
@@ -37,7 +39,7 @@ if(ENABLE_MPI)
     if(MPI_FOUND)
         set(CMAKE_CXX_COMPILER mpicxx)
         add_definitions(-DHAVE_MPI)
-  endif(MPI_FOUND)
+    endif(MPI_FOUND)
 endif(ENABLE_MPI)
 
 if(ENABLE_OMP)
@@ -50,6 +52,3 @@ endif(ENABLE_OMP)
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_subdirectory(src)
-
-#To see the library path for PETSc
-mark_as_advanced(PETSC_LIBS )

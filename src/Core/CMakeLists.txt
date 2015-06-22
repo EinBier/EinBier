@@ -1,12 +1,10 @@
-add_definitions (${PETSC_DEFINITIONS})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Message)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/BIO)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Core)
+if(HAVE_PETSC)
+    add_definitions (${PETSC_DEFINITIONS})
+endif(HAVE_PETSC)
 
 add_library(Core
 Operator.cpp
 Matrix.cpp
 )
 
-target_link_libraries (Core ${PETSC_LIBRARIES})
+target_link_libraries(Core) # ${PETSC_LIBRARIES}

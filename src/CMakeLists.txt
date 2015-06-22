@@ -2,7 +2,7 @@ if(HAVE_PETSC)
     add_definitions (${PETSC_DEFINITIONS})
 endif(HAVE_PETSC)
 
-include_directories(${CMAKE_SOURCE_DIR}/src)
+# add all these directories to all subdirectories (c++ -I)
 include_directories(${CMAKE_SOURCE_DIR}/src/Common)
 include_directories(${CMAKE_SOURCE_DIR}/src/Geometry)
 include_directories(${CMAKE_SOURCE_DIR}/src/BIO)

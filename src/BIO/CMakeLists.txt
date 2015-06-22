@@ -1,12 +1,10 @@
-add_definitions (${PETSC_DEFINITIONS})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Common)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Core)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/BIO)
+if(HAVE_PETSC)
+    add_definitions (${PETSC_DEFINITIONS})
+endif(HAVE_PETSC)
 
 add_library(BIO
   BIO.cpp
   BIOUtils.cpp
   )
 
-target_link_libraries (BIO ${PETSC_LIBRARIES})
+target_link_libraries(BIO) # ${PETSC_LIBRARIES}

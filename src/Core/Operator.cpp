@@ -18,14 +18,12 @@ void Operator::createOperator(int row, int col, bool management)
 
     OperatorHandler *opH;
     opH = opH->getOperatorHandler();
-    int id = opH->addOperator(this, management);
-    if(id>=0) {
-        Message::Info("Operator created. [%p]", this);
+    m_id = opH->addOperator(this, management);
+    if(m_id >= 0) {
+        Message::Debug("Operator created. [%p] (id: %d)", this, m_id);
     } else {
-        Message::Error("Operator could not be created. [%p]", this);
+        Message::Error("Operator could not be created. [%p] (id: %d)", this, m_id);
     }
-    m_id = id;
-    Message::Debug("id = %d %d", m_id, id);
     return;
 }
 
@@ -147,7 +145,7 @@ Matrix Operator::assemble()
                 m->insert(r, c, getValue(r, c));
             }
         }
-        Message::Info("Operator::assemble returns Matrix: [%p] -> [%p]", this, m);
+        Message::Debug("Operator::assemble returns Matrix: [%p] -> [%p]", this, m);
         return *m;
     }
     else if (m_shape_block < Shape(0, 0)) {
@@ -168,21 +166,28 @@ Matrix Operator::assemble()
 
 Operator Operator::operator+(Operator & other)
 {
-    Operator *tmp = new Operator(m_shape, true);
-    if (m_shape == other.get_shape()) {
-        int nleftAdd = 0;
-        int nrightAdd = 0;
-        if (m_shape_block.get_row()<0)
-            nleftAdd = -m_shape_block.get_row();
-        if (other.m_shape_block.get_row()<0)
-            nrightAdd = -other.get_shape_block().get_row();
-        tmp->get_shape_block().set_row(-(nleftAdd + nrightAdd +1));
+    Shape mime = get_shape_block();
+    Shape their = other.get_shape_block();
+
+    Operator *tmp = new Operator(get_shape(), true);
+
+    if (get_shape() == other.get_shape()) {
+        int nmul = 0;
+        if (mime.get_col()<0)
+            nmul += mime.get_col();
+        if (their.get_col()<0)
+            nmul += their.get_col();
+        int update = -1;
+        if (mime.get_row()<0)
+            update += mime.get_row();
+        if (their.get_row()<0)
+            update += their.get_row();
+        tmp->set_shape_block(Shape(update, nmul));
         tmp->m_node.set("+", this, &other);
     } else {
         Message::Error("Addition impossible, wrong shape (%d,%d)(%d,%d)",
-                       m_shape.get_row(), m_shape.get_col(),
-                       other.get_shape().get_row(),
-                       other.get_shape().get_col());
+                       mime.get_row(), mime.get_col(),
+                       their.get_row(), their.get_col());
         Message::Error("addition : [%p] + [%p] failed!", this, &other);
         *tmp = 0;
     }
@@ -191,12 +196,14 @@ Operator Operator::operator+(Operator & other)
 
 Operator Operator::operator*(double v)
 {
-    Operator *tmp = new Operator(m_shape, true);
-    if (m_shape_block.get_col()<0){
-        tmp->get_shape_block().set_col(m_shape_block.get_col()-1);
-    } else {
-        tmp->get_shape_block().set_col(-1);
-    }
+    Shape mime = get_shape_block();
+
+    Operator *tmp = new Operator(get_shape(), true);
+
+    int update = -1;
+    if (mime.get_col()<0)
+        update += mime.get_col();
+    tmp->set_shape_block(Shape(mime.get_row(), update));
     tmp->get_node_ptr()->set("*", this, &v);
     return *tmp;
 }

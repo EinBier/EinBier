@@ -85,4 +85,11 @@ public:
     Shape get_shape(){return m_shape;};
     Shape get_shape_block(){return m_shape_block;};
     Node* get_node_ptr(){return &m_node;};
+
+    void set_shape(Shape s)
+    {m_shape.set_row(s.get_row());
+        m_shape.set_col(s.get_col()); };
+    void set_shape_block(Shape s)
+    {m_shape_block.set_row(s.get_row());
+        m_shape_block.set_col(s.get_col()); };
 };

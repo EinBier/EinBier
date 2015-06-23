@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
     Matrix MM = myMat + myMat;
     MM.Print();
 
-    Matrix M = eye.assemb();
+    Matrix M = eye.assemble();
     M.Print();
 
     OperatorVal two(5, 5, 2);
@@ -198,19 +198,19 @@ int main(int argc, char *argv[])
     Operator ww4;
     ww4 = (Two + Four) + Three;
     ww4.Print();
-    Matrix WW4 = ww4.assemb();
+    Matrix WW4 = ww4.assemble();
     WW4.Print();
 
     OperatorVal Five(4, 4, 5);
     Operator ww5;
     ww5 = (Two + Five) + Three;
     ww5.Print();
-    Matrix WW5 = ww5.assemb();
+    Matrix WW5 = ww5.assemble();
     WW5.Print();
 
     Message::Info("res-add + res-add + res-add");
     Operator www = ww + ww4 + ww5;
-    Matrix WWW = www.assemb();
+    Matrix WWW = www.assemble();
     WWW.Print();
 
     Message::Info("(res-add) * double");
@@ -223,12 +223,12 @@ int main(int argc, char *argv[])
 
     Operator yyyy = (www * 1.)*2;
     yyyy.Print();
-    Matrix YYYY = yyyy.assemb();
+    Matrix YYYY = yyyy.assemble();
     YYYY.Print();
 
 
     Operator xxx = (ww+ww)*1;
-    Matrix XXX = xxx.assemb();
+    Matrix XXX = xxx.assemble();
     XXX.Print();
 
 //Test de l'operatorHandler

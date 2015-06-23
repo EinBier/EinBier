@@ -31,7 +31,7 @@ class Operator
 {
 private:
     //Every operator is associated to a node
-    Node node;
+    Node m_node;
 protected: //derived class also share these attributs
     int m_id; //id in the OperatorHandler
     Shape m_shape; // shape matrix
@@ -61,7 +61,8 @@ public:
 
     //Algebra on operator
 //double should be changed to EBScalar
-    Operator operator+(Operator other);
+    Operator operator+(Operator & other);
+//    Operator operator+(Operator other);
     Operator operator*(double scalar);
     
 // assemble the system
@@ -74,4 +75,5 @@ public:
     int get_id(){return m_id;}
     Shape get_shape(){return m_shape;}
     Shape get_shape_block(){return m_shape_block;}
+    Node* get_node_ptr(){return &m_node;}
 };

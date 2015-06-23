@@ -153,13 +153,13 @@ Matrix Operator::assemble()
     }
     else if (m_shape_block < Shape(0, 0)) {
 	Message::Info("Operator composed: %d(+) and %d(*)", -m_shape_block.get_row(), -m_shape_block.get_col());
-	std::string op = node.m_op;
-	Matrix L = (node.m_left)->assemble();
+	std::string op = m_node.m_op;
+	Matrix L = (m_node.m_left)->assemble();
 	if (op == "+") {
-	    Matrix R = (node.m_right)->assemble();
+	    Matrix R = (m_node.m_right)->assemble();
 	    return L + R;
 	} else if (op == "*") {
-	    return L * (*node.m_scalar);
+	    return L * (*m_node.m_scalar);
 	}
     }
     else
@@ -178,7 +178,7 @@ Operator Operator::operator+(Operator & other)
 	if (other.m_shape_block.get_row()<0)
 	    nrightAdd = -other.get_shape_block().get_row();
 	tmp->get_shape_block().set_row(-(nleftAdd + nrightAdd +1));
-	tmp->node.set("+", this, &other);
+	tmp->m_node.set("+", this, &other);
     } else {
 	Message::Error("Addition impossible, wrong shape (%d,%d)(%d,%d)",
 		       m_shape.get_row(), m_shape.get_col(),
@@ -192,11 +192,11 @@ Operator Operator::operator*(double v)
     //The OperatorHandler is asked to manage this buddy
     Operator *tmp = new Operator(m_shape, true);
     if (m_shape_block.get_col()<0){
-	tmp.m_shape_block.set_col(m_shape_block.get_col()-1);
+	tmp->get_shape_block().set_col(m_shape_block.get_col()-1);
     } else {
-	tmp.m_shape_block.set_col(-1);
+	tmp->get_shape_block().set_col(-1);
     }
-    tmp.node.compute("*", this, &v);
+    tmp->get_node_ptr()->set("*", this, &v);
     return *tmp;
 }
 

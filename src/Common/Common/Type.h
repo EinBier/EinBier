@@ -1,54 +1,49 @@
 #pragma once
-
+/*
 #include <memory>
-
 #define MyMin(a, b) ((a) < (b) ? (a) : (b))
+*/
 
-class Coord
+class Shape
 {
+private:
+    int m_row;
+    int m_col;
 public:
-    int row;
-    int col;
-    Coord(int ii=0, int jj=0){row=ii; col=jj;};
-
+    Shape(int row=0, int col=0):m_row(row), m_col(col){}
+    ~Shape(){}
     // perhaps not useful because the compiler already provides an assign
     //// more or less T & operator=(const T &)
-    Coord & operator=(Coord other)
+    Shape & operator=(Shape other)
     {
-        std::swap(row, other.row);
+        std::swap(m_row, other.m_row);
         std::swap(col, other.col);
         return *this;
-    };
-    bool  operator==(Coord other)
-    {
-        if (this->get_row()==other.get_row()
-            && this->get_col()==other.get_col()) {
-            return true;
-        } else {
-            return false;
-        }
-    };
-    bool  operator!=(Coord other)
-    {
-        if (this->get_row()!=other.get_row()
-            || this->get_col()!=other.get_col()) {
-            return true;
-        } else {
-            return false;
-        }
-    };
-	bool operator<(Coord other)
-	{
-		if (this->get_row()<other.get_row()
-            || this->get_col()<other.get_col()) {
-            return true;
-        } else {
-            return false;
-        }
-	};
+    }
 
-    int get_row(){return row;};
-    int get_col(){return col;};
-    void set_row(int ii){row=ii;};
-    void set_col(int ii){col=ii;};
+    bool operator==(Shape other)
+    {
+        return (m_row==other.get_row() && m_col==other.get_col());
+    }
+
+    bool operator!=(Shape other)
+    {
+        return (m_row != other.get_row() || m_col != other.get_col());
+    }
+    
+//C'est vrai ??
+    bool operator<(Shape other)
+    {
+	if(m_row > other.get_row())
+	    return false;
+	else if(m_row < other.get_row())
+	    return true;
+	else //Equality, check the column
+	    return (m_col() < other.get_col());
+    }
+
+    int get_row(){return m_row;}
+    int get_col(){return m_col;}
+    void set_row(int row){m_row = row;}
+    void set_col(int col){m_col = col;}
 };

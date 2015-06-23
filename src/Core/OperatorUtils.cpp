@@ -29,8 +29,8 @@ OperatorEye::OperatorEye(int r, int c) : Operator(r, c)
 double OperatorEye::getValue(int i, int j)
 {
     if (i == j) {
-    return 1.;
+        return 1.;
     } else {
-    return 0.;
+        return 0.;
     }
 }

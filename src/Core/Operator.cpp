@@ -15,16 +15,17 @@ void Operator::createOperator(int row, int col, bool management)
     m_shape_block.set_col(0);
     m_banded_rows.push_back(-1);
     m_banded_cols.push_back(-1);
-//OPERATOR HANDLER
+
     OperatorHandler *opH;
     opH = opH->getOperatorHandler();
     int id = opH->addOperator(this, management);
-    if(id>=0)
-	Message::Info("Operator created. [%p]", this);
-    else
-	Message::Error("Operator could not be created. [%p]", this);
+    if(id>=0) {
+        Message::Info("Operator created. [%p]", this);
+    } else {
+        Message::Error("Operator could not be created. [%p]", this);
+    }
     m_id = id;
-    Message::Debug("id = %d", id);
+    Message::Debug("id = %d %d", m_id, id);
     return;
 }
 
@@ -39,14 +40,12 @@ Operator::Operator(Shape shape, bool management)
 }
 
 
-//DESTRUCTOR: Modifier le 
 Operator::~Operator()
 {
     OperatorHandler *opH;
     opH = opH->getOperatorHandler();
     if(opH != NULL)
-	//The operator must be delete from the OperatorHandler
-	opH->removeOperator(m_id);
+        opH->removeOperator(m_id);
 }
 
 
@@ -59,15 +58,15 @@ void Operator::setBlock(Shape shape, Operator *op)
 void Operator::setBlock(int row, int col, Operator *op)
 {
     if (isInList(row, m_rows) && isInList(col, m_cols)) {
-	Message::Warning("Operator::setBlock: the place (%d,%d) is already occupied!", row,col);
-	return;
+        Message::Warning("Operator::setBlock already occupied! (%d,%d)", row,col);
+        return;
     } else if (!isCheckAndUpdate_shapes(row, col, op->get_shape())) {
-	Message::Error("Operator::setBlock: wrong size!");
-	return;
+        Message::Error("Operator::setBlock: wrong size!");
+        return;
     } else {
-	m_rows.push_back(row);
-	m_cols.push_back(col);
-	m_ops.push_back(op);
+        m_rows.push_back(row);
+        m_cols.push_back(col);
+        m_ops.push_back(op);
     }
     return;
 }
@@ -96,11 +95,11 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Shape shape)
         m_banded_rows.insert(m_banded_rows.begin()+r, rr);
     } else {
         if (m_banded_rows[r] != rr) {
-            Message::Info("Already blocks at row:%d [shape.row:%d !=%d]", r, rr,
+            Message::Debug("Already blocks at row:%d [shape.row:%d !=%d]", r, rr,
                           m_banded_rows[r]);
             return false;
         } else {
-            Message::Info("Already blocks at row:%d [shape.row:%d ok]", r, rr);
+            Message::Debug("Already blocks at row:%d [shape.row:%d ok]", r, rr);
         }
     }
 
@@ -108,11 +107,11 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Shape shape)
         m_banded_cols.insert(m_banded_cols.begin()+c, cc);
     } else {
         if (m_banded_cols[c] != cc) {
-            Message::Info("Already blocks at col:%d [shape.col:%d !=%d]", c, cc,
+            Message::Debug("Already blocks at col:%d [shape.col:%d !=%d]", c, cc,
                           m_banded_cols[c]);
             return false;
         } else {
-            Message::Info("Already blocks at col:%d [shape.col:%d ok]", c, cc);
+            Message::Debug("Already blocks at col:%d [shape.col:%d ok]", c, cc);
         }
     }
 
@@ -137,64 +136,66 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Shape shape)
 Matrix Operator::assemble()
 {
     if (m_shape_block == Shape(0, 0)) {
-	Message::Error("No BIO attached.");
-	return Matrix(Shape(0, 0));
+        Message::Error("No BIO attached.");
+        return Matrix(Shape(0, 0));
     }
     else if (m_shape_block==Shape(1, 1)) {
-        Message::Info("Operator assembling... [%p]", this);
+        Message::Debug("Operator assembling... [%p]", this);
         Matrix *m = new Matrix(m_shape);
-        for (int r=0; r < m_shape.get_row(); r++) {
-            for (int c=0; c < m_shape.get_col(); c++) {
+        for (int r=0; r<m_shape.get_row(); r++) {
+            for (int c=0; c<m_shape.get_col(); c++) {
                 m->insert(r, c, getValue(r, c));
             }
         }
-        Message::Info("Operator assembled -> return Matrix. [%p] -> [%p]", this, m);
+        Message::Info("Operator::assemble returns Matrix: [%p] -> [%p]", this, m);
         return *m;
     }
     else if (m_shape_block < Shape(0, 0)) {
-	Message::Info("Operator composed: %d(+) and %d(*)", -m_shape_block.get_row(), -m_shape_block.get_col());
-	std::string op = m_node.m_op;
-	Matrix L = (m_node.m_left)->assemble();
-	if (op == "+") {
-	    Matrix R = (m_node.m_right)->assemble();
-	    return L + R;
-	} else if (op == "*") {
-	    return L * (*m_node.m_scalar);
-	}
+        Message::Debug("Operator composed: %d(+) and %d(*)",
+                      -m_shape_block.get_row(), -m_shape_block.get_col());
+        std::string op = m_node.m_op;
+        Matrix L = (m_node.m_left)->assemble();
+        if (op == "+") {
+            Matrix R = (m_node.m_right)->assemble();
+            return L + R;
+        } else if (op == "*") {
+            return L * (*m_node.m_scalar);
+        }
+    } else {
+        return Matrix(Shape(0, 0));
     }
-    else
-      return Matrix(Shape(0, 0));
 }
 
 Operator Operator::operator+(Operator & other)
 {
-    //The OperatorHandler is asked to manage this buddy
     Operator *tmp = new Operator(m_shape, true);
     if (m_shape == other.get_shape()) {
-	int nleftAdd = 0;
-	int nrightAdd = 0;
-	if (m_shape_block.get_row()<0)
-	    nleftAdd = -m_shape_block.get_row();
-	if (other.m_shape_block.get_row()<0)
-	    nrightAdd = -other.get_shape_block().get_row();
-	tmp->get_shape_block().set_row(-(nleftAdd + nrightAdd +1));
-	tmp->m_node.set("+", this, &other);
+        int nleftAdd = 0;
+        int nrightAdd = 0;
+        if (m_shape_block.get_row()<0)
+            nleftAdd = -m_shape_block.get_row();
+        if (other.m_shape_block.get_row()<0)
+            nrightAdd = -other.get_shape_block().get_row();
+        tmp->get_shape_block().set_row(-(nleftAdd + nrightAdd +1));
+        tmp->m_node.set("+", this, &other);
     } else {
-	Message::Error("Addition impossible, wrong shape (%d,%d)(%d,%d)",
-		       m_shape.get_row(), m_shape.get_col(),
-		       other.get_shape().get_row(), other.get_shape().get_col());
+        Message::Error("Addition impossible, wrong shape (%d,%d)(%d,%d)",
+                       m_shape.get_row(), m_shape.get_col(),
+                       other.get_shape().get_row(),
+                       other.get_shape().get_col());
+        Message::Error("addition : [%p] + [%p] failed!", this, &other);
+        *tmp = 0;
     }
     return *tmp;
 }
 
 Operator Operator::operator*(double v)
 {
-    //The OperatorHandler is asked to manage this buddy
     Operator *tmp = new Operator(m_shape, true);
     if (m_shape_block.get_col()<0){
-	tmp->get_shape_block().set_col(m_shape_block.get_col()-1);
+        tmp->get_shape_block().set_col(m_shape_block.get_col()-1);
     } else {
-	tmp->get_shape_block().set_col(-1);
+        tmp->get_shape_block().set_col(-1);
     }
     tmp->get_node_ptr()->set("*", this, &v);
     return *tmp;
@@ -204,9 +205,8 @@ Operator Operator::operator*(double v)
 void Operator::Print()
 {
     Message::Info("Operator: \tshape: %d %d\tShape: %d %d [%p]",
-		  m_shape.get_row(), m_shape.get_col(),
-		  m_shape_block.get_row(), m_shape_block.get_col(),
-		  this);
+          m_shape.get_row(), m_shape.get_col(),
+          m_shape_block.get_row(), m_shape_block.get_col(),
+          this);
     return;
 }
-

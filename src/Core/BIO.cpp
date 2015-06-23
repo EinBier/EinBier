@@ -13,10 +13,3 @@ BIO::BIO(Shape shape, bool management): Operator(shape, management)
 {
     m_shape_block = Shape(1, 1);
 }
-
-BIO::~BIO()
-{}
-
-double BIO::getValue(int i, int j)
-{
-}

@@ -41,31 +41,31 @@ void Matrix::Print()
 
 Matrix Matrix::operator+(Matrix other)
 {
-	if (shape == other.shape) {
-	    Matrix *add = new Matrix(shape);
-	    for (int i=0; i < add->shape.get_row(); i++) {
-		for (int j=0; j < add->shape.get_col(); j++) {
-		    add->coeffs[i][j] = coeffs[i][j] + other.coeffs[i][j];
-		}
-	    }
-	    return *add;
-	} else {
-	    printf("Error: different shape\n");
-	    Matrix *tmp = new Matrix(Shape(0, 0));
-	    return *tmp;
-	}
+    if (shape == other.shape) {
+        Matrix *add = new Matrix(shape);
+        for (int i=0; i < add->shape.get_row(); i++) {
+        for (int j=0; j < add->shape.get_col(); j++) {
+            add->coeffs[i][j] = coeffs[i][j] + other.coeffs[i][j];
+        }
+        }
+        return *add;
+    } else {
+        printf("Error: different shape\n");
+        Matrix *tmp = new Matrix(Shape(0, 0));
+        return *tmp;
+    }
 }
 
 Matrix Matrix::operator-()
 {
-    Matrix tmp(shape);
+    Matrix *tmp = new Matrix(shape);
     int i, j;
     for (i=0; i<shape.get_row(); i++) {
             for (j=0; j<shape.get_row(); j++) {
-                tmp.coeffs[i][j] = -coeffs[i][j];
+                tmp->coeffs[i][j] = -coeffs[i][j];
             }
         }
-        return tmp;
+        return *tmp;
 }
 
 Matrix Matrix::operator-(Matrix other)

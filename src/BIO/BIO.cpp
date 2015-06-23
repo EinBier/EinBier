@@ -4,6 +4,6 @@
 
 BIO::BIO(int r, int c) : Operator(r, c)
 {
-	shape = Coord(r, c);
-	Shape = Coord(1, 1);
+    shape = Coord(r, c);
+    Shape = Coord(1, 1);
 }

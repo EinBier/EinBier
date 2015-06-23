@@ -2,7 +2,7 @@
 
 class Geometry
 {
- public:
-  virtual void Print(){}
+public:
+    virtual void Print(){}
 
 };

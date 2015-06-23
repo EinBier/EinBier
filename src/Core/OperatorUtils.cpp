@@ -23,13 +23,13 @@ double OperatorZero::getValue(int, int)
 
 OperatorEye::OperatorEye(int r, int c) : Operator(r, c)
 {
-	Shape = Coord(1, 1);
+    Shape = Coord(1, 1);
 }
 double OperatorEye::getValue(int i, int j)
 {
     if (i == j) {
-	return 1.;
+    return 1.;
     } else {
-	return 0.;
+    return 0.;
     }
 }

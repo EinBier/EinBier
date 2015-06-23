@@ -148,11 +148,11 @@ int main(int argc, char *argv[])
     }
     myMat.Print();
 
-	Matrix MM = myMat + myMat;
-	MM.Print();
+    Matrix MM = myMat + myMat;
+    MM.Print();
 
     Matrix M = eye.assemb();
-	M.Print();
+    M.Print();
     OperatorVal two(5, 5, 2);
     Matrix N = two.assemb();
     //N.Print();
@@ -190,49 +190,49 @@ int main(int argc, char *argv[])
     ZZZ.Print();
 
     Message::Info("TrueOp + TrueOp + TrueOp");
-	OperatorVal Three(4, 4, 3);
+    OperatorVal Three(4, 4, 3);
     Operator ww;
     ww = (Three + Three) + Three;
     ww.Print();
     Matrix WW = ww.assemb();
     WW.Print();
 
-	OperatorVal Four(4, 4, 4);
+    OperatorVal Four(4, 4, 4);
     Operator ww4;
     ww4 = (Two + Four) + Three;
     ww4.Print();
     Matrix WW4 = ww4.assemb();
     WW4.Print();
 
-	OperatorVal Five(4, 4, 5);
+    OperatorVal Five(4, 4, 5);
     Operator ww5;
     ww5 = (Two + Five) + Three;
     ww5.Print();
     Matrix WW5 = ww5.assemb();
     WW5.Print();
 
-	Message::Info("res-add + res-add + res-add");
+    Message::Info("res-add + res-add + res-add");
     Operator www = ww + ww4 + ww5;
-	Matrix WWW = www.assemb();
-	WWW.Print();
+    Matrix WWW = www.assemb();
+    WWW.Print();
 
-	Message::Info("(res-add) * double");
-	Operator yyy = (www * 2.);
+    Message::Info("(res-add) * double");
+    Operator yyy = (www * 2.);
     yyy.Print();
     Matrix YYY = yyy.assemb();
     YYY.Print();
 
     Message::Debug(" == Bug Operator Assembling ==");
 
-	Operator yyyy = (www * 1.)*2;
+    Operator yyyy = (www * 1.)*2;
     yyyy.Print();
     Matrix YYYY = yyyy.assemb();
     YYYY.Print();
 
 
-	Operator xxx = (ww+ww)*1;
-	Matrix XXX = xxx.assemb();
-	XXX.Print();
+    Operator xxx = (ww+ww)*1;
+    Matrix XXX = xxx.assemb();
+    XXX.Print();
 
     Message::InfoRoot("End-------");
     return Message::Finalize(EXIT_SUCCESS);

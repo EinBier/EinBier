@@ -37,15 +37,15 @@ public:
             return false;
         }
     };
-	bool operator<(Coord other)
-	{
-		if (this->get_row()<other.get_row()
+    bool operator<(Coord other)
+    {
+        if (this->get_row()<other.get_row()
             || this->get_col()<other.get_col()) {
             return true;
         } else {
             return false;
         }
-	};
+    };
 
     int get_row(){return row;};
     int get_col(){return col;};

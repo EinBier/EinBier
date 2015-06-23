@@ -17,7 +17,7 @@ public:
     Coord shape;
     Coord Shape; // (0,0) by Coord constructor
 
-	virtual double getValue(int, int){}; // do not forget {}, so weird c++ !!
+    virtual double getValue(int, int){}; // do not forget {}, so weird c++ !!
 
     void createOperator(int, int);
     Operator(int r=0, int c=0);

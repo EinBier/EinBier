@@ -116,17 +116,18 @@ Matrix Operator::assemb()
     int r = 0, c = 0;
     if (Shape == Coord(0, 0)) {
 	Message::Error("No BIO attached.");
-    }
+	return Matrix(Coord(0, 0));
+	}
     else if (Shape==Coord(1, 1)) {
         Message::Info("Operator assembling... [%p]", this);
-        Matrix m(shape);
+        Matrix *m = new Matrix(shape);
         for (r=0; r<shape.get_row(); r++) {
             for (c=0; c<shape.get_col(); c++) {
-                m.insert(r, c, getValue(r, c));
+                m->insert(r, c, getValue(r, c));
             }
         }
-        Message::Info("Operator assembled -> return Matrix. [%p] -> [%p]", this, &m);
-        return m;
+		Message::Info("Operator assembled -> return Matrix. [%p] -> [%p]", this, m);
+		return *m;
     } else if (Shape < Coord(0, 0)) {
 	Message::Info("Operator composed: %d(+) and %d(*)", -Shape.get_row(), -Shape.get_col());
 	std::string op = node.m_op;
@@ -142,9 +143,9 @@ Matrix Operator::assemb()
     }
 }
 
-Operator Operator::operator+(Operator other)
+Operator Operator::operator+(Operator & other)
 {
-	Operator tmp(shape);
+	Operator *tmp = new Operator(shape);
 	if (shape == other.shape) {
 		int nleftAdd = 0;
 		int nrightAdd = 0;
@@ -152,34 +153,37 @@ Operator Operator::operator+(Operator other)
 			nleftAdd = -Shape.get_row();
 		if (other.Shape.get_row()<0)
 			nrightAdd = -other.Shape.get_row();
-		tmp.Shape.set_row(-(nleftAdd + nrightAdd +1));
-		tmp.node.compute("+", this, &other);
+		tmp->Shape.set_row(-(nleftAdd + nrightAdd +1));
+		tmp->node.compute("+", this, &other);
 	} else {
 		Message::Error("Addition impossible, wrong shape (%d,%d)(%d,%d)",
 					   shape.row, shape.col,
 					   other.shape.row, other.shape.col);
+		Message::Error("addition : [%p]	 +	[%p]  failed!", this, &other);
+		*tmp = 0;
 	}
-	return tmp;
+	return *tmp;
 }
 
 Operator Operator::operator*(double v)
 {
-	Operator tmp(shape);
+	Operator *tmp = new Operator(shape);
 	if (Shape.get_col()<0){
-		tmp.Shape.set_col(Shape.get_col()-1);
+		tmp->Shape.set_col(Shape.get_col()-1);
 	} else {
-		tmp.Shape.set_col(-1);
+		tmp->Shape.set_col(-1);
 	}
-	tmp.node.compute("*", this, &v);
-	return tmp;
+	tmp->node.compute("*", this, &v);
+	return *tmp;
 }
 
 //
 void Operator::Print()
 {
-    Message::Info("Operator: \tshape: %d %d\tShape: %d %d",
+	Message::Info("Operator: \tshape: %d %d\tShape: %d %d \t [%p]",
 				  shape.row, shape.col,
-				  Shape.row, Shape.col);
+				  Shape.row, Shape.col,
+				  this);
 	return;
 }
 //

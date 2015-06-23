@@ -29,7 +29,7 @@ public:
     Matrix assemb();
     Node node;
 
-    Operator operator+(Operator);
+    Operator operator+(Operator &);
     Operator operator*(double);
 
     void Print();

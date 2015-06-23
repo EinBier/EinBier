@@ -28,13 +28,13 @@ Operator::Operator(Coord ij)
     createOperator(ij.row, ij.col);
 }
 
-void Operator::addBlock(Coord ij, Operator *op)
+void Operator::setBlock(Coord ij, Operator *op)
 {
-    addBlock(ij.row, ij.col, op);
+    setBlock(ij.row, ij.col, op);
     return;
 }
 
-void Operator::addBlock(int r, int c, Operator *op)
+void Operator::setBlock(int r, int c, Operator *op)
 {
     if (isInList(r, rows) && isInList(c, cols)) {
         Message::Warning("occupied!");

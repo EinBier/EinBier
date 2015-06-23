@@ -84,13 +84,6 @@ int main(int argc, char *argv[])
     Message::Info("\n");
     Message::Debug(" == Start addBlock ==");
 
-    //// to prevent a circular dependency
-    BIO tmp;
-    //// otherwise the linker failed:  undefined reference to `BIO::create()'
-    //// note: the circular dependency with forward declaration is well-known
-    //// and it could be a problem, source of bug ?
-    //// It is claimed that the mutual dependency is done by unexperimented programmer.
-
     Operator op;
     //op.Print();
     Operator A(5, 5);
@@ -103,19 +96,19 @@ int main(int argc, char *argv[])
     //C.Print();
 
     Message::Info("add A");
-    op.addBlock(0, 0, &A);
+    op.setBlock(0, 0, &A);
     op.Print();
 
     Message::Info("add AA (error?)");
-    op.addBlock(0, 0, &AA);
+    op.setBlock(0, 0, &AA);
     //op.Print();
 
     Message::Info("add B");
-    op.addBlock(0, 1, &B);
+    op.setBlock(0, 1, &B);
     //op.Print();
 
     Message::Info("add C");
-    op.addBlock(1, 1, &C);
+    op.setBlock(1, 1, &C);
     //op.Print();
 
     //
@@ -131,12 +124,12 @@ int main(int argc, char *argv[])
 
     Operator fromBIO;
     Coord coord(0,0);
-    fromBIO.addBlock(coord, &bio);
-    fromBIO.addBlock(Coord(1,1), &biov);
-    fromBIO.addBlock(2, 2, &zero);
-    fromBIO.addBlock(3, 3, &eye);
+    fromBIO.setBlock(coord, &bio);
+    fromBIO.setBlock(Coord(1,1), &biov);
+    fromBIO.setBlock(2, 2, &zero);
+    fromBIO.setBlock(3, 3, &eye);
     fromBIO.Print();
-    fromBIO.addBlock(Coord(0, 0), &eye);
+    fromBIO.setBlock(Coord(0, 0), &eye);
 
     Message::Debug(" == Start Matrix ==");
     Matrix myMat(Coord(3, 3));

@@ -23,8 +23,8 @@ public:
     Operator(int r=0, int c=0);
     Operator(Coord);
 
-    void addBlock(int, int, Operator*);
-    void addBlock(Coord, Operator*);
+    void setBlock(int, int, Operator*);
+    void setBlock(Coord, Operator*);
 
     Matrix assemb();
     Node node;

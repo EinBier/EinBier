@@ -11,6 +11,7 @@
 #include <Core/Operator.h>
 #include <Core/OperatorUtils.h>
 #include <Core/Matrix.h>
+#include <Core/OperatorHandler.h>
 
 #if defined(HAVE_MPI) && defined(HAVE_PETSC)
 #include <mpi.h>
@@ -204,6 +205,15 @@ int main(int argc, char *argv[])
 //  Matrix moMulAdd = (((eye.create() + two.create())*2) + two.create()).assemb();
 //  moMulAdd.Print();
 
+//Test de l'operatorHandler
+    OperatorHandler *opHand = NULL;
+    Message::Debug("OperatorHandler %d", opHand);
+    opHand=opHand->getOperatorHandler();
+    Message::Debug("OperatorHandler %d", opHand);
+
+
+    if(opHand != NULL)
+	delete opHand;
     Message::InfoRoot("End-------");
     return Message::Finalize(EXIT_SUCCESS);
 

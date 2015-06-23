@@ -5,16 +5,16 @@
 class Matrix
 {
 public:
-    Coord shape;
+    Shape shape;
     double **coeffs;
 
-    Matrix(Coord);
+    Matrix(Shape);
 
     void insert(int, int, double);
     void Print();
-
-	Matrix  operator+(Matrix);
-	Matrix  operator-();
-	Matrix  operator-(Matrix);
-	Matrix  operator*(double);
+    
+    Matrix  operator+(Matrix);
+    Matrix  operator-();
+    Matrix  operator-(Matrix);
+    Matrix  operator*(double);
 };

@@ -1,10 +1,11 @@
 
+#include <Common/Type.h>
 #include <Core/Operator.h>
 #include <Core/OperatorUtils.h>
 
 OperatorVal::OperatorVal(int r, int c, double v) : Operator(r, c), val(v)
 {
-    Shape = Coord(1, 1);
+    m_shape_block = Shape(1, 1);
 }
 
 double OperatorVal::getValue(int, int)
@@ -23,7 +24,7 @@ double OperatorZero::getValue(int, int)
 
 OperatorEye::OperatorEye(int r, int c) : Operator(r, c)
 {
-	Shape = Coord(1, 1);
+    m_shape_block = Shape(1, 1);
 }
 double OperatorEye::getValue(int i, int j)
 {

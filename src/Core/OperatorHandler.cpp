@@ -36,13 +36,13 @@ OperatorHandler* OperatorHandler::getOperatorHandler(std::string opHandlerName)
     else { return it_find->second; }
 }
 
-bool OperatorHandler::doesOperatorExists(char *op)
+bool OperatorHandler::doesOperatorExists(Operator *op)
 {
     int id = getIdOfOperator(op);
     return (id > 0);
 }
 
-int OperatorHandler::getIdOfOperator(char *op)
+int OperatorHandler::getIdOfOperator(Operator *op)
 {
     OperatorHandler::element el(op, false);
     //Find the element in the list
@@ -55,19 +55,20 @@ int OperatorHandler::getIdOfOperator(char *op)
 }
 
 
-int OperatorHandler::addOperator(char *op, bool destroyIt)
+int OperatorHandler::addOperator(Operator *op, bool destroyIt)
 {
+    m_max_id++;
     int id = m_max_id;
     OperatorHandler::element new_elem(op, destroyIt, id);
     m_list_of_element.insert(m_list_of_element.end(), new_elem );
     m_id_to_element[id] = &(m_list_of_element.back());
-    m_max_id++;
     return id;
 }
 
 
 int OperatorHandler::removeOperator(int op_id)
 {
+    Message::Debug("Deleting OperatorHandler of id %d!", op_id);
     // check if an object with this name exists
     std::map<int, OperatorHandler::element*>::iterator map_find;
     map_find = m_id_to_element.find(op_id);
@@ -85,7 +86,7 @@ int OperatorHandler::removeOperator(int op_id)
     return -1;
 }
 
-int OperatorHandler::removeOperator(char *op_ptr)
+int OperatorHandler::removeOperator(Operator *op_ptr)
 {
     OperatorHandler::element el_aux(op_ptr);
     // check if an object with this name exists
@@ -96,6 +97,7 @@ int OperatorHandler::removeOperator(char *op_ptr)
 	int id = map_find->m__id;
 	m_list_of_element.erase(map_find);
 	m_id_to_element.erase(id);
+	Message::Debug("Deleting OperatorHandler of id %d!", id);
 	return 0;
     }
     return -1;

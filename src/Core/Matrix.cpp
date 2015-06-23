@@ -4,7 +4,7 @@
 #include <Common/Type.h>
 #include <Core/Matrix.h>
 
-Matrix::Matrix(Coord s)
+Matrix::Matrix(Shape s)
 {
     shape = s;
     coeffs = (double**)calloc(shape.get_row(), sizeof(double*));
@@ -52,7 +52,7 @@ Matrix Matrix::operator+(Matrix other)
 		return add;
 	} else {
 		printf("Error: different shape\n");
-		Matrix tmp(Coord(0, 0));
+		Matrix tmp(Shape(0, 0));
 		return tmp;
 	}
 }

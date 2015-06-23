@@ -1,8 +1,4 @@
 #pragma once
-/*
-#include <memory>
-#define MyMin(a, b) ((a) < (b) ? (a) : (b))
-*/
 
 class Shape
 {
@@ -16,8 +12,9 @@ public:
     //// more or less T & operator=(const T &)
     Shape & operator=(Shape other)
     {
-        std::swap(m_row, other.m_row);
-        std::swap(col, other.col);
+//Why swap was here ?
+        m_row = other.get_row();
+        m_col = other.get_col();
         return *this;
     }
 
@@ -31,7 +28,8 @@ public:
         return (m_row != other.get_row() || m_col != other.get_col());
     }
     
-//C'est vrai ??
+//FIXBERT
+//C'est vrai ?? (j'ai fait des modifs mais j'y crois pas)
     bool operator<(Shape other)
     {
 	if(m_row > other.get_row())
@@ -39,7 +37,7 @@ public:
 	else if(m_row < other.get_row())
 	    return true;
 	else //Equality, check the column
-	    return (m_col() < other.get_col());
+	    return (m_col < other.get_col());
     }
 
     int get_row(){return m_row;}

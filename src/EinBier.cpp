@@ -2,16 +2,17 @@
 #include <vector>
 
 #include <Common/Message.h>
+#include <Common/Type.h>
+
 #include <Geometry/Geometry.h>
 #include <Geometry/Circle.h>
 
-#include <BIO/BIO.h>
 
-#include <Core/Node.h>
 #include <Core/Operator.h>
 #include <Core/OperatorUtils.h>
 #include <Core/Matrix.h>
 #include <Core/OperatorHandler.h>
+#include <Core/BIO.h>
 
 #if defined(HAVE_MPI) && defined(HAVE_PETSC)
 #include <mpi.h>
@@ -83,14 +84,7 @@ int main(int argc, char *argv[])
 
     Message::Info("");
     Message::Info("\n");
-    Message::Debug(" == Start addBlock ==");
-
-    //// to prevent a circular dependency
-    BIO tmp;
-    //// otherwise the linker failed:  undefined reference to `BIO::create()'
-    //// note: the circular dependency with forward declaration is well-known
-    //// and it could be a problem, source of bug ?
-    //// It is claimed that the mutual dependency is done by unexperimented programmer.
+    Message::Debug(" == Start setBlock ==");
 
     Operator op;
     //op.Print();
@@ -98,31 +92,32 @@ int main(int argc, char *argv[])
     //A.Print();
     Operator AA(4, 4);
     //AA.Print();
-    Coord rc(5, 7);
+    Shape rc(5, 7);
     Operator B(rc);
-    Operator C(Coord(2, 2));
+    Operator C(Shape(2, 2));
     //C.Print();
 
     Message::Info("add A");
-    op.addBlock(0, 0, &A);
+    op.setBlock(0, 0, &A);
     op.Print();
 
     Message::Info("add AA (error?)");
-    op.addBlock(0, 0, &AA);
+    op.setBlock(0, 0, &AA);
     //op.Print();
 
     Message::Info("add B");
-    op.addBlock(0, 1, &B);
+    op.setBlock(0, 1, &B);
     //op.Print();
 
     Message::Info("add C");
-    op.addBlock(1, 1, &C);
+    op.setBlock(1, 1, &C);
     //op.Print();
 
     //
 
     Message::Debug(" == Start BIO and first Operator Assembling ==");
     BIO bio(3, 3);
+    
     OperatorVal biov(2, 2, 2);
     OperatorZero zero(4, 4);
     OperatorEye eye(5, 5);
@@ -131,16 +126,16 @@ int main(int argc, char *argv[])
     eye.Print();
 
     Operator fromBIO;
-    Coord coord(0,0);
-    fromBIO.addBlock(coord, &bio);
-    fromBIO.addBlock(Coord(1,1), &biov);
-    fromBIO.addBlock(2, 2, &zero);
-    fromBIO.addBlock(3, 3, &eye);
+    Shape coord(0,0);
+    fromBIO.setBlock(coord, &bio);
+    fromBIO.setBlock(Shape(1,1), &biov);
+    fromBIO.setBlock(2, 2, &zero);
+    fromBIO.setBlock(3, 3, &eye);
     fromBIO.Print();
-    fromBIO.addBlock(Coord(0, 0), &eye);
+    fromBIO.setBlock(Shape(0, 0), &eye);
 
     Message::Debug(" == Start Matrix ==");
-    Matrix myMat(Coord(3, 3));
+    Matrix myMat(Shape(3, 3));
     int i, j;
     for (i=0; i<3; i++) {
         for (j=0; j<3; j++) {
@@ -149,10 +144,10 @@ int main(int argc, char *argv[])
     }
     myMat.Print();
 
-    Matrix M = eye.assemb();
+    Matrix M = eye.assemble();
 	M.Print();
     OperatorVal two(5, 5, 2);
-    Matrix N = two.assemb();
+    Matrix N = two.assemble();
     //N.Print();
     Matrix Add = M + N;
     //Add.Print();
@@ -169,22 +164,22 @@ int main(int argc, char *argv[])
     Message::Info("TrueOp + TrueOp");
     Operator zz = Two + Two;
     zz.Print();
-    Matrix ZZ = zz.assemb();
+    Matrix ZZ = zz.assemble();
     ZZ.Print();
     Message::Info("res-add1 + TrueOp");
     Operator yy = zz + Two;
     yy.Print();
-    Matrix YY = yy.assemb();
+    Matrix YY = yy.assemble();
     YY.Print();
     Message::Info("res-add1 + res-add2");
     Operator xx = zz + yy;
     xx.Print();
-    Matrix XX = xx.assemb();
+    Matrix XX = xx.assemble();
     XX.Print();
     Message::Info("TrueOp * double");
     Operator zzz = Two * 21.;
     zzz.Print();
-    Matrix ZZZ = zzz.assemb();
+    Matrix ZZZ = zzz.assemble();
     ZZZ.Print();
 
     Message::Debug(" == Bug Operator Assembling ==");
@@ -193,16 +188,16 @@ int main(int argc, char *argv[])
     Operator ww;
     ww = (Two + Two) + Two;
     ww.Print();
-    Matrix WW = ww.assemb();
+    Matrix WW = ww.assemble();
     WW.Print();
 
     Message::Info("res-mul1 * double");
     Operator yyy = zzz * 1.;
     yyy.Print();
-    Matrix YYY = yyy.assemb();
+    Matrix YYY = yyy.assemble();
     YYY.Print();
 
-//  Matrix moMulAdd = (((eye.create() + two.create())*2) + two.create()).assemb();
+//  Matrix moMulAdd = (((eye.create() + two.create())*2) + two.create()).assemble();
 //  moMulAdd.Print();
 
 //Test de l'operatorHandler
@@ -210,7 +205,7 @@ int main(int argc, char *argv[])
     Message::Debug("OperatorHandler %d", opHand);
     opHand=opHand->getOperatorHandler();
     Message::Debug("OperatorHandler %d", opHand);
-
+    opHand->removeOperator(bio.get_id());
 
     if(opHand != NULL)
 	delete opHand;

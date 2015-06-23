@@ -6,6 +6,7 @@ add_library(Core
 OperatorHandler.cpp
 Operator.cpp
 OperatorUtils.cpp
+BIO.cpp
 Matrix.cpp
 )
 

@@ -11,14 +11,13 @@ include_directories(${CMAKE_SOURCE_DIR}/src/Core)
 #Build subdirectories
 add_subdirectory(Common)
 add_subdirectory(Geometry)
-add_subdirectory(BIO)
 add_subdirectory(Core)
 
 add_executable(EinBier
 EinBier.cpp)
 
 #unsure if this is good
-set(TARGET_LINK_LIB EinBier Common Geometry BIO Core)
+set(TARGET_LINK_LIB EinBier Common Geometry Core)
 
 if(HAVE_MPI)
     set(${TARGET_LINK_LIB} ${TARGET_LINK_LIB}  ${MPI_CXX_LIBRARIES})

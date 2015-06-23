@@ -38,6 +38,7 @@ Operator::Operator(Shape shape, bool management)
     createOperator(shape.get_row(), shape.get_col(), management);
 }
 
+
 //DESTRUCTOR: Modifier le 
 Operator::~Operator()
 {
@@ -73,17 +74,16 @@ void Operator::setBlock(int row, int col, Operator *op)
 
 bool Operator::isInList(int i, std::list<int> l)
 {
-	std::list<int>::iterator itr;
-	for(itr=l.begin(); itr!=l.end(); itr++) {
-		if (i == *itr)
-			return true;
-	}
-	return false;
+    std::list<int>::iterator itr;
+    for(itr=l.begin(); itr!=l.end(); itr++) {
+        if (i == *itr)
+            return true;
+    }
+    return false;
 }
 
 bool Operator::isCheckAndUpdate_shapes(int r, int c, Shape shape)
 {
-
     int rr = shape.get_row();
     int cc = shape.get_col();
 
@@ -115,6 +115,7 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Shape shape)
             Message::Info("Already blocks at col:%d [shape.col:%d ok]", c, cc);
         }
     }
+
     if (m_shape_block.get_row() <= r)
         m_shape_block.set_row(r+1);
     if (m_shape_block.get_col() <= c)
@@ -137,17 +138,18 @@ Matrix Operator::assemble()
 {
     if (m_shape_block == Shape(0, 0)) {
 	Message::Error("No BIO attached.");
+	return Matrix(Shape(0, 0));
     }
     else if (m_shape_block==Shape(1, 1)) {
         Message::Info("Operator assembling... [%p]", this);
-        Matrix m(m_shape);
+        Matrix *m = new Matrix(m_shape);
         for (int r=0; r < m_shape.get_row(); r++) {
             for (int c=0; c < m_shape.get_col(); c++) {
-                m.insert(r, c, getValue(r, c));
+                m->insert(r, c, getValue(r, c));
             }
         }
-        Message::Info("Operator assembled -> return Matrix. [%p] -> [%p]", this, &m);
-        return m;
+        Message::Info("Operator assembled -> return Matrix. [%p] -> [%p]", this, m);
+        return *m;
     }
     else if (m_shape_block < Shape(0, 0)) {
 	Message::Info("Operator composed: %d(+) and %d(*)", -m_shape_block.get_row(), -m_shape_block.get_col());
@@ -164,7 +166,7 @@ Matrix Operator::assemble()
       return Matrix(Shape(0, 0));
 }
 
-Operator Operator::operator+(Operator other)
+Operator Operator::operator+(Operator & other)
 {
     //The OperatorHandler is asked to manage this buddy
     Operator *tmp = new Operator(m_shape, true);
@@ -189,22 +191,22 @@ Operator Operator::operator*(double v)
 {
     //The OperatorHandler is asked to manage this buddy
     Operator *tmp = new Operator(m_shape, true);
-/*    if (m_shape_block.get_col()<0){
+    if (m_shape_block.get_col()<0){
 	tmp.m_shape_block.set_col(m_shape_block.get_col()-1);
     } else {
 	tmp.m_shape_block.set_col(-1);
     }
     tmp.node.compute("*", this, &v);
-*/
     return *tmp;
 }
 
 
 void Operator::Print()
 {
-    Message::Info("Operator: \tshape: %d %d\tShape: %d %d",
+    Message::Info("Operator: \tshape: %d %d\tShape: %d %d [%p]",
 		  m_shape.get_row(), m_shape.get_col(),
-		  m_shape_block.get_row(), m_shape_block.get_col());
+		  m_shape_block.get_row(), m_shape_block.get_col(),
+		  this);
     return;
 }
 

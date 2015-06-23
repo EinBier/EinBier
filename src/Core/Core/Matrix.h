@@ -12,7 +12,6 @@ public:
 
     void insert(int, int, double);
     void Print();
-    
     Matrix  operator+(Matrix);
     Matrix  operator-();
     Matrix  operator-(Matrix);

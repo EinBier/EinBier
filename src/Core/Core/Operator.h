@@ -19,6 +19,7 @@ public: //Actually, we can let everything public, right ?
     Operator *m_right;
     double *m_scalar;
 public:
+
 Node(std::string s="", Operator *l=NULL, Operator *r=NULL, double *v=NULL):m_op(s), m_left(l), m_right(r), m_scalar(v)
     {}
     void set(std::string s, Operator *l, Operator *r){m_op=s; m_left=l; m_right=r;}

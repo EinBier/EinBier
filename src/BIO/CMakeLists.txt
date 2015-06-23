@@ -3,7 +3,6 @@ if(HAVE_PETSC)
 endif(HAVE_PETSC)
 
 add_library(BIO
-  BIO.cpp
   )
 
 target_link_libraries(BIO) # ${PETSC_LIBRARIES}

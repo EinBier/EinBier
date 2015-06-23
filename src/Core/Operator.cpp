@@ -185,6 +185,8 @@ Operator Operator::operator+(Operator & other)
         tmp->set_shape_block(Shape(update, nmul));
         tmp->m_node.set("+", this, &other);
     } else {
+        mime = get_shape();
+        their = other.get_shape();
         Message::Error("Addition impossible, wrong shape (%d,%d)(%d,%d)",
                        mime.get_row(), mime.get_col(),
                        their.get_row(), their.get_col());

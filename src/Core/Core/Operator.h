@@ -66,7 +66,7 @@ protected:
 
 public:
 
-    Operator(int row=0, int col=0, bool management = false);
+    Operator(int row=0, int col=0, bool management = true);
     Operator(Shape shape, bool management = false);
     ~Operator();
 

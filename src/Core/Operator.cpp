@@ -133,31 +133,33 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Shape shape)
 
 Matrix Operator::assemble()
 {
-    if (m_shape_block == Shape(0, 0)) {
+    Shape mine = get_shape();
+    Shape mine_block = get_shape_block();
+    if (mine_block == Shape(0, 0)) {
         Message::Error("No BIO attached.");
         return Matrix(Shape(0, 0));
     }
-    else if (m_shape_block==Shape(1, 1)) {
+    else if (mine_block == Shape(1, 1)) {
         Message::Debug("Operator assembling... [%p]", this);
-        Matrix *m = new Matrix(m_shape);
-        for (int r=0; r<m_shape.get_row(); r++) {
-            for (int c=0; c<m_shape.get_col(); c++) {
+        Matrix *m = new Matrix(mine);
+        for (int r=0; r<mine.get_row(); r++) {
+            for (int c=0; c<mine.get_col(); c++) {
                 m->insert(r, c, getValue(r, c));
             }
         }
         Message::Debug("Operator::assemble returns Matrix: [%p] -> [%p]", this, m);
         return *m;
     }
-    else if (m_shape_block < Shape(0, 0)) {
+    else if (mine_block < Shape(0, 0)) {
         Message::Debug("Operator composed: %d(+) and %d(*)",
-                      -m_shape_block.get_row(), -m_shape_block.get_col());
-        std::string op = m_node.m_op;
-        Matrix L = (m_node.m_left)->assemble();
+                      -mine_block.get_row(), -mine_block.get_col());
+        std::string op = get_node_ptr()->get_op();
+        Matrix L = get_node_ptr()->get_left()->assemble();
         if (op == "+") {
-            Matrix R = (m_node.m_right)->assemble();
+            Matrix R = get_node_ptr()->get_right()->assemble();
             return L + R;
         } else if (op == "*") {
-            return L * (*m_node.m_scalar);
+            return L * (get_node_ptr()->get_scalar());
         }
     } else {
         return Matrix(Shape(0, 0));
@@ -206,7 +208,7 @@ Operator Operator::operator*(double v)
     if (mime.get_col()<0)
         update += mime.get_col();
     tmp->set_shape_block(Shape(mime.get_row(), update));
-    tmp->get_node_ptr()->set("*", this, &v);
+    tmp->get_node_ptr()->set("*", this, v);
     return *tmp;
 }
 

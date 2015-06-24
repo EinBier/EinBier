@@ -30,8 +30,8 @@ OperatorHandler* OperatorHandler::getOperatorHandler(std::string opHandlerName)
     it_find = operatorHandlers.find(opHandlerName);
     if (it_find == operatorHandlers.end()) {
 //There is no one ? create one !
-	operatorHandlers[opHandlerName] = new OperatorHandler(opHandlerName);
-	return operatorHandlers[opHandlerName];
+        operatorHandlers[opHandlerName] = new OperatorHandler(opHandlerName);
+        return operatorHandlers[opHandlerName];
     }
     else { return it_find->second; }
 }
@@ -46,12 +46,12 @@ int OperatorHandler::getIdOfOperator(Operator *op)
 {
     OperatorHandler::element el(op, false);
     //Find the element in the list
-    std::list<OperatorHandler::element>::iterator it_find; 
+    std::list<OperatorHandler::element>::iterator it_find;
     it_find = std::find(m_list_of_element.begin(), m_list_of_element.end(), el);
     if(it_find != m_list_of_element.end())
-	return it_find->m__id;
+        return it_find->m__id;
     else
-	return -1;
+        return -1;
 }
 
 
@@ -62,26 +62,31 @@ int OperatorHandler::addOperator(Operator *op, bool destroyIt)
     OperatorHandler::element new_elem(op, destroyIt, id);
     m_list_of_element.insert(m_list_of_element.end(), new_elem );
     m_id_to_element[id] = &(m_list_of_element.back());
+    Message::Debug("Handler  add Operator (handler: %d) (id: %d)", this, id);
     return id;
 }
 
 
 int OperatorHandler::removeOperator(int op_id)
 {
-    Message::Debug("Deleting OperatorHandler of id %d!", op_id);
+    Message::Debug("Handler  rm Operator  (handler: %d) (id: %d) {id}", this, op_id);
     // check if an object with this name exists
     std::map<int, OperatorHandler::element*>::iterator map_find;
     map_find = m_id_to_element.find(op_id);
     // if it does, remove it from the list and from the maps
     if (map_find != m_id_to_element.end()) {
-	// The value *(map_find->second) is an OperatorHandler::element
-	std::list<element>::iterator it_find;
-	it_find = find(m_list_of_element.begin(), m_list_of_element.end(), *(map_find->second));
-	if (it_find == m_list_of_element.end())
-	    Message::Error("OperatorHandler::removeOperator: Could not find the element in the registry");
-	m_list_of_element.erase(it_find);
-	m_id_to_element.erase(map_find);
-	return 0;
+        // The value *(map_find->second) is an OperatorHandler::element
+        std::list<element>::iterator it_find;
+        it_find = find(m_list_of_element.begin(),
+                       m_list_of_element.end(),
+                       *(map_find->second));
+        if (it_find == m_list_of_element.end()) {
+            Message::Error("Handler  rm Operator by {id}: Cannot find element in the registry", this);
+            return -2;
+        }
+        m_list_of_element.erase(it_find);
+        m_id_to_element.erase(map_find);
+        return 0;
     }
     return -1;
 }
@@ -94,11 +99,11 @@ int OperatorHandler::removeOperator(Operator *op_ptr)
     map_find = std::find(m_list_of_element.begin(), m_list_of_element.end(), el_aux);
     // if it does, remove it from the list and from the maps
     if (map_find != m_list_of_element.end()) {
-	int id = map_find->m__id;
-	m_list_of_element.erase(map_find);
-	m_id_to_element.erase(id);
-	Message::Debug("Deleting OperatorHandler of id %d!", id);
-	return 0;
+        int id = map_find->m__id;
+        m_list_of_element.erase(map_find);
+        m_id_to_element.erase(id);
+        Message::Debug("Handler  rm Operator  (handler: %d) (id: %d) {*ptr}", this, id);
+        return 0;
     }
     return -1;
 }

@@ -11,8 +11,7 @@
 void Operator::createOperator(int row, int col, bool management)
 {
     m_shape = Shape(row, col);
-    m_shape_block.set_row(0);
-    m_shape_block.set_col(0);
+    m_shape_block = Shape(0, 0);
     m_banded_rows.push_back(-1);
     m_banded_cols.push_back(-1);
 
@@ -20,7 +19,7 @@ void Operator::createOperator(int row, int col, bool management)
     opH = opH->getOperatorHandler();
     m_id = opH->addOperator(this, management);
     if(m_id >= 0) {
-        Message::Debug("Operator created. [%p] (id: %d)", this, m_id);
+        Message::Debug("Operator created.     (handler: %d) (id: %d)   [%p]", opH, m_id, this);
     } else {
         Message::Error("Operator could not be created. [%p] (id: %d)", this, m_id);
     }
@@ -42,8 +41,11 @@ Operator::~Operator()
 {
     OperatorHandler *opH;
     opH = opH->getOperatorHandler();
-    if(opH != NULL)
-        opH->removeOperator(m_id);
+    if(opH != 0) {
+        int check = opH->removeOperator(m_id);
+        Message::Debug("Operator removed.     (handler: %d) (id: %d) (status: %d)",
+                       opH, m_id, check);
+    }
 }
 
 
@@ -56,10 +58,10 @@ void Operator::setBlock(Shape shape, Operator *op)
 void Operator::setBlock(int row, int col, Operator *op)
 {
     if (isInList(row, m_rows) && isInList(col, m_cols)) {
-        Message::Warning("Operator::setBlock already occupied! (%d,%d)", row,col);
+        Message::Warning("Operator setBlock already occupied! (%d,%d)", row,col);
         return;
     } else if (!isCheckAndUpdate_shapes(row, col, op->get_shape())) {
-        Message::Error("Operator::setBlock: wrong size!");
+        Message::Error("Operator setBlock: wrong size!");
         return;
     } else {
         m_rows.push_back(row);
@@ -93,11 +95,11 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Shape shape)
         m_banded_rows.insert(m_banded_rows.begin()+r, rr);
     } else {
         if (m_banded_rows[r] != rr) {
-            Message::Debug("Already blocks at row:%d [shape.row:%d !=%d]", r, rr,
+            Message::Debug("Already blocks at row:%d (shape.row:%d !=%d)", r, rr,
                           m_banded_rows[r]);
             return false;
         } else {
-            Message::Debug("Already blocks at row:%d [shape.row:%d ok]", r, rr);
+            Message::Debug("Already blocks at row:%d (shape.row:%d) (status: ok)", r, rr);
         }
     }
 
@@ -105,11 +107,11 @@ bool Operator::isCheckAndUpdate_shapes(int r, int c, Shape shape)
         m_banded_cols.insert(m_banded_cols.begin()+c, cc);
     } else {
         if (m_banded_cols[c] != cc) {
-            Message::Debug("Already blocks at col:%d [shape.col:%d !=%d]", c, cc,
+            Message::Debug("Already blocks at col:%d (shape.col:%d !=%d)", c, cc,
                           m_banded_cols[c]);
             return false;
         } else {
-            Message::Debug("Already blocks at col:%d [shape.col:%d ok]", c, cc);
+            Message::Debug("Already blocks at col:%d (shape.col:%d) (status: ok)", c, cc);
         }
     }
 
@@ -140,14 +142,14 @@ Matrix Operator::assemble()
         return Matrix(Shape(0, 0));
     }
     else if (mine_block == Shape(1, 1)) {
-        Message::Debug("Operator assembling... [%p]", this);
+        Message::Debug("Operator assembling...             [%p]", this);
         Matrix *m = new Matrix(mine);
         for (int r=0; r<mine.get_row(); r++) {
             for (int c=0; c<mine.get_col(); c++) {
                 m->insert(r, c, getValue(r, c));
             }
         }
-        Message::Debug("Operator::assemble returns Matrix: [%p] -> [%p]", this, m);
+        Message::Debug("Operator assembled returns Matrix: [%p] -> [%p]", this, m);
         return *m;
     }
     else if (mine_block < Shape(0, 0)) {
@@ -215,9 +217,10 @@ Operator Operator::operator*(double v)
 
 void Operator::Print()
 {
-    Message::Info("Operator: \tshape: %d %d\tShape: %d %d [%p]",
-          m_shape.get_row(), m_shape.get_col(),
-          m_shape_block.get_row(), m_shape_block.get_col(),
-          this);
+    Message::Info("Operator: (id: %d) (shape: %d %d) (Shape: %d %d) [%p]",
+                  get_id(),
+                  get_shape().get_row(), get_shape().get_col(),
+                  get_shape_block().get_row(), get_shape_block().get_col(),
+                  this);
     return;
 }

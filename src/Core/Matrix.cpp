@@ -13,7 +13,7 @@ Matrix::Matrix(Shape s)
         coeffs[i] = (double*)calloc(shape.get_col(), sizeof(double));
     }
     int mem = shape.get_row()*shape.get_col()*sizeof(double);
-    printf("Matrix allocator: %dx%d = %d bytes [%p]\n",
+    printf("Matrix allocator: %dx%d = %d bytes                              [%p]\n",
            shape.get_row(), shape.get_col(), mem, this);
 
 }

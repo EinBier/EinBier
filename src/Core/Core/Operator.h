@@ -49,7 +49,7 @@ protected:
 
     int m_id;            // used by OperatorHandler
     Shape m_shape;       // shape matrix
-    Shape m_shape_block; // (0,0) by Shape constructor
+    Shape m_shape_block; // store #row Blocks and #col Blocks
 
     void createOperator(int row, int col, bool management);
 
@@ -65,14 +65,14 @@ protected:
     std::list<int> m_rows;
     std::list<int> m_cols;
     std::list<Operator*> m_ops;
-	// alternative with map
+    // alternative with map
     // std::map<std::pair<int, int>, Operator *> m_listOfOp;
 
 
 public:
 
-    Operator(int row=0, int col=0, bool management = true);
-    Operator(Shape shape, bool management = false);
+    Operator(int row=0, int col=0, bool management=false);
+    Operator(Shape shape, bool management=false);
     ~Operator();
 
     void setBlock(int row, int col, Operator* op);
@@ -91,6 +91,7 @@ public:
     Shape get_shape_block(){return m_shape_block;};
     Node* get_node_ptr(){return &m_node;};
 
+    void set_id(int id){m_id=id;};
     void set_shape(Shape s)
     {m_shape.set_row(s.get_row());
         m_shape.set_col(s.get_col()); };

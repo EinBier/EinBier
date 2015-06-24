@@ -87,9 +87,10 @@ int main(int argc, char *argv[])
     Message::Debug(" == Start setBlock ==");
 
     Operator op;
-    //op.Print();
+    op.Print();
     Operator A(5, 5);
-    //A.Print();
+    A.Print();
+
     Operator AA(4, 4);
     //AA.Print();
     Shape rc(5, 7);
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
 
     Message::Debug(" == Start BIO and first Operator Assembling ==");
     BIO bio(3, 3);
-    
+
     OperatorVal biov(2, 2, 2);
     OperatorZero zero(4, 4);
     OperatorEye eye(5, 5);
@@ -225,21 +226,23 @@ int main(int argc, char *argv[])
     yyyy.Print();
     Matrix YYYY = yyyy.assemble();
     YYYY.Print();
+    WWW.Print();
 
-
-    Operator xxx = (ww+ww)*1;
-    Matrix XXX = xxx.assemble();
-    XXX.Print();
+    // Operator xxx = ( ((Two+Two)*1) + (Four*1))*2;
+    // Matrix XXX = xxx.assemble();
+    // XXX.Print();
 
 //Test de l'operatorHandler
     OperatorHandler *opHand = NULL;
-    Message::Debug("OperatorHandler %d", opHand);
+    Message::Debug("OperatorHandler %d [%p]", opHand, opHand);
     opHand=opHand->getOperatorHandler();
-    Message::Debug("OperatorHandler %d", opHand);
+    Message::Debug("OperatorHandler %d [%p]", opHand, opHand);
     opHand->removeOperator(bio.get_id());
+    opHand->removeOperator(&Two);
 
     if(opHand != NULL)
-	delete opHand;
+        delete opHand;
+
     Message::InfoRoot("End-------");
     return Message::Finalize(EXIT_SUCCESS);
 

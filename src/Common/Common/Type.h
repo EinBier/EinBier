@@ -8,7 +8,7 @@ private:
 
 public:
     Shape(int row=0, int col=0)
-        : m_row(row), m_col(col){};
+        : m_row(row),  m_col(col) {};
     ~Shape(){};
 
     // perhaps not useful because the compiler already provides an assign

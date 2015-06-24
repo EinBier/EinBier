@@ -20,6 +20,21 @@ OperatorHandler::~OperatorHandler()
     m_list_of_element.clear();
     m_id_to_element.clear();
     m_element_to_id.clear();
+    operatorHandlers.erase(m_name);
+}
+
+void OperatorHandler::createOperatorHandler(std::string opHandlerName)
+{
+    Message::Info("Creating OperatorHandler...");
+//Find in the local (but global to every OperatorHandler) map:
+    std::map<std::string, OperatorHandler*>::iterator it_find;
+    it_find = operatorHandlers.find(opHandlerName);
+    if (it_find == operatorHandlers.end()) {
+//There is no one ? create one !
+        operatorHandlers[opHandlerName] = new OperatorHandler(opHandlerName);
+    }
+    else
+	Message::Warning("OperatorHandler already exist!");   
 }
 
 
@@ -28,12 +43,10 @@ OperatorHandler* OperatorHandler::getOperatorHandler(std::string opHandlerName)
 //Find in the local (but global to every OperatorHandler) map:
     std::map<std::string, OperatorHandler*>::iterator it_find;
     it_find = operatorHandlers.find(opHandlerName);
-    if (it_find == operatorHandlers.end()) {
-//There is no one ? create one !
-        operatorHandlers[opHandlerName] = new OperatorHandler(opHandlerName);
-        return operatorHandlers[opHandlerName];
-    }
-    else { return it_find->second; }
+    if (it_find == operatorHandlers.end())
+        return NULL;
+    else
+	return it_find->second;
 }
 
 bool OperatorHandler::doesOperatorExists(Operator *op)
@@ -69,8 +82,6 @@ int OperatorHandler::addOperator(Operator *op, bool destroyIt)
 
 int OperatorHandler::removeOperator(int op_id)
 {
-    Message::Debug("Handler  rm Operator  (handler: %d) (id: %d) {id}", this, op_id);
-    Print();
     // check if an Operator with this id exists
     std::map<int, OperatorHandler::element*>::iterator map_find;
     map_find = m_id_to_element.find(op_id);

@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
 //Test de l'operatorHandler
     Message::Debug(" == Init OperatorHandler ==");
     OperatorHandler *opHand = NULL;
+    OperatorHandler::createOperatorHandler();
     Message::Debug("OperatorHandler %d", opHand);
     opHand=opHand->getOperatorHandler();
     Message::Info("opHand %d", opHand);

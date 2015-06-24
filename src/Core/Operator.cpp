@@ -41,6 +41,8 @@ Operator::~Operator()
 {
     OperatorHandler *opH;
     opH = opH->getOperatorHandler();
+    if(opH == NULL)
+	return;
     if(opH != 0) {
         int check = opH->removeOperator(m_id);
         Message::Debug("Operator removed.     (handler: %d) (id: %d) (status: %d)",

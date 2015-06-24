@@ -14,8 +14,11 @@
 #include <Core/OperatorHandler.h>
 #include <Core/BIO.h>
 
-#if defined(HAVE_MPI) && defined(HAVE_PETSC)
+#if defined(HAVE_MPI)
 #include <mpi.h>
+#endif
+
+#if defined(HAVE_PETSC)
 #include <petsc.h>
 #endif
 
@@ -25,15 +28,11 @@ int main(int argc, char *argv[])
 {
     Message::Info("------- Begin BERT");
     Message::Initialize(argc, argv);
-
-#if defined(HAVE_MPI) && defined(HAVE_PETSC)
-    PetscErrorCode ierr;
     int mpirank = Message::GetRank();
     int mpisize = Message::GetNProc();
 
-    Message::Info("MPI rank %d, m_start = %d, m_loc =%d", mpirank,m_start, m_loc);
-    // Test class
-    Message::Barrier();
+#if defined(HAVE_PETSC)
+    PetscErrorCode ierr;
 #endif
 //Test de l'operatorHandler
     Message::Debug(" == Init OperatorHandler ==");
@@ -48,18 +47,10 @@ int main(int argc, char *argv[])
     BIO bio(2, 2);
     Message::Debug("Print bio");
     bio.Print();
-    Message::Debug("Build A");
-    Operator A(2,2);//, B(2,2), C(2,2);
-//    A = B+C;
-    Message::Debug("Print A");
-    A.Print();
-    Message::Debug("Create B");
-    Operator B;
-    Message::Debug("Print B");
-    B.Print();
-    B = A;
-    Message::Debug("Print B (after B = A)");
-    B.Print();
+    Operator A, B(2,2), C(2,2);
+    Message::Debug("Somme A = B + C");
+    A = B + C;
+    Message::Debug("OK");
 
     OperatorHandler::Clear();
     Message::InfoRoot("End-------");

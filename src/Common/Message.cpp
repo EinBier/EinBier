@@ -299,6 +299,7 @@ int Message::Finalize(int status)
     MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
 #endif
+//PETSc Finalize ?
     if(status == EXIT_SUCCESS)
         Message::Info("Exit with success (status %d)", status);
     else

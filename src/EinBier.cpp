@@ -14,8 +14,11 @@
 #include <Core/OperatorHandler.h>
 #include <Core/BIO.h>
 
-#if defined(HAVE_MPI) && defined(HAVE_PETSC)
+#if defined(HAVE_MPI)
 #include <mpi.h>
+#endif
+
+#if defined(HAVE_PETSC)
 #include <petsc.h>
 #endif
 
@@ -25,12 +28,12 @@ int main(int argc, char *argv[])
 {
     Message::Info("------- Begin");
     Message::Initialize(argc, argv);
-
-#if defined(HAVE_MPI) && defined(HAVE_PETSC)
-    PetscErrorCode ierr;
-    Vec v;
     int mpirank = Message::GetRank();
     int mpisize = Message::GetNProc();
+
+#if defined(HAVE_PETSC)
+    PetscErrorCode ierr;
+    Vec v;
     int m = 10;
     int m_loc = m/mpisize;
     int m_start = m_loc * mpirank;

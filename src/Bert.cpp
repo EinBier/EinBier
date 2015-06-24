@@ -61,9 +61,7 @@ int main(int argc, char *argv[])
     Message::Debug("Print B (after B = A)");
     B.Print();
 
-    opHand->Print();
-    if(opHand != NULL)
-	delete opHand;
+    OperatorHandler::clear();
     Message::InfoRoot("End-------");
     return Message::Finalize(EXIT_SUCCESS);
 

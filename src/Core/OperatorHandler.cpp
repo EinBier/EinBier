@@ -23,6 +23,17 @@ OperatorHandler::~OperatorHandler()
     operatorHandlers.erase(m_name);
 }
 
+void OperatorHandler::clear()
+{
+//Loop on every potential OperatorHandler and close them
+    std::map<std::string, OperatorHandler*>::iterator it;
+    for(it = operatorHandlers.begin(); it != operatorHandlers.end(); it++) {
+	delete it->second;
+    }
+    operatorHandlers.clear();
+}
+
+
 void OperatorHandler::createOperatorHandler(std::string opHandlerName)
 {
     Message::Info("Creating OperatorHandler...");

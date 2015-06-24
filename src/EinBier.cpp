@@ -234,16 +234,8 @@ int main(int argc, char *argv[])
     // Matrix XXX = xxx.assemble();
     // XXX.Print();
 
-//Test de l'operatorHandler
-    OperatorHandler *opHand = NULL;
-    Message::Debug("OperatorHandler %d [%p]", opHand, opHand);
-    opHand=opHand->getOperatorHandler();
-    Message::Debug("OperatorHandler %d [%p]", opHand, opHand);
-    opHand->removeOperator(bio.get_id());
-    opHand->removeOperator(&Two);
 
-    if(opHand != NULL)
-        delete opHand;
+    OperatorHandler::clear();
 
     Message::InfoRoot("End-------");
     return Message::Finalize(EXIT_SUCCESS);

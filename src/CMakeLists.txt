@@ -28,3 +28,7 @@ if(HAVE_PETSC)
 endif(HAVE_PETSC)
 
 target_link_libraries(EinBier ${TARGET_LINK_LIB})
+add_executable(Bert
+Bert.cpp)
+
+target_link_libraries(Bert ${TARGET_LINK_LIB})

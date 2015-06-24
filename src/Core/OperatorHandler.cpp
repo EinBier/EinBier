@@ -70,7 +70,8 @@ int OperatorHandler::addOperator(Operator *op, bool destroyIt)
 int OperatorHandler::removeOperator(int op_id)
 {
     Message::Debug("Handler  rm Operator  (handler: %d) (id: %d) {id}", this, op_id);
-    // check if an object with this name exists
+    Print();
+    // check if an Operator with this id exists
     std::map<int, OperatorHandler::element*>::iterator map_find;
     map_find = m_id_to_element.find(op_id);
     // if it does, remove it from the list and from the maps
@@ -88,6 +89,7 @@ int OperatorHandler::removeOperator(int op_id)
         m_id_to_element.erase(map_find);
         return 0;
     }
+    Message::Error("Handler  rm Operator by {id}: Cannot find element in the registry", this);
     return -1;
 }
 
@@ -106,4 +108,15 @@ int OperatorHandler::removeOperator(Operator *op_ptr)
         return 0;
     }
     return -1;
+}
+
+void OperatorHandler::Print()
+{
+    Message::Info("Printing OperatorHandler...");
+    for(std::map < int, OperatorHandler::element* >::const_iterator it = m_id_to_element.begin();
+	it != m_id_to_element.end(); ++it)
+    {
+	Message::Info("Map(id,ptr):%d %p",it->first, it->second->m__ptr);
+    }
+
 }

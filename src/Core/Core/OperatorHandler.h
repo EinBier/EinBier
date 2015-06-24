@@ -12,15 +12,15 @@ class OperatorHandler
 public:
     struct element {
         // pointer to the Operator
-        char* m__ptr;
+        Operator* m__ptr;
         // true if the OperatorHandler has to delete memory of the pointer location
         bool m__delete_ptr;
         //id
         int m__id;
         // constructor
         element(Operator *ptr, bool delete_ptr=false, int id=-1) {
-            m__ptr = NULL;
-            m__delete_ptr = false;
+            m__ptr = ptr;
+            m__delete_ptr = delete_ptr;
             m__id = id;
         }
         // destructor
@@ -75,4 +75,5 @@ public:
     int getIdOfOperator(Operator *op);
 //Check if an operator already exist (in fact, check the pointers!!)
     bool doesOperatorExists(Operator *op);
+    void Print();
 };

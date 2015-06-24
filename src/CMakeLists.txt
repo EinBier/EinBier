@@ -17,7 +17,7 @@ add_executable(EinBier
 EinBier.cpp)
 
 #unsure if this is good
-set(TARGET_LINK_LIB EinBier Common Geometry Core)
+set(TARGET_LINK_LIB Common Geometry Core)
 
 if(HAVE_MPI)
     set(${TARGET_LINK_LIB} ${TARGET_LINK_LIB}  ${MPI_CXX_LIBRARIES})
@@ -27,4 +27,4 @@ if(HAVE_PETSC)
     set(${TARGET_LINK_LIB} ${TARGET_LINK_LIB}  ${PETSC_LIBRARIES})
 endif(HAVE_PETSC)
 
-target_link_libraries(${TARGET_LINK_LIB})
+target_link_libraries(EinBier ${TARGET_LINK_LIB})

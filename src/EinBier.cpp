@@ -65,6 +65,8 @@ int main(int argc, char *argv[])
     // Test class
     Message::Barrier();
 #endif
+//IMPORTANT NOW: creation of the Operator Handler
+    OperatorHandler::createOperatorHandler();
 
     //Test Circle
     double r1 = 1;

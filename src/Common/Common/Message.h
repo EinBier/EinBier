@@ -27,9 +27,9 @@ private:
     static void Error(int level, const char *format, ...);
     static void Error(const char *format, ...);
     static int Precision(){return 17;} //set decimal precision for output file
-    static int GetRank(){return m_myRank;};
-    static int GetNProc(){return m_nb_proc;};
-    static int GetNumThreads(){return  m_nb_threads;};
+    static int GetRank(){return m_myRank;}
+    static int GetNProc(){return m_nb_proc;}
+    static int GetNumThreads(){return  m_nb_threads;}
     static int GetThreadNum();
     static bool RootMpi(){return (m_myRank == 0);}
     static int Finalize(int status);

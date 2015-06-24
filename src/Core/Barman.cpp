@@ -1,5 +1,5 @@
 
-#include <Core/OperatorHandler.h>
+#include <Core/Barman.h>
 #include <Common/Message.h>
 
 #include <string>
@@ -8,24 +8,24 @@
 #include <algorithm> //std::find
 
 // define the variable "operatorHandlers" (not global)
-// This will contain the different OperatorHandler, even if a priori, there is only one :-)
-static std::map<std::string, OperatorHandler*> operatorHandlers;
+// This will contain the different Barman, even if a priori, there is only one :-)
+static std::map<std::string, Barman*> operatorHandlers;
 
-OperatorHandler::OperatorHandler(std::string myname): m_n_operator(0), m_max_id(-1), m_name(myname)
+Barman::Barman(std::string myname): m_n_operator(0), m_max_id(-1), m_name(myname)
 {
 }
 
-OperatorHandler::~OperatorHandler()
+Barman::~Barman()
 {
     m_id_to_element.clear();
     m_element_to_id.clear();
     m_list_of_element.clear();
 }
 
-void OperatorHandler::Clear()
+void Barman::Clear()
 {
-//Loop on every potential OperatorHandler and close them
-    std::map<std::string, OperatorHandler*>::iterator it;
+//Loop on every potential Barman and close them
+    std::map<std::string, Barman*>::iterator it;
     for(it = operatorHandlers.begin(); it != operatorHandlers.end(); it++)
     {
 	delete it->second;
@@ -36,25 +36,25 @@ void OperatorHandler::Clear()
 }
 
 
-void OperatorHandler::Init(std::string opHandlerName)
+void Barman::Init(std::string opHandlerName)
 {
-    Message::Info("Creating OperatorHandler...");
-//Find in the local (but global to every OperatorHandler) map:
-    std::map<std::string, OperatorHandler*>::iterator it_find;
+    Message::Info("Creating Barman...");
+//Find in the local (but global to every Barman) map:
+    std::map<std::string, Barman*>::iterator it_find;
     it_find = operatorHandlers.find(opHandlerName);
     if (it_find == operatorHandlers.end()) {
 //There is no one ? create one !
-        operatorHandlers[opHandlerName] = new OperatorHandler(opHandlerName);
+        operatorHandlers[opHandlerName] = new Barman(opHandlerName);
     }
     else
-	Message::Warning("OperatorHandler already exist!");   
+	Message::Warning("Barman already exist!");   
 }
 
 
-OperatorHandler* OperatorHandler::getOperatorHandler(std::string opHandlerName)
+Barman* Barman::getBarman(std::string opHandlerName)
 {
-//Find in the local (but global to every OperatorHandler) map:
-    std::map<std::string, OperatorHandler*>::iterator it_find;
+//Find in the local (but global to every Barman) map:
+    std::map<std::string, Barman*>::iterator it_find;
     it_find = operatorHandlers.find(opHandlerName);
     if (it_find == operatorHandlers.end())
         return NULL;
@@ -62,17 +62,17 @@ OperatorHandler* OperatorHandler::getOperatorHandler(std::string opHandlerName)
 	return it_find->second;
 }
 
-bool OperatorHandler::doesOperatorExists(Operator *op)
+bool Barman::doesOperatorExists(Operator *op)
 {
     int id = getIdOfOperator(op);
     return (id > 0);
 }
 
-int OperatorHandler::getIdOfOperator(Operator *op)
+int Barman::getIdOfOperator(Operator *op)
 {
-    OperatorHandler::element el(op, false);
+    Barman::element el(op, false);
     //Find the element in the list
-    std::list<OperatorHandler::element>::iterator it_find;
+    std::list<Barman::element>::iterator it_find;
     it_find = std::find(m_list_of_element.begin(), m_list_of_element.end(), el);
     if(it_find != m_list_of_element.end())
         return it_find->m__id;
@@ -81,11 +81,11 @@ int OperatorHandler::getIdOfOperator(Operator *op)
 }
 
 
-int OperatorHandler::addOperator(Operator *op, bool destroyIt)
+int Barman::addOperator(Operator *op, bool destroyIt)
 {
     m_max_id++;
     int id = m_max_id;
-    OperatorHandler::element new_elem(op, destroyIt, id);
+    Barman::element new_elem(op, destroyIt, id);
     m_list_of_element.insert(m_list_of_element.end(), new_elem );
     m_id_to_element[id] = &(m_list_of_element.back());
     Message::Debug("Handler  add Operator (handler: %d) (id: %d)", this, id);
@@ -93,14 +93,14 @@ int OperatorHandler::addOperator(Operator *op, bool destroyIt)
 }
 
 
-int OperatorHandler::removeOperator(int op_id)
+int Barman::removeOperator(int op_id)
 {
     // check if an Operator with this id exists
-    std::map<int, OperatorHandler::element*>::iterator map_find;
+    std::map<int, Barman::element*>::iterator map_find;
     map_find = m_id_to_element.find(op_id);
     // if it does, remove it from the list and from the maps
     if (map_find != m_id_to_element.end()) {
-        // The value *(map_find->second) is an OperatorHandler::element
+        // The value *(map_find->second) is an Barman::element
         std::list<element>::iterator it_find;
         it_find = find(m_list_of_element.begin(),
                        m_list_of_element.end(),
@@ -117,11 +117,11 @@ int OperatorHandler::removeOperator(int op_id)
     return -1;
 }
 
-int OperatorHandler::removeOperator(Operator *op_ptr)
+int Barman::removeOperator(Operator *op_ptr)
 {
-    OperatorHandler::element el_aux(op_ptr);
+    Barman::element el_aux(op_ptr);
     // check if an object with this name exists
-    std::list<OperatorHandler::element>::iterator map_find;
+    std::list<Barman::element>::iterator map_find;
     map_find = std::find(m_list_of_element.begin(), m_list_of_element.end(), el_aux);
     // if it does, remove it from the list and from the maps
     if (map_find != m_list_of_element.end()) {
@@ -134,10 +134,10 @@ int OperatorHandler::removeOperator(Operator *op_ptr)
     return -1;
 }
 
-void OperatorHandler::Print()
+void Barman::Print()
 {
-    Message::Info("Printing OperatorHandler...");
-    for(std::map < int, OperatorHandler::element* >::const_iterator it = m_id_to_element.begin();
+    Message::Info("Printing Barman...");
+    for(std::map < int, Barman::element* >::const_iterator it = m_id_to_element.begin();
 	it != m_id_to_element.end(); ++it)
     {
 	Message::Info("Map(id,ptr):%d %p",it->first, it->second->m__ptr);

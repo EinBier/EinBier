@@ -47,7 +47,7 @@ private:
 
 protected:
 
-    int m_id;            // used by OperatorHandler
+    int m_id;            // used by Barman
     Shape m_shape;       // shape matrix
     Shape m_shape_block; // store #row Blocks and #col Blocks
 

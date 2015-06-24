@@ -11,7 +11,7 @@
 #include <Core/Operator.h>
 #include <Core/OperatorUtils.h>
 #include <Core/Matrix.h>
-#include <Core/OperatorHandler.h>
+#include <Core/Barman.h>
 #include <Core/BIO.h>
 
 #if defined(HAVE_MPI)
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     Message::Barrier();
 #endif
 //IMPORTANT NOW: creation of the Operator Handler
-    OperatorHandler::Init();
+    Barman::Init();
 
     //Test Circle
     double r1 = 1;
@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
     // XXX.Print();
 
 
-    OperatorHandler::Clear();
+    Barman::Clear();
 
     Message::InfoRoot("End-------");
     return Message::Finalize(EXIT_SUCCESS);

@@ -3,7 +3,7 @@ if(HAVE_PETSC)
 endif(HAVE_PETSC)
 
 add_library(Core
-OperatorHandler.cpp
+Barman.cpp
 Operator.cpp
 OperatorUtils.cpp
 BIO.cpp

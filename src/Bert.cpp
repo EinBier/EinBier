@@ -11,7 +11,7 @@
 #include <Core/Operator.h>
 #include <Core/OperatorUtils.h>
 #include <Core/Matrix.h>
-#include <Core/OperatorHandler.h>
+#include <Core/Barman.h>
 #include <Core/BIO.h>
 
 #if defined(HAVE_MPI)
@@ -35,24 +35,20 @@ int main(int argc, char *argv[])
     PetscErrorCode ierr;
 #endif
 //Test de l'operatorHandler
-    Message::Debug(" == Init OperatorHandler ==");
-    OperatorHandler *opHand = NULL;
-    OperatorHandler::Init();
-    Message::Debug("OperatorHandler %d", opHand);
-    opHand=opHand->getOperatorHandler();
+    Message::Debug(" == Init Barman ==");
+    Barman *opHand = NULL;
+    Barman::Init();
+    Message::Debug("Barman %d", opHand);
+    opHand=opHand->getBarman();
     Message::Info("opHand %d", opHand);
 
-    Message::Debug(" == Start BIO and first Operator Assembling ==");
-    Message::Debug("Build bio");
-    BIO bio(2, 2);
-    Message::Debug("Print bio");
-    bio.Print();
-    Operator A, B(2,2), C(2,2);
-    Message::Debug("Somme A = B + C");
-    A = B + C;
+    Message::Debug("-----------------------------");
+    Operator A (2,2,false), B(2,2,false);
+    Operator C;
+    C=A+B;
     Message::Debug("OK");
 
-    OperatorHandler::Clear();
+    Barman::Clear();
     Message::InfoRoot("End-------");
     return Message::Finalize(EXIT_SUCCESS);
 

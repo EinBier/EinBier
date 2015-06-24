@@ -9,13 +9,13 @@
 
 class Operator;
 
-class OperatorHandler
+class Barman
 {
 // This is the container of an Operator in the handler
 public:
     struct element {
         Operator* m__ptr;   // pointer to the Operator
-        bool m__delete_ptr; // Should the OperatorHandler delete the Operator in the end ?
+        bool m__delete_ptr; // Should the Barman delete the Operator in the end ?
         int m__id;          // id of the Operator
 
         // constructor
@@ -62,16 +62,16 @@ private:
     std::map<element*, int> m_element_to_id; //For reverse search
 
 public:
-    OperatorHandler(std::string myname);
-    ~OperatorHandler();
-    OperatorHandler* getOperatorHandler(std::string opHandlerName = "default");
+    Barman(std::string myname);
+    ~Barman();
+    Barman* getBarman(std::string opHandlerName = "default");
     static void Init(std::string opHandlerName = "default");
     static void Clear();
-// Add an Operator to the OperatorHandler.
+// Add an Operator to the Barman.
 // Return the id of the operator (will be set to the operator)
-// destroyIt precises whether the OperatorHandler must destroy it or not
+// destroyIt precises whether the Barman must destroy it or not
     int addOperator(Operator *op, bool destroyIt = false);
-// Remove an Operator in the OperatorHandler. Warning, this DOES NOT DESTROY the Operator.
+// Remove an Operator in the Barman. Warning, this DOES NOT DESTROY the Operator.
 // Return 0 (ok) or 1 (error)
     int removeOperator(int op_id);
     int removeOperator(Operator *op_ptr);

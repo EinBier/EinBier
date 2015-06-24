@@ -1,7 +1,7 @@
 #include <Common/Message.h>
 #include <Common/Type.h>
 
-#include <Core/OperatorHandler.h>
+#include <Core/Barman.h>
 #include <Core/Operator.h>
 
 #include<string>
@@ -15,11 +15,11 @@ void Operator::createOperator(int row, int col, bool management)
     m_banded_rows.push_back(-1);
     m_banded_cols.push_back(-1);
 
-    OperatorHandler *opH;
-    opH = opH->getOperatorHandler();
+    Barman *opH;
+    opH = opH->getBarman();
     if(opH == NULL)
     {
-	Message::Error("Operator::createOperator: Init the OperatorHandler first!");
+	Message::Error("Operator::createOperator: Init the Barman first!");
 	return;
     }
     m_id = opH->addOperator(this, management);
@@ -33,19 +33,21 @@ void Operator::createOperator(int row, int col, bool management)
 
 Operator::Operator(int row, int col, bool management)
 {
+    Message::Debug("Operator by row col");
     createOperator(row, col, management);
 }
 
 Operator::Operator(Shape shape, bool management)
 {
+    Message::Debug("Operator by Shape");
     createOperator(shape.get_row(), shape.get_col(), management);
 }
 
 
 Operator::~Operator()
 {
-    OperatorHandler *opH;
-    opH = opH->getOperatorHandler();
+    Barman *opH;
+    opH = opH->getBarman();
     if(opH == NULL)
 	return;
     int check = opH->removeOperator(m_id);
@@ -201,6 +203,8 @@ Operator Operator::operator+(Operator & other)
     Shape their = other.get_shape_block();
 
     Operator *tmp = new Operator(get_shape(), true);
+    Message::Debug("Printfiqzofqzg");
+    tmp->Print();
 
     if (get_shape() == other.get_shape()) {
         int nmul = 0;

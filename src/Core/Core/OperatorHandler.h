@@ -1,5 +1,8 @@
 #pragma once
 
+#include<Common/Message.h>
+
+
 #include<string>
 #include <map>
 #include <list>
@@ -11,20 +14,19 @@ class OperatorHandler
 // This is the container of an Operator in the handler
 public:
     struct element {
-        // pointer to the Operator
-        Operator* m__ptr;
-        // true if the OperatorHandler has to delete memory of the pointer location
-        bool m__delete_ptr;
-        //id
-        int m__id;
+        Operator* m__ptr;   // pointer to the Operator
+        bool m__delete_ptr; // Should the OperatorHandler delete the Operator in the end ?
+        int m__id;          // id of the Operator
+
         // constructor
         element(Operator *ptr, bool delete_ptr=false, int id=-1) {
             m__ptr = ptr;
             m__delete_ptr = delete_ptr;
             m__id = id;
         }
+
         // destructor
-        ~element() { if (m__delete_ptr) { delete m__ptr; } }
+        ~element() { if (m__delete_ptr) {delete m__ptr; } }
         // copy constructor
         element(const element& rhs) {
             m__ptr = rhs.m__ptr;
@@ -45,6 +47,7 @@ public:
         element& operator=(const element& rhs) {
             m__ptr = rhs.m__ptr;
             m__delete_ptr = rhs.m__delete_ptr;
+            m__id = rhs.m__id;
             return *this;
         }
     };

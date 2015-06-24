@@ -17,19 +17,21 @@ OperatorHandler::OperatorHandler(std::string myname): m_n_operator(0), m_max_id(
 
 OperatorHandler::~OperatorHandler()
 {
-    m_list_of_element.clear();
     m_id_to_element.clear();
     m_element_to_id.clear();
-    operatorHandlers.erase(m_name);
+    m_list_of_element.clear();
 }
 
 void OperatorHandler::Clear()
 {
 //Loop on every potential OperatorHandler and close them
     std::map<std::string, OperatorHandler*>::iterator it;
-    for(it = operatorHandlers.begin(); it != operatorHandlers.end(); it++) {
+    for(it = operatorHandlers.begin(); it != operatorHandlers.end(); it++)
+    {
 	delete it->second;
+	it->second = NULL;
     }
+//clear map
     operatorHandlers.clear();
 }
 

@@ -17,6 +17,11 @@ void Operator::createOperator(int row, int col, bool management)
 
     OperatorHandler *opH;
     opH = opH->getOperatorHandler();
+    if(opH == NULL)
+    {
+	Message::Error("Operator::createOperator: Init the OperatorHandler first!");
+	return;
+    }
     m_id = opH->addOperator(this, management);
     if(m_id >= 0) {
         Message::Debug("Operator created.     (handler: %d) (id: %d)   [%p]", opH, m_id, this);
@@ -43,11 +48,9 @@ Operator::~Operator()
     opH = opH->getOperatorHandler();
     if(opH == NULL)
 	return;
-    if(opH != 0) {
-        int check = opH->removeOperator(m_id);
-        Message::Debug("Operator removed.     (handler: %d) (id: %d) (status: %d)",
-                       opH, m_id, check);
-    }
+    int check = opH->removeOperator(m_id);
+    Message::Debug("Operator removed.     (handler: %d) (id: %d) (status: %d)",
+		   opH, m_id, check);
 }
 
 

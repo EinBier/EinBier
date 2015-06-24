@@ -30,24 +30,24 @@ public:
             m__ptr = rhs.m__ptr;
             m__delete_ptr = rhs.m__delete_ptr;
         }
-
+	
         // overload the == operator (according to the pointer)
         bool operator==(const element& rhs) const {
             return (m__ptr == rhs.m__ptr);
         }
-
+	
         // overload the < operator (according to the pointer)
         bool operator<(const element& rhs) const {
             return (m__ptr < rhs.m__ptr);
         }
-
+	
         // copy operator
         element& operator=(const element& rhs) {
             m__ptr = rhs.m__ptr;
             m__delete_ptr = rhs.m__delete_ptr;
             return *this;
         }
-        };
+    };
 
 private:
     int m_n_operator;

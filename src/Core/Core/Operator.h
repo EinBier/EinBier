@@ -26,17 +26,17 @@ public:
 public:
 
     Node(std::string s="", Operator *l=0, Operator *r=0, double v=0)
-        : m_op(s), m_left(l), m_right(r), m_scalar(v) {};
+        : m_op(s), m_left(l), m_right(r), m_scalar(v) {}
 
     void set(std::string s, Operator *l, Operator *r)
-    {m_op=s; m_left=l; m_right=r;};
+    {m_op=s; m_left=l; m_right=r;}
     void set(std::string s, Operator *l, double v)
-    {m_op=s; m_left=l; m_scalar=v;};
+    {m_op=s; m_left=l; m_scalar=v;}
 
-    std::string get_op() {return m_op;};
-    Operator * get_left() {return m_left;};
-    Operator * get_right() {return m_right;};
-    double get_scalar() {return m_scalar;};
+    std::string get_op() {return m_op;}
+    Operator * get_left() {return m_left;}
+    Operator * get_right() {return m_right;}
+    double get_scalar() {return m_scalar;}
 };
 
 
@@ -82,20 +82,20 @@ public:
     Operator operator*(double scalar);
 
     virtual Matrix assemble();
-    virtual double getValue(int i, int j){};
+    virtual double getValue(int i, int j){}
 
     void Print();
 
-    int get_id(){return m_id;};
-    Shape get_shape(){return m_shape;};
-    Shape get_shape_block(){return m_shape_block;};
-    Node* get_node_ptr(){return &m_node;};
+    int get_id(){return m_id;}
+    Shape get_shape(){return m_shape;}
+    Shape get_shape_block(){return m_shape_block;}
+    Node* get_node_ptr(){return &m_node;}
 
-    void set_id(int id){m_id=id;};
+    void set_id(int id){m_id=id;}
     void set_shape(Shape s)
     {m_shape.set_row(s.get_row());
-        m_shape.set_col(s.get_col()); };
+        m_shape.set_col(s.get_col()); }
     void set_shape_block(Shape s)
     {m_shape_block.set_row(s.get_row());
-        m_shape_block.set_col(s.get_col()); };
+        m_shape_block.set_col(s.get_col()); }
 };

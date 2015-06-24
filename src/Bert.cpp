@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 //Test de l'operatorHandler
     Message::Debug(" == Init OperatorHandler ==");
     OperatorHandler *opHand = NULL;
-    OperatorHandler::createOperatorHandler();
+    OperatorHandler::Init();
     Message::Debug("OperatorHandler %d", opHand);
     opHand=opHand->getOperatorHandler();
     Message::Info("opHand %d", opHand);
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     Message::Debug("Print B (after B = A)");
     B.Print();
 
-    OperatorHandler::clear();
+    OperatorHandler::Clear();
     Message::InfoRoot("End-------");
     return Message::Finalize(EXIT_SUCCESS);
 

@@ -23,7 +23,7 @@ OperatorHandler::~OperatorHandler()
     operatorHandlers.erase(m_name);
 }
 
-void OperatorHandler::clear()
+void OperatorHandler::Clear()
 {
 //Loop on every potential OperatorHandler and close them
     std::map<std::string, OperatorHandler*>::iterator it;
@@ -34,7 +34,7 @@ void OperatorHandler::clear()
 }
 
 
-void OperatorHandler::createOperatorHandler(std::string opHandlerName)
+void OperatorHandler::Init(std::string opHandlerName)
 {
     Message::Info("Creating OperatorHandler...");
 //Find in the local (but global to every OperatorHandler) map:

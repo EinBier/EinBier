@@ -62,8 +62,8 @@ public:
     OperatorHandler(std::string myname);
     ~OperatorHandler();
     OperatorHandler* getOperatorHandler(std::string opHandlerName = "default");
-    static void createOperatorHandler(std::string opHandlerName = "default");
-    static void clear();
+    static void Init(std::string opHandlerName = "default");
+    static void Clear();
 // Add an Operator to the OperatorHandler.
 // Return the id of the operator (will be set to the operator)
 // destroyIt precises whether the OperatorHandler must destroy it or not

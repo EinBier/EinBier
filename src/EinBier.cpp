@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
     Message::Barrier();
 #endif
 //IMPORTANT NOW: creation of the Operator Handler
-    OperatorHandler::createOperatorHandler();
+    OperatorHandler::Init();
 
     //Test Circle
     double r1 = 1;
@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
     // XXX.Print();
 
 
-    OperatorHandler::clear();
+    OperatorHandler::Clear();
 
     Message::InfoRoot("End-------");
     return Message::Finalize(EXIT_SUCCESS);

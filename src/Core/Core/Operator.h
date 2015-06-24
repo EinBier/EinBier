@@ -78,6 +78,10 @@ public:
     void setBlock(int row, int col, Operator* op);
     void setBlock(Shape shape, Operator* op);
 
+
+    friend void copyOperator(Operator &me, const Operator &other);
+
+    Operator& operator=(const Operator & other);
     Operator operator+(Operator & other);
     Operator operator*(double scalar);
 
@@ -98,4 +102,6 @@ public:
     void set_shape_block(Shape s)
     {m_shape_block.set_row(s.get_row());
         m_shape_block.set_col(s.get_col()); }
+
+
 };

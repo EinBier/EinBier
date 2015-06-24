@@ -168,6 +168,28 @@ Matrix Operator::assemble()
     }
 }
 
+
+void copyOperator(Operator &me, const Operator &other)
+{
+    //Copy everything except id
+    me.m_node        = other.m_node;
+    me.m_shape       = other.m_shape;
+    me.m_shape_block = other.m_shape_block;
+    me.m_banded_rows = other.m_banded_rows;
+    me.m_banded_cols = other. m_banded_cols;
+    me.m_rows        =  other.m_rows;
+    me.m_cols        = other.m_cols;
+    me.m_ops         = other.m_ops;
+}
+
+Operator& Operator::operator=(const Operator &other)
+{
+    if (this == &other)
+        return *this;
+    copyOperator(*this, other);
+    return *this;
+}
+
 Operator Operator::operator+(Operator & other)
 {
     Shape mime = get_shape_block();

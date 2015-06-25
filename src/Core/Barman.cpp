@@ -9,7 +9,7 @@
 
 // define the variable "operatorHandlers" (not global)
 // This will contain the different Barman, even if a priori, there is only one :-)
-static std::map<std::string, Barman*> operatorHandlers;
+static std::map<std::string, Barman*> operatorBarmans;
 
 Barman::Barman(std::string myname): m_n_operator(0), m_max_id(-1), m_name(myname)
 {
@@ -26,36 +26,36 @@ void Barman::Clear()
 {
 //Loop on every potential Barman and close them
     std::map<std::string, Barman*>::iterator it;
-    for(it = operatorHandlers.begin(); it != operatorHandlers.end(); it++) {
+    for(it = operatorBarmans.begin(); it != operatorBarmans.end(); it++) {
         delete it->second;
         it->second = NULL;
     }
 //clear map
-    operatorHandlers.clear();
+    operatorBarmans.clear();
 }
 
 
-void Barman::Init(std::string opHandlerName)
+void Barman::Init(std::string opBarmanName)
 {
     Message::Info("Creating Barman...");
 //Find in the local (but global to every Barman) map:
     std::map<std::string, Barman*>::iterator it_find;
-    it_find = operatorHandlers.find(opHandlerName);
-    if (it_find == operatorHandlers.end()) {
+    it_find = operatorBarmans.find(opBarmanName);
+    if (it_find == operatorBarmans.end()) {
         //There is no one ? create one !
-        operatorHandlers[opHandlerName] = new Barman(opHandlerName);
+        operatorBarmans[opBarmanName] = new Barman(opBarmanName);
     }
     else
         Message::Warning("Barman already exist!");
 }
 
 
-Barman* Barman::getBarman(std::string opHandlerName)
+Barman* Barman::getBarman(std::string opBarmanName)
 {
 //Find in the local (but global to every Barman) map:
     std::map<std::string, Barman*>::iterator it_find;
-    it_find = operatorHandlers.find(opHandlerName);
-    if (it_find == operatorHandlers.end())
+    it_find = operatorBarmans.find(opBarmanName);
+    if (it_find == operatorBarmans.end())
         return NULL;
     else
         return it_find->second;
@@ -87,7 +87,7 @@ int Barman::addOperator(Operator *op, bool destroyIt)
     Barman::element new_elem(op, destroyIt, id);
     m_list_of_element.insert(m_list_of_element.end(), new_elem );
     m_id_to_element[id] = &(m_list_of_element.back());
-    Message::Debug("Handler  add Operator (handler: %d) (id: %d)", this, id);
+    Message::Debug("Barman  add Operator (handler: %d) (id: %d)", this, id);
     return id;
 }
 
@@ -105,14 +105,14 @@ int Barman::removeOperator(int op_id)
                        m_list_of_element.end(),
                        *(map_find->second));
         if (it_find == m_list_of_element.end()) {
-            Message::Error("Handler  rm Operator by {id}: Cannot find element in the registry", this);
+            Message::Error("Barman  rm Operator by {id}: Cannot find element in the registry", this);
             return -2;
         }
         m_list_of_element.erase(it_find);
         m_id_to_element.erase(map_find);
         return 0;
     }
-    Message::Error("Handler  rm Operator by {id}: Cannot find element in the registry", this);
+    Message::Error("Barman  rm Operator by {id}: Cannot find element in the registry", this);
     return -1;
 }
 
@@ -127,7 +127,7 @@ int Barman::removeOperator(Operator *op_ptr)
         int id = map_find->m__id;
         m_list_of_element.erase(map_find);
         m_id_to_element.erase(id);
-        Message::Debug("Handler  rm Operator  (handler: %d) (id: %d) {*ptr}", this, id);
+        Message::Debug("Barman  rm Operator  (handler: %d) (id: %d) {*ptr}", this, id);
         return 0;
     }
     return -1;

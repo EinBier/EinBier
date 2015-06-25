@@ -64,8 +64,8 @@ private:
 public:
     Barman(std::string myname);
     ~Barman();
-    Barman* getBarman(std::string opHandlerName = "default");
-    static void Init(std::string opHandlerName = "default");
+    Barman* getBarman(std::string opBarmanName = "default");
+    static void Init(std::string opBarmanName = "default");
     static void Clear();
 // Add an Operator to the Barman.
 // Return the id of the operator (will be set to the operator)

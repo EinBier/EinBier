@@ -85,9 +85,45 @@ int Barman::addOperator(Operator *op, bool destroyIt)
     m_max_id++;
     int id = m_max_id;
     Barman::element new_elem(op, destroyIt, id);
+    // push_back(new_elem) is equivalent ?
     m_list_of_element.insert(m_list_of_element.end(), new_elem );
+    // &(m_list_of_element.back()) := new_elem ?
     m_id_to_element[id] = &(m_list_of_element.back());
-    Message::Debug("Barman  add Operator (handler: %d) (id: %d)", this, id);
+    Message::Debug("Barman  add Operator  (barman: %d) (id: %d)", this, id);
+
+    // int Barman::removeOperator(Operator *op_ptr)
+    std::list<Barman::element>::iterator finder;
+    finder = std::find(m_list_of_element.begin(), m_list_of_element.end(), new_elem);
+    if (finder != m_list_of_element.end()) {
+        int idd = finder->m__id;
+        Message::Debug("Barman  find Operator (barman: %d) (id: %d) [%p]",
+                       this, idd, finder->m__ptr);
+    } else {
+        Message::Debug("Barman  not found Operator  (barman: %d) (id: %d)",
+                       this, id);
+    }
+
+    // int Barman::removeOperator(int op_id)
+    std::map<int, Barman::element*>::iterator map_find;
+    map_find = m_id_to_element.find(id);
+    if (map_find != m_id_to_element.end()) {
+        std::list<element>::iterator it_find;
+        it_find = find(m_list_of_element.begin(),
+                       m_list_of_element.end(),
+                       *(map_find->second));
+        if (it_find == m_list_of_element.end()) {
+            Message::Error("Barman  not found Operator  (barman: %d) (id: %d)",
+                           this, id);
+        } else {
+            int iddd = it_find->m__id;
+            Message::Debug("Barman  find Operator (barman: %d) (id: %d) [%p]",
+                           this, iddd, it_find->m__ptr);
+        }
+    } else {
+        Message::Error("Barman  not found Operator  (barman: %d) (id: %d)",
+                       this, id);
+    }
+
     return id;
 }
 
@@ -127,7 +163,7 @@ int Barman::removeOperator(Operator *op_ptr)
         int id = map_find->m__id;
         m_list_of_element.erase(map_find);
         m_id_to_element.erase(id);
-        Message::Debug("Barman  rm Operator  (handler: %d) (id: %d) {*ptr}", this, id);
+        Message::Debug("Barman  rm Operator  (barman: %d) (id: %d) {*ptr}", this, id);
         return 0;
     }
     return -1;

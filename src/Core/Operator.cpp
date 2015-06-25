@@ -23,7 +23,7 @@ void Operator::createOperator(int row, int col, bool management)
     }
     m_id = opH->addOperator(this, management);
     if(m_id >= 0) {
-        Message::Debug("Operator created.     (handler: %d) (id: %d)   [%p]", opH, m_id, this);
+        Message::Debug("Operator created.     (barman: %d) (id: %d)   [%p]", opH, m_id, this);
     } else {
         Message::Error("Operator could not be created. [%p] (id: %d)", this, m_id);
     }
@@ -50,7 +50,7 @@ Operator::~Operator()
     if(opH == NULL)
         return;
     int check = opH->removeOperator(m_id);
-    Message::Debug("Operator removed.     (handler: %d) (id: %d) (status: %d)",
+    Message::Debug("Operator removed.     (barman: %d) (id: %d) (status: %d)",
                    opH, m_id, check);
 }
 

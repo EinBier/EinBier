@@ -98,10 +98,10 @@ public:
     void set_id(int id){m_id=id;}
     void set_shape(Shape s)
     {m_shape.set_row(s.get_row());
-        m_shape.set_col(s.get_col()); }
+        m_shape.set_col(s.get_col());}
     void set_shape_block(Shape s)
     {m_shape_block.set_row(s.get_row());
-        m_shape_block.set_col(s.get_col()); }
+        m_shape_block.set_col(s.get_col());}
 
 
 };

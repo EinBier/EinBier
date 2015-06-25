@@ -17,10 +17,9 @@ void Operator::createOperator(int row, int col, bool management)
 
     Barman *opH;
     opH = opH->getBarman();
-    if(opH == NULL)
-    {
-	Message::Error("Operator::createOperator: Init the Barman first!");
-	return;
+    if(opH == NULL) {
+        Message::Error("Operator::createOperator: Init the Barman first!");
+        return;
     }
     m_id = opH->addOperator(this, management);
     if(m_id >= 0) {
@@ -49,10 +48,10 @@ Operator::~Operator()
     Barman *opH;
     opH = opH->getBarman();
     if(opH == NULL)
-	return;
+        return;
     int check = opH->removeOperator(m_id);
     Message::Debug("Operator removed.     (handler: %d) (id: %d) (status: %d)",
-		   opH, m_id, check);
+                   opH, m_id, check);
 }
 
 

@@ -26,10 +26,9 @@ void Barman::Clear()
 {
 //Loop on every potential Barman and close them
     std::map<std::string, Barman*>::iterator it;
-    for(it = operatorHandlers.begin(); it != operatorHandlers.end(); it++)
-    {
-	delete it->second;
-	it->second = NULL;
+    for(it = operatorHandlers.begin(); it != operatorHandlers.end(); it++) {
+        delete it->second;
+        it->second = NULL;
     }
 //clear map
     operatorHandlers.clear();
@@ -43,11 +42,11 @@ void Barman::Init(std::string opHandlerName)
     std::map<std::string, Barman*>::iterator it_find;
     it_find = operatorHandlers.find(opHandlerName);
     if (it_find == operatorHandlers.end()) {
-//There is no one ? create one !
+        //There is no one ? create one !
         operatorHandlers[opHandlerName] = new Barman(opHandlerName);
     }
     else
-	Message::Warning("Barman already exist!");   
+        Message::Warning("Barman already exist!");
 }
 
 
@@ -59,7 +58,7 @@ Barman* Barman::getBarman(std::string opHandlerName)
     if (it_find == operatorHandlers.end())
         return NULL;
     else
-	return it_find->second;
+        return it_find->second;
 }
 
 bool Barman::doesOperatorExists(Operator *op)
@@ -138,9 +137,8 @@ void Barman::Print()
 {
     Message::Info("Printing Barman...");
     for(std::map < int, Barman::element* >::const_iterator it = m_id_to_element.begin();
-	it != m_id_to_element.end(); ++it)
-    {
-	Message::Info("Map(id,ptr):%d %p",it->first, it->second->m__ptr);
+	it != m_id_to_element.end(); ++it) {
+        Message::Info("Map(id,ptr):%d %p",it->first, it->second->m__ptr);
     }
 
 }

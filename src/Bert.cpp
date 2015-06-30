@@ -54,12 +54,19 @@ int main(int argc, char *argv[])
     thetrace.Print();
 //Operators
     Operator opA, opB, opC, opD;
+    Operator opAB, opCD;
+    opAB.setBlockSize(2,2);
+    opAB.setBlock(0,0,&opA);
+    opAB.setBlock(1,1,&opB);
+    opAB.Print();
+    opCD.setBlockSize(2,2);
+    opCD.setBlock(0,0,&opC);
+    opCD.setBlock(1,1,&opD);
+    opCD.Print();
     Operator TheOp;
     TheOp.setBlockSize(2,2);
-    TheOp.setBlock(0, 0, &opA);
-    TheOp.setBlock(0, 1, &opB);
-    TheOp.setBlock(1, 0, &opC);
-    TheOp.setBlock(1, 1, &opD);
+    TheOp.setBlock(0, 0, &opAB);
+    TheOp.setBlock(1, 1, &opCD);
     TheOp.Print();
 //    Message::Info("thetrace has %d Traces", thetrace.get_number_of_Trace());
 

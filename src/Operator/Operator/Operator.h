@@ -37,7 +37,7 @@ class Operator
 protected:
     int m_id;
     Operator::node m_operators;              // the operators (if it's a node)
-    std::vector<std::vector<int> > m_blocks; //the blocks (if exists)
+    std::vector<std::vector<int> > m_blocks; //the blocks (if it's a block operator)
     Trace *m_dof, *m_trial;
 
     void createOperator(int row, int col, bool management);
@@ -54,5 +54,13 @@ public:
     void setTraces(Trace *dof, Trace *trial);
     virtual bool isElementary();
     void Print(bool isEnd = true);
+    bool checkSizes();//For block structure: check sizes between traces
+    virtual std::string WhatIsMyType();
 };
 
+
+class OperatorElementarty: public Operator
+{
+    virtual std::string WhatIsMyType(){return "elementary";}
+
+};

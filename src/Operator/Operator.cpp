@@ -41,10 +41,10 @@ Operator::Operator(int row, int col, bool management)
 
 void Operator::createOperator(int row, int col, bool management)
 {
+    m_dof = nullptr;
+    m_trial = nullptr;
     m_operators.resize(0);
-    m_blocks.resize(row);
-    for (int i = 0; i < row ; i ++)
-	m_blocks[i].resize(col);
+    setBlockSize(row, col);
     m_id = Barman::addOperator(this, management);
     return;
 }
@@ -52,8 +52,8 @@ void Operator::createOperator(int row, int col, bool management)
 
 void Operator::setBlockSize(int nrow, int ncol){
     m_blocks.resize(nrow);
-    for (int i = 0; i < nrow; i++)
-	m_blocks[i].resize(ncol);
+    for (int i = 0; i < nrow ; i ++)
+	m_blocks[i].resize(ncol, -1);
 }
 
 
@@ -109,12 +109,24 @@ bool Operator::isElementary(){
 }
 
 
-void Operator::Print(bool isEnd){
+bool Operator::checkSizes()
+{
+
+    return true;
+}
+
+std::string Operator::WhatIsMyType()
+{
     std::string type = "elementary";
     if(m_operators.size() > 0)
 	type = "node";
     if(m_blocks.size() > 0)
 	type = "block";
+    return type;
+}
+
+void Operator::Print(bool isEnd){
+    std::string type = WhatIsMyType();
     if(isEnd)
 	Message::Info("I'm the Operator %d, I'm a %s and here is my structure:", m_id, type.c_str());
 
@@ -151,10 +163,15 @@ void Operator::Print(bool isEnd){
 	    {
 		int id = m_blocks[i][j];
 		Operator *op = Barman::get_Operator_ptr(id);
-		op->Print(false);
+		if(op == nullptr)
+		    std::cout << "Z";
+		else
+		    op->Print(false);
 		std::cout << " ";
 	    }
-	    std::cout << "]"<<std::endl;
+	    std::cout << "]";
+	    if(i < m_blocks.size()-1)
+		std::cout<<std::endl;
 	}
     }
 

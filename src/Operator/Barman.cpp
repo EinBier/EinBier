@@ -45,9 +45,14 @@ int Barman::getIdOfOperator(Operator *op)
 
 Operator* Barman::get_Operator_ptr(int id)
 {
-    Barman::element *el;
-    el = m_id_to_element[id];
-    return el->m__ptr;
+    if ( m_id_to_element.find(id) == m_id_to_element.end() )
+	return nullptr;
+    else
+    {
+	Barman::element *el = nullptr;
+	el = m_id_to_element[id];
+	return el->m__ptr;
+    }
 }
 
 

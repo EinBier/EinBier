@@ -2,17 +2,12 @@
 #include <vector>
 
 #include <Common/Message.h>
-#include <Common/Type.h>
 
 #include <Geometry/Geometry.h>
 #include <Geometry/Circle.h>
 
-
-#include <Core/Operator.h>
-#include <Core/OperatorUtils.h>
-#include <Core/Matrix.h>
-#include <Core/Barman.h>
-#include <Core/BIO.h>
+#include <Trace/Trace.h>
+#include <Trace/VectorTrace.h>
 
 #if defined(HAVE_MPI)
 #include <mpi.h>
@@ -34,21 +29,27 @@ int main(int argc, char *argv[])
 #if defined(HAVE_PETSC)
     PetscErrorCode ierr;
 #endif
+    Trace a("A");
+    Trace b("B");
+    VectorTrace t1;
+    t1.push_back(&a);
+    t1.push_back(&b);
+    t1.Print();
+
+    Trace c("C");
+    Trace d("D");
+
+    VectorTrace t2, t3;
+    t2.push_back(&c);
+    t3.push_back(&d);
+
+    VectorTrace thet;
+    thet.push_back(&t1);
+    thet.push_back(&t2);
+    thet.push_back(&t3);
+    thet.Print();
+
 //Test de l'operatorHandler
-    Message::Debug(" == Init Barman ==");
-    Barman *opHand = NULL;
-    Barman::Init();
-    Message::Debug("Barman %d", opHand);
-    opHand=opHand->getBarman();
-    Message::Info("opHand %d", opHand);
-
-    Message::Debug("-----------------------------");
-    Operator A (2,2,false), B(2,2,false);
-    Operator C;
-    C=A+B;
-    Message::Debug("OK");
-
-    Barman::Clear();
     Message::InfoRoot("End-------");
     return Message::Finalize(EXIT_SUCCESS);
 

@@ -5,15 +5,16 @@ endif(HAVE_PETSC)
 # add all these directories to all subdirectories (c++ -I)
 include_directories(${CMAKE_SOURCE_DIR}/src/Common)
 include_directories(${CMAKE_SOURCE_DIR}/src/Geometry)
-#include_directories(${CMAKE_SOURCE_DIR}/src/Core)
+include_directories(${CMAKE_SOURCE_DIR}/src/Trace)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Method)
 
 #Build subdirectories
 add_subdirectory(Common)
 add_subdirectory(Geometry)
-#add_subdirectory(Core)
+add_subdirectory(Trace)
 
 #unsure if this is good
-set(TARGET_LINK_LIB Common Geometry)
+set(TARGET_LINK_LIB Common Geometry Trace)
 
 if(HAVE_MPI)
     set(${TARGET_LINK_LIB} ${TARGET_LINK_LIB}  ${MPI_CXX_LIBRARIES})

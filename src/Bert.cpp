@@ -8,6 +8,10 @@
 
 #include <Trace/Trace.h>
 
+#include <Operator/Barman.h>
+#include <Operator/Operator.h>
+
+
 #if defined(HAVE_MPI)
 #include <mpi.h>
 #endif
@@ -48,6 +52,15 @@ int main(int argc, char *argv[])
     thetrace.push_back(&abcd);
     thetrace.push_back(&e);
     thetrace.Print();
+//Operators
+    Operator opA, opB, opC, opD;
+    Operator TheOp;
+    TheOp.setBlockSize(2,2);
+    TheOp.setBlock(0, 0, &opA);
+    TheOp.setBlock(0, 1, &opB);
+    TheOp.setBlock(1, 0, &opC);
+    TheOp.setBlock(1, 1, &opD);
+    TheOp.Print();
 //    Message::Info("thetrace has %d Traces", thetrace.get_number_of_Trace());
 
 //Test de l'operatorHandler

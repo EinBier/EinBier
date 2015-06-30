@@ -1,65 +1,29 @@
+#include <Common/Message.h>
 
 #include <Operator/Barman.h>
-#include <Common/Message.h>
 
 #include <string>
 #include <map>
 #include <list>
 #include <algorithm> //std::find
 
-// define the variable "operatorHandlers" (not global)
-// This will contain the different Barman, even if a priori, there is only one :-)
-static std::map<std::string, Barman*> operatorBarmans;
+int Barman::m_max_id = -1;
+std::list<Barman::element> Barman::m_list_of_element;
+std::map<int, Barman::element*> Barman::m_id_to_element;
 
-Barman::Barman(std::string myname): m_n_operator(0), m_max_id(-1), m_name(myname)
-{
-}
 
-Barman::~Barman()
+//Function quite useless, now...
+void Barman::Init()
 {
-    m_id_to_element.clear();
-    m_element_to_id.clear();
-    m_list_of_element.clear();
+    Message::Info("Welcome to the tavern, Bro'!");
 }
 
 void Barman::Clear()
 {
-//Loop on every potential Barman and close them
-    std::map<std::string, Barman*>::iterator it;
-    for(it = operatorBarmans.begin(); it != operatorBarmans.end(); it++) {
-        delete it->second;
-        it->second = NULL;
-    }
-//clear map
-    operatorBarmans.clear();
+    m_id_to_element.clear();
+    m_list_of_element.clear();
 }
 
-
-void Barman::Init(std::string opBarmanName)
-{
-    Message::Info("Creating Barman...");
-//Find in the local (but global to every Barman) map:
-    std::map<std::string, Barman*>::iterator it_find;
-    it_find = operatorBarmans.find(opBarmanName);
-    if (it_find == operatorBarmans.end()) {
-        //There is no one ? create one !
-        operatorBarmans[opBarmanName] = new Barman(opBarmanName);
-    }
-    else
-        Message::Warning("Barman already exist!");
-}
-
-
-Barman* Barman::getBarman(std::string opBarmanName)
-{
-//Find in the local (but global to every Barman) map:
-    std::map<std::string, Barman*>::iterator it_find;
-    it_find = operatorBarmans.find(opBarmanName);
-    if (it_find == operatorBarmans.end())
-        return NULL;
-    else
-        return it_find->second;
-}
 
 bool Barman::doesOperatorExists(Operator *op)
 {
@@ -69,7 +33,7 @@ bool Barman::doesOperatorExists(Operator *op)
 
 int Barman::getIdOfOperator(Operator *op)
 {
-    Barman::element el(op, false);
+    Barman::element el(op);
     //Find the element in the list
     std::list<Barman::element>::iterator it_find;
     it_find = std::find(m_list_of_element.begin(), m_list_of_element.end(), el);
@@ -79,51 +43,23 @@ int Barman::getIdOfOperator(Operator *op)
         return -1;
 }
 
+Operator* Barman::get_Operator_ptr(int id)
+{
+    Barman::element *el;
+    el = m_id_to_element[id];
+    return el->m__ptr;
+}
 
-int Barman::addOperator(Operator *op, bool destroyIt)
+
+int Barman::addOperator(Operator *op, bool management)
 {
     m_max_id++;
     int id = m_max_id;
-    Barman::element new_elem(op, destroyIt, id);
-    // push_back(new_elem) is equivalent ?
+    Barman::element new_elem(op, id, management);
     m_list_of_element.insert(m_list_of_element.end(), new_elem );
-    // &(m_list_of_element.back()) := new_elem ?
     m_id_to_element[id] = &(m_list_of_element.back());
-    Message::Debug("Barman  add Operator  (barman: %d) (id: %d)", this, id);
-
-    // int Barman::removeOperator(Operator *op_ptr)
-    std::list<Barman::element>::iterator finder;
-    finder = std::find(m_list_of_element.begin(), m_list_of_element.end(), new_elem);
-    if (finder != m_list_of_element.end()) {
-        int idd = finder->m__id;
-        Message::Debug("Barman  find Operator (barman: %d) (id: %d) [%p]",
-                       this, idd, finder->m__ptr);
-    } else {
-        Message::Debug("Barman  not found Operator  (barman: %d) (id: %d)",
-                       this, id);
-    }
-
-    // int Barman::removeOperator(int op_id)
-    std::map<int, Barman::element*>::iterator map_find;
-    map_find = m_id_to_element.find(id);
-    if (map_find != m_id_to_element.end()) {
-        std::list<element>::iterator it_find;
-        it_find = find(m_list_of_element.begin(),
-                       m_list_of_element.end(),
-                       *(map_find->second));
-        if (it_find == m_list_of_element.end()) {
-            Message::Error("Barman  not found Operator  (barman: %d) (id: %d)",
-                           this, id);
-        } else {
-            int iddd = it_find->m__id;
-            Message::Debug("Barman  find Operator (barman: %d) (id: %d) [%p]",
-                           this, iddd, it_find->m__ptr);
-        }
-    } else {
-        Message::Error("Barman  not found Operator  (barman: %d) (id: %d)",
-                       this, id);
-    }
-
+    Message::Info("Barman: I successfully added this guy: %d [%p]", id, op);
+    new_elem.m__delete_ptr = false; //otherwise, trouble
     return id;
 }
 
@@ -141,14 +77,15 @@ int Barman::removeOperator(int op_id)
                        m_list_of_element.end(),
                        *(map_find->second));
         if (it_find == m_list_of_element.end()) {
-            Message::Error("Barman  rm Operator by {id}: Cannot find element in the registry", this);
+        Message::Info("Barman: I do not find this guy: %d", op_id);
             return -2;
         }
         m_list_of_element.erase(it_find);
         m_id_to_element.erase(map_find);
+        Message::Info("Barman: I kicked this guy: %d", op_id);
         return 0;
     }
-    Message::Error("Barman  rm Operator by {id}: Cannot find element in the registry", this);
+    Message::Info("Barman: I do not find this guy: %d", op_id);
     return -1;
 }
 
@@ -163,7 +100,7 @@ int Barman::removeOperator(Operator *op_ptr)
         int id = map_find->m__id;
         m_list_of_element.erase(map_find);
         m_id_to_element.erase(id);
-        Message::Debug("Barman  rm Operator  (barman: %d) (id: %d) {*ptr}", this, id);
+        Message::Info("Barman: I kicked this guy: %d", id);
         return 0;
     }
     return -1;
@@ -171,10 +108,16 @@ int Barman::removeOperator(Operator *op_ptr)
 
 void Barman::Print()
 {
-    Message::Info("Printing Barman...");
-    for(std::map < int, Barman::element* >::const_iterator it = m_id_to_element.begin();
-	it != m_id_to_element.end(); ++it) {
-        Message::Info("Map(id,ptr):%d %p",it->first, it->second->m__ptr);
+    int n_operator = m_list_of_element.size();
+    if(n_operator == 0)
+	Message::Info("The tavern is empty!");
+    else
+    {
+	Message::Info("Clients in the tavern:");
+	for(std::map < int, Barman::element* >::const_iterator it = m_id_to_element.begin();
+	    it != m_id_to_element.end(); ++it)
+	{
+	    Message::Info("Map(id,ptr,bool):%d %p %d",it->first, it->second->m__ptr, it->second->m__delete_ptr);
+	}
     }
-
 }

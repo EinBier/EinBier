@@ -3,6 +3,7 @@
 #include<Trace/Trace.h>
 
 #include<vector>
+#include<string>
 
 class Operator
 {
@@ -11,34 +12,47 @@ class Operator
 	std::string m__operation;
 
         // constructor
-        element() {
+        node() {
 	    m__ids.resize(0);
 	    m__operation = "";
 	}
 
-        element(std::vector<int> ids, std::string operation) {
-	    m__operators = ids;
+        node(std::vector<int> ids, std::string operation) {
+	    m__ids = ids;
 	    m__operation = operation;
         }
-        element(int id, std::string operation) {
-	    m__operators.resize(1);
-	    m__operators[0] = stdids;
+        node(int id, std::string operation) {
+	    m__ids.resize(1);
 	    m__operation = operation;
         }
+	Operator* get_left();
+	Operator* get_right();
+	std::string get_operation(){return m__operation;}
+	int get_left_id(){return m__ids[1];}
+	int get_right_id(){return m__ids.size()>1?m__ids[1]:-1;}
+	int size(){return m__ids.size();}
+	void resize(int n){m__ids.resize(n);}
     };
 
 protected:
     int m_id;
-    std::vector<Operator::node> m_operators; // the operators (if it's a node)
-    std::vector<std::vector<int ids> > m_blocks; //the blocks (if exists)
+    Operator::node m_operators;              // the operators (if it's a node)
+    std::vector<std::vector<int> > m_blocks; //the blocks (if exists)
     Trace *m_dof, *m_trial;
 
+    void createOperator(int row, int col, bool management);
+
 public:
+    explicit Operator():Operator(0, 0, false){}
+    explicit Operator(int row, int col):Operator(row, col, false){}
+    explicit Operator(int row, int col, bool management);
+    ~Operator();
 
     int get_id(){return m_id;}
     void setBlockSize(int nrow, int ncol);
     void setBlock(int k, int l, Operator *op);
     void setTraces(Trace *dof, Trace *trial);
-    virtual bool isElementary(){return ((m_blocks.size() + m_operators.size())==0);}
+    virtual bool isElementary();
+    void Print(bool isEnd = true);
 };
 

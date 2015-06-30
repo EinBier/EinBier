@@ -5,6 +5,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Trace)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Operator)
 
 add_library(Operator
+Barman.cpp
 Operator.cpp)
 
-target_link_libraries (Operator Trace ${PETSC_LIBRARIES})
+target_link_libraries (Operator Common Trace ${PETSC_LIBRARIES})

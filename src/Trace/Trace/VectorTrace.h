@@ -17,4 +17,5 @@ public:
     void push_back(Trace *t);
     void push_back(VectorTrace *t);
     void Print(bool isEnd = true);
+    int get_number_of_Trace();
 };

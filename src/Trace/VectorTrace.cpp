@@ -66,3 +66,15 @@ void VectorTrace::push_back(VectorTrace *vt){
     m_vtraces.push_back(vt);
     
 }
+
+
+int VectorTrace::get_number_of_Trace(){
+    int nt = m_traces.size();
+    int nvt = m_vtraces.size();
+    if(nt > 0)
+	return nt;
+    int n = 0;
+    for (int i = 0; i < nvt; i ++)
+	n += m_vtraces[i]->get_number_of_Trace();
+    return n;
+}

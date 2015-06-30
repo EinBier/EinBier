@@ -7,7 +7,6 @@
 #include <Geometry/Circle.h>
 
 #include <Trace/Trace.h>
-#include <Trace/VectorTrace.h>
 
 #if defined(HAVE_MPI)
 #include <mpi.h>
@@ -29,25 +28,27 @@ int main(int argc, char *argv[])
 #if defined(HAVE_PETSC)
     PetscErrorCode ierr;
 #endif
-    Trace a("A");
-    Trace b("B");
-    VectorTrace t1;
-    t1.push_back(&a);
-    t1.push_back(&b);
-    t1.Print();
-
-    Trace c("C");
-    Trace d("D");
-
-    VectorTrace t2, t3;
-    t2.push_back(&c);
-    t3.push_back(&d);
-
-    VectorTrace thet;
-    thet.push_back(&t1);
-    thet.push_back(&t2);
-    thet.push_back(&t3);
-    thet.Print();
+    TraceElem a("A");
+    TraceElem b("B");
+    TraceElem c("C");
+    TraceElem d("D");
+    TraceElem e("E");
+    TraceElem f("F");
+    a.Print();
+    Trace ab;
+    ab.push_back(&a);
+    ab.push_back(&b);
+    Trace cd;
+    cd.push_back(&c);
+    cd.push_back(&d);
+    Trace abcd;
+    abcd.push_back(&ab);
+    abcd.push_back(&cd);
+    Trace thetrace;
+    thetrace.push_back(&abcd);
+    thetrace.push_back(&e);
+    thetrace.Print();
+//    Message::Info("thetrace has %d Traces", thetrace.get_number_of_Trace());
 
 //Test de l'operatorHandler
     Message::InfoRoot("End-------");

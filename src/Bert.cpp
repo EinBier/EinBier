@@ -38,7 +38,6 @@ int main(int argc, char *argv[])
     TraceElem d("D");
     TraceElem e("E");
     TraceElem f("F");
-    a.Print();
     Trace ab;
     ab.push_back(&a);
     ab.push_back(&b);
@@ -53,7 +52,8 @@ int main(int argc, char *argv[])
     thetrace.push_back(&e);
     thetrace.Print();
 //Operators
-    Operator opA, opB, opC, opD;
+    Operator opAplusB;
+    Operator opA, opB;/*, opC, opD;
     Operator opAB, opCD;
     opAB.setBlockSize(2,2);
     opAB.setBlock(0,0,&opA);
@@ -68,9 +68,29 @@ int main(int argc, char *argv[])
     TheOp.setBlock(0, 0, &opAB);
     TheOp.setBlock(1, 1, &opCD);
     TheOp.Print();
+    opA.PrintShape();
+    opAB.PrintShape();
+    TheOp.PrintShape();
+		      */
+    Message::Debug("--------");
+    opAplusB = opA + opB;
+    Message::Debug("--------");
+    opAplusB.Print();
+/*
+    Message::Info("Checking...");
+    bool checkAandB = opA.checkSize(opB);
+    Message::Info("checkAandB = %d", checkAandB);
+    bool checkAandAB = opA.checkSize(opAB);
+    Message::Info("checkAandAB = %d", checkAandAB);
+    bool checkABandCD = opCD.checkSize(opAB);
+    Message::Info("checkABandCD = %d", checkABandCD);
+    bool checkTheOpandAB = TheOp.checkSize(opAB);
+    Message::Info("checkTheOpandAB = %d", checkTheOpandAB);
+    bool checkAandAplusB = opA.checkSize(opAplusB);
+    Message::Info("checkAandAplusB = %d", checkAandAplusB);
+*/
 //    Message::Info("thetrace has %d Traces", thetrace.get_number_of_Trace());
-
-//Test de l'operatorHandler
+    Barman::Clear();
     Message::InfoRoot("End-------");
     return Message::Finalize(EXIT_SUCCESS);
 

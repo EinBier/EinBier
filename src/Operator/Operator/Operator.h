@@ -25,13 +25,13 @@ class Operator
 	    m__ids.resize(1);
 	    m__operation = operation;
         }
-	Operator* get_left();
-	Operator* get_right();
-	std::string get_operation(){return m__operation;}
-	int get_left_id(){return m__ids[1];}
-	int get_right_id(){return m__ids.size()>1?m__ids[1]:-1;}
-	int size(){return m__ids.size();}
-	void resize(int n){m__ids.resize(n);}
+	Operator* get_left() const;
+	Operator* get_right() const;
+	std::string get_operation() const {return m__operation;}
+	int get_left_id() const {return m__ids[1];}
+	int get_right_id() const {return m__ids.size()>1?m__ids[1]:-1;}
+	int size() const {return m__ids.size();}
+	void resize(int n) {m__ids.resize(n);}
     };
 
 protected:
@@ -44,18 +44,30 @@ protected:
 
 public:
     explicit Operator():Operator(0, 0, false){}
+    explicit Operator(bool management):Operator(0, 0, management){}
     explicit Operator(int row, int col):Operator(row, col, false){}
     explicit Operator(int row, int col, bool management);
+//    explicit Operator(const Operator &op);
     ~Operator();
 
-    int get_id(){return m_id;}
+    Operator operator=(const Operator& rhs);
+    //   Operator operator=(Operator rhs);
+
+    friend Operator operator+(Operator &lhs, const Operator& rhs);
+    bool checkSize(const Operator &you) const;//Compare size between two Operators
+    
+    Operator::node get_node(){return m_operators;}
     void setBlockSize(int nrow, int ncol);
     void setBlock(int k, int l, Operator *op);
     void setTraces(Trace *dof, Trace *trial);
     virtual bool isElementary();
     void Print(bool isEnd = true);
-    bool checkSizes();//For block structure: check sizes between traces
-    virtual std::string WhatIsMyType();
+    void PrintShape();
+    bool checkSize();//For block structure: check sizes between traces
+    void getElementaryBlockSize(std::vector<int> *vec) const;
+    void getBlockSize(std::vector<int> *vec) const;
+    virtual std::string WhatIsMyType() const;
+    int get_id() const{return m_id;}
 };
 
 

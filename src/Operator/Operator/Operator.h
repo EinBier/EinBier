@@ -50,7 +50,7 @@ public:
 //    explicit Operator(const Operator &op);
     ~Operator();
 
-    Operator operator=(const Operator& rhs);
+    void operator=(const Operator& rhs);
     //   Operator operator=(Operator rhs);
 
     friend Operator operator+(Operator &lhs, const Operator& rhs);

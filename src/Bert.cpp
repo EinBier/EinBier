@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     Message::Debug("--------");
     opAplusB = opA + opB;
     Message::Debug("--------");
-    opAplusB.Print();
+//    opAplusB.Print();
 /*
     Message::Info("Checking...");
     bool checkAandB = opA.checkSize(opB);

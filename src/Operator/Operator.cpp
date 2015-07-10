@@ -306,6 +306,7 @@ bool compareSize(Operator *op)
 
 Operator operator+(Operator &lhs, const Operator& rhs)
 {
+    Barman::Print();
     Operator *res = new Operator(true);
     //check size!
     bool checkS = lhs.checkSize(rhs);
@@ -322,6 +323,7 @@ Operator operator+(Operator &lhs, const Operator& rhs)
     res->m_operators.m__ids.resize(2);
     res->m_operators.m__ids[0] = lhs.m_id;
     res->m_operators.m__ids[0] = rhs.m_id;    
+    res->Print();
     return *res;
 }
 
@@ -340,8 +342,9 @@ Operator operator+(Operator &lhs, const Operator& rhs)
 }
 */
 
-Operator Operator::operator=(const Operator& rhs)
+void Operator::operator=(const Operator& rhs)
 {
+    Barman::Print();
     Message::Debug("entering const copy");
     if (this != &rhs)
     {
@@ -351,5 +354,6 @@ Operator Operator::operator=(const Operator& rhs)
 	m_dof = rhs.m_dof;
 	m_trial = rhs.m_trial;
     }
-    return *this;
+    Barman::Print();
+//    return *this;
 }

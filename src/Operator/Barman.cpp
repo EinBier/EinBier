@@ -1,6 +1,7 @@
 #include <Common/Message.h>
 
 #include <Operator/Barman.h>
+#include <Operator/CoreOperator.h>
 
 #include <string>
 #include <map>
@@ -25,13 +26,13 @@ void Barman::Clear()
 }
 
 
-bool Barman::doesOperatorExists(Operator *op)
+bool Barman::doesCoreOperatorExists(CoreOperator *op)
 {
-    int id = getIdOfOperator(op);
+    int id = getIdOfCoreOperator(op);
     return (id > 0);
 }
 
-int Barman::getIdOfOperator(Operator *op)
+int Barman::getIdOfCoreOperator(CoreOperator *op)
 {
     Barman::element el(op);
     //Find the element in the list
@@ -43,7 +44,7 @@ int Barman::getIdOfOperator(Operator *op)
         return -1;
 }
 
-Operator* Barman::get_Operator_ptr(int id)
+CoreOperator* Barman::get_CoreOperator_ptr(int id)
 {
     if ( m_id_to_element.find(id) == m_id_to_element.end() )
 	return nullptr;
@@ -56,7 +57,7 @@ Operator* Barman::get_Operator_ptr(int id)
 }
 
 
-int Barman::addOperator(Operator *op, bool management)
+int Barman::addCoreOperator(CoreOperator *op, bool management)
 {
     m_max_id++;
     int id = m_max_id;
@@ -69,9 +70,9 @@ int Barman::addOperator(Operator *op, bool management)
 }
 
 
-int Barman::removeOperator(int op_id)
+int Barman::removeCoreOperator(int op_id)
 {
-    // check if an Operator with this id exists
+    // check if an CoreOperator with this id exists
     std::map<int, Barman::element*>::iterator map_find;
     map_find = m_id_to_element.find(op_id);
     // if it does, remove it from the list and from the maps
@@ -94,7 +95,7 @@ int Barman::removeOperator(int op_id)
     return -1;
 }
 
-int Barman::removeOperator(Operator *op_ptr)
+int Barman::removeCoreOperator(CoreOperator *op_ptr)
 {
     Barman::element el_aux(op_ptr);
     // check if an object with this name exists

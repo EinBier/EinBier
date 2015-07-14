@@ -1,0 +1,91 @@
+Barman
+CoreOperator
+Operator
+
+- Barman doit pouvoir renvoyer les pointeurs qu'il convient
+- Barman doit pouvoir delete les CoreOperator
+- Barman doit donc pointer vers CoreOperator :-/
+
+-CoreOperator contient des Noeuds, et donc doit communiquer avec le Barman ?
+--> On peut enlever l'id et mettre le pointeur, dans ce cas.
+
+
+- Operator pointe vers Barman (manatory). Mais pas forcément vers CoreOperator ?
+--> Quand on créée un Operator, il peut être vide
+--> Sinon on demande au Barman de contruire un nouveau CoreOperator
+--> Et on reçoit l'id.
+--> Le Barman ajoute alors à l'id qu'il y a un nouveau pointeur vers ce CoreOperator, ceci est utilisé pour vider la mémoire petit à petit
+--> Quand un Operator meurt, il dit au Barman "hey, I go out" et il décrémente le compteur associé au CoreOperator de 1. Si on atteint zéro, alors on détruit le CoreOperator
+
+
+--------
+Operator A = Operator B + Operator C
+
+Dans Operator:
+- si m_id d'un des deux est -1 alors skip
+- Vérification des Shape, via le Barman ? Why not (Barman récupère les pointeurs, demandent aux CoreOperator de se comparer)
+- Création d'un nouveau CoreOperator (Barman), avec les bons Shape (ou les bonnes Trace)
+- get the id of course
+- Transformation du CoreOperator en NodeCoreOperator avec les pointeurs ... ? Barman, again ? + Ajouter qu'il existe des gens qui pointent dessus, du coup !
+- Ensuite on va recopier dans A...
+
+Assignement:
+- on copie l'id ou alors on demande au Barman de répliquer les CoreOperator
+-- Si on modifie l'id, on ne change pas l'Operator "A" passé (dans les noeuds, etc.), on est plus proche de l'informatique
+-- Si on réplique les CoreOperator, modification du past-A. Plus proche des math ?
+-- D'une manière générale, il faut choisir et les users ne doivent pas modifier un Operator s'il est utilisé ailleurs. C'est mal.
+Je penche pour la copie de l'id :
+- copie id
+- say to barman I'm in the new_id and I left the previous id
+
+Constructor from Operator
+- Là par contre, on dupplique l'opérateur ? On a dans l'idée de faire un nouvel Operator, mais basé sur les mêmes traces par exemple ...
+
+
+---------------------
+
+Operator A;
+A.reset(); // Construit un nouvel operator
+
+---------------------
+getValue....
+
+Est-ce qu'on le mets dans les Trace ?
+-> Non, car cela dépend de l'operator.
+-> Ou alors, "oui". Et dans CoreOperator, il y a un "flag" pour dire quel Operator on fait.
+Ca donnerait :
+Operator A(trace x, trace y, "FourierSpectral", "SingleLayer"); // Ça le rend élémentaire !
+A.assemble();
+//Ca demande au Barman de dire au CoreOperator de s'assembler
+//un objet BIO contient tout.
+Quand on assemble, on construit un BIO avec les traces et les paramètres pour dire c'est quel operator, etc.
+
+---------------
+MathOperator
+
+Trace *x, *y;
+TypeOfOperator, ...
+
+assemble()
+->getValue selon les fonctions.
+on aurait dedans moyen de pluger directement la bonne fonction
+double getValue(i, j, Trace *x, Trace *y)
+{
+	double g = TheGoodMethod(i,j,*x,*y);
+	return g;
+}
+
+On peut du coup ajouter des operateurs mathématiques dedans.
+
+Question : 
+1- peut-on construire un pointeur de méthode dans une instance de class ? pour éviter les if ...
+2- Or, faire une méthode static qui prend quand même en compte les paramètres privés ? je ne pense pas.
+
+----------------------------------
+CoreOperator
+
+- ne se construit que via des pointeurs et n'est jamais utilisé diretement par l'utilisateur
+- On a 2 possiblités :
+-- Feuille d'un arbre : c'est un opérateur élémentaire.
+-- Un noeud de l'arbre : opérateur unaire (+/-/inv), binaire (+/-/*/ avec scalaire ou CoreOperator), block (agration)
+Tout doit pouvoir être moduler en cours de route, avec un Check à chaque fois (coûte pas cher).

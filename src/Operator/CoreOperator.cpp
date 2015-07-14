@@ -2,30 +2,38 @@
 
 #include <Trace/Trace.h>
 
-#include <Operator/Operator.h>
+#include <Operator/CoreOperator.h>
 #include <Operator/Barman.h>
 
 #include <iostream>
 
 
-Operator::~Operator()
-{
-    Barman::DecreaseNumberOfPointer(m_id);
+CoreOperator* CoreOperator::node::get_left() const {
+    if(m__ids.size() < 1)
+    {
+	Message::Error("There is only %d CoreOperator in the node", m__ids.size());
+	return nullptr;
+    }
+    return Barman::get_CoreOperator_ptr(m__ids[0]);
 }
 
-Operator::Operator()
-{
-    m_id = -1;
+CoreOperator* CoreOperator::node::get_right() const {
+    if(m__ids.size() < 2)
+    {
+	Message::Error("There is only %d CoreOperator in the node", m__ids.size());
+	return nullptr;
+    }
+    return Barman::get_CoreOperator_ptr(m__ids[1]);
 }
 
-Operator::Operator(int row, int col)
+CoreOperator::CoreOperator(int row, int col, bool management)
 {
-    createOperator(row, col);
+    createCoreOperator(row, col, management);
 }
 /*
-Operator::Operator(const Operator &op)
+CoreOperator::CoreOperator(const CoreOperator &op)
 {
-    m_id = Barman::addOperator(this, false);
+    m_id = Barman::addCoreOperator(this, false);
     m_operators = op.m_operators;
     m_blocks = op.m_blocks;
     m_dof = op.m_dof;
@@ -33,21 +41,25 @@ Operator::Operator(const Operator &op)
 }
 */
 
-void Operator::createOperator(int row, int col)
+void CoreOperator::createCoreOperator(int row, int col, bool management)
 {
-    m_id = Barman::createOperator(row, col);
+    m_dof = nullptr;
+    m_trial = nullptr;
+    m_operators.resize(0);
+    setBlockSize(row, col);
+    m_id = Barman::addCoreOperator(this, management);
     return;
 }
 
 
-void Operator::setBlockSize(int nrow, int ncol){
+void CoreOperator::setBlockSize(int nrow, int ncol){
     m_blocks.resize(nrow);
     for (int i = 0; i < nrow ; i ++)
 	m_blocks[i].resize(ncol, -1);
 }
 
 
-void Operator::setBlock(int k, int l, Operator *op){
+void CoreOperator::setBlock(int k, int l, CoreOperator *op){
     int nrow = 0, ncol = 0;
     nrow = m_blocks.size();
     if (nrow <=0)
@@ -66,7 +78,7 @@ void Operator::setBlock(int k, int l, Operator *op){
 
 
 
-void Operator::setTraces(Trace *dof, Trace *trial){
+void CoreOperator::setTraces(Trace *dof, Trace *trial){
     //check the block-size (if already set) or set the block size
     int nrow = 0, ncol = 0;
     nrow = m_blocks.size();
@@ -86,7 +98,7 @@ void Operator::setTraces(Trace *dof, Trace *trial){
 }
 
 
-bool Operator::isElementary(){
+bool CoreOperator::isElementary(){
     int nrow = m_blocks.size();
     if( nrow >0)
 	return false;
@@ -99,7 +111,7 @@ bool Operator::isElementary(){
 }
 
 
-void Operator::getBlockSize(std::vector<int> *vec) const
+void CoreOperator::getBlockSize(std::vector<int> *vec) const
 {
     vec->resize(2, 0);
     (*vec)[0] = m_blocks.size();
@@ -109,7 +121,7 @@ void Operator::getBlockSize(std::vector<int> *vec) const
 }
 
 
-void Operator::getElementaryBlockSize(std::vector<int> *vec) const
+void CoreOperator::getElementaryBlockSize(std::vector<int> *vec) const
 {
     vec->resize(2);
     std::string type = WhatIsMyType();
@@ -129,11 +141,11 @@ void Operator::getElementaryBlockSize(std::vector<int> *vec) const
 	for (int i = 0; i < nrows; i++)
 	{
 	    std::vector<int> row_tmp;
-	    Operator *op;
+	    CoreOperator *op;
 	    //Find the first term non null in the column
 	    for (int j = 0; j < ncols; j++)
 	    {
-		op = Barman::get_Operator_ptr(m_blocks[i][j]);
+		op = Barman::get_CoreOperator_ptr(m_blocks[i][j]);
 		if(op != nullptr)
 		    break;
 		else if (j == ncols-1)
@@ -148,11 +160,11 @@ void Operator::getElementaryBlockSize(std::vector<int> *vec) const
 	for (int j = 0; j < ncols; j++)
 	{
 	    std::vector<int> col_tmp;
-	    Operator *op;
+	    CoreOperator *op;
 	    //Find the first term non null in the line
 	    for (int i = 0; i < nrows; i++)
 	    {
-		op = Barman::get_Operator_ptr(m_blocks[i][j]);
+		op = Barman::get_CoreOperator_ptr(m_blocks[i][j]);
 		if(op != nullptr)
 		    break;
 		else if (i == nrows-1)
@@ -169,7 +181,7 @@ void Operator::getElementaryBlockSize(std::vector<int> *vec) const
 }
 
 
-bool Operator::checkSize(const Operator &you) const
+bool CoreOperator::checkSize(const CoreOperator &you) const
 {
     std::string myType = WhatIsMyType();
     std::string yourType = you.WhatIsMyType();
@@ -177,12 +189,12 @@ bool Operator::checkSize(const Operator &you) const
 	return true;
     if(myType == "node")
     {
-	Operator *op_left = m_operators.get_left();
+	CoreOperator *op_left = m_operators.get_left();
 	return op_left->checkSize(you);
     }
     if(yourType=="node")
     {
-	Operator *op_left = you.m_operators.get_left();
+	CoreOperator *op_left = you.m_operators.get_left();
 	return op_left->checkSize(*this);
     }
 //Ok, there is only blocks here
@@ -195,8 +207,8 @@ bool Operator::checkSize(const Operator &you) const
     {
 	for (int j = 0; j < my_shape[1]; j++)
 	{
-	    Operator *mine_aux = Barman::get_Operator_ptr(m_blocks[i][j]);
-	    Operator *yours_aux = Barman::get_Operator_ptr(you.m_blocks[i][j]);
+	    CoreOperator *mine_aux = Barman::get_CoreOperator_ptr(m_blocks[i][j]);
+	    CoreOperator *yours_aux = Barman::get_CoreOperator_ptr(you.m_blocks[i][j]);
 	    if(mine_aux == nullptr  || yours_aux == nullptr)
 		continue;
 	    bool res_aux = mine_aux->checkSize(*yours_aux);
@@ -207,7 +219,7 @@ bool Operator::checkSize(const Operator &you) const
     return true;
 }
 
-std::string Operator::WhatIsMyType() const
+std::string CoreOperator::WhatIsMyType() const
 {
     std::string type = "elementary";
     if(m_operators.size() > 0)
@@ -217,10 +229,10 @@ std::string Operator::WhatIsMyType() const
     return type;
 }
 
-void Operator::Print(bool isEnd){
+void CoreOperator::Print(bool isEnd){
     std::string type = WhatIsMyType();
     if(isEnd)
-	Message::Info("I'm the Operator %d, I'm a %s and here is my structure:", m_id, type.c_str());
+	Message::Info("I'm the CoreOperator %d, I'm a %s and here is my structure:", m_id, type.c_str());
     else
 	Message::Debug("Op id = %d",m_id);
 
@@ -254,7 +266,7 @@ void Operator::Print(bool isEnd){
 	    for (int j = 0; j < m_blocks[i].size() ; j++)
 	    {
 		int id = m_blocks[i][j];
-		Operator *op = Barman::get_Operator_ptr(id);
+		CoreOperator *op = Barman::get_CoreOperator_ptr(id);
 		if(op == nullptr)
 		    std::cout << "Z";
 		else
@@ -272,29 +284,29 @@ void Operator::Print(bool isEnd){
     return;
 }
 
-void Operator::PrintShape()
+void CoreOperator::PrintShape()
 {
     std::vector<int> shape(2);
     getElementaryBlockSize(&shape);
-    Message::Info("Operator %d shape : (%d, %d) (in Elementary blocks)", m_id, shape[0], shape[1]);
+    Message::Info("CoreOperator %d shape : (%d, %d) (in Elementary blocks)", m_id, shape[0], shape[1]);
 }
 
-bool compareSize(Operator *op)
+bool compareSize(CoreOperator *op)
 {
 
 
 }
 
 
-Operator operator+(Operator &lhs, const Operator& rhs)
+CoreOperator operator+(CoreOperator &lhs, const CoreOperator& rhs)
 {
     Barman::Print();
-    Operator *res = new Operator(true);
+    CoreOperator *res = new CoreOperator(true);
     //check size!
     bool checkS = lhs.checkSize(rhs);
     if(!checkS || lhs.m_dof != rhs.m_dof || lhs.m_trial != rhs.m_trial)
     {
-	Message::Error("Operator are not of the same block structure! result is crap...");
+	Message::Error("CoreOperator are not of the same block structure! result is crap...");
 	res->setBlockSize(-1, -1);
 	return *res;
     }
@@ -309,7 +321,7 @@ Operator operator+(Operator &lhs, const Operator& rhs)
     return *res;
 }
 
-/*Operator Operator::operator=(Operator rhs)
+/*CoreOperator CoreOperator::operator=(CoreOperator rhs)
 {
     Message::Debug("entering copy");
     if (this != &rhs)
@@ -324,7 +336,7 @@ Operator operator+(Operator &lhs, const Operator& rhs)
 }
 */
 
-void Operator::operator=(const Operator& rhs)
+void CoreOperator::operator=(const CoreOperator& rhs)
 {
     Barman::Print();
     Message::Debug("entering const copy");

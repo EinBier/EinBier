@@ -35,7 +35,7 @@ Operator::Operator(const Operator &op)
 
 void Operator::createOperator(int row, int col)
 {
-    m_id = Barman::createOperator(row, col);
+    m_id = Barman::createCoreOperator(row, col);
     return;
 }
 

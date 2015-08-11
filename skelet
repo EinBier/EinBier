@@ -10,9 +10,9 @@ Operator
 --> On peut enlever l'id et mettre le pointeur, dans ce cas.
 
 
-- Operator pointe vers Barman (manatory). Mais pas forcément vers CoreOperator ?
+- Operator pointe vers Barman (mandatory). Mais pas forcément vers CoreOperator ?
 --> Quand on créée un Operator, il peut être vide
---> Sinon on demande au Barman de contruire un nouveau CoreOperator
+--> Sinon on demande au Barman de construire un nouveau CoreOperator
 --> Et on reçoit l'id.
 --> Le Barman ajoute alors à l'id qu'il y a un nouveau pointeur vers ce CoreOperator, ceci est utilisé pour vider la mémoire petit à petit
 --> Quand un Operator meurt, il dit au Barman "hey, I go out" et il décrémente le compteur associé au CoreOperator de 1. Si on atteint zéro, alors on détruit le CoreOperator
@@ -68,7 +68,7 @@ TypeOfOperator, ...
 
 assemble()
 ->getValue selon les fonctions.
-on aurait dedans moyen de pluger directement la bonne fonction
+on aurait dedans moyen de pluguer directement la bonne fonction
 double getValue(i, j, Trace *x, Trace *y)
 {
 	double g = TheGoodMethod(i,j,*x,*y);

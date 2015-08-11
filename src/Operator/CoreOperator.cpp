@@ -1,4 +1,5 @@
 #include<Common/Message.h>
+#include <Common/Shape.h>
 
 #include <Trace/Trace.h>
 
@@ -8,28 +9,18 @@
 #include <iostream>
 
 
-CoreOperator* CoreOperator::node::get_left() const {
-    if(m__ids.size() < 1)
-    {
-	Message::Error("There is only %d CoreOperator in the node", m__ids.size());
-	return nullptr;
-    }
-    return Barman::get_CoreOperator_ptr(m__ids[0]);
-}
+std::string CoreOperator::ELEMENTARY = "elementary";
+std::string CoreOperator::UNARY = "unary";
+std::string CoreOperator::BINARY = "binary";
+std::string CoreOperator::BLOCK = "block";
 
-CoreOperator* CoreOperator::node::get_right() const {
-    if(m__ids.size() < 2)
-    {
-	Message::Error("There is only %d CoreOperator in the node", m__ids.size());
-	return nullptr;
-    }
-    return Barman::get_CoreOperator_ptr(m__ids[1]);
-}
 
-CoreOperator::CoreOperator(int row, int col, bool management)
+CoreOperator::CoreOperator(int id, int row, int col)
 {
-    createCoreOperator(row, col, management);
+    m_id = id;
+    createCoreOperator(row, col);
 }
+
 /*
 CoreOperator::CoreOperator(const CoreOperator &op)
 {
@@ -41,38 +32,62 @@ CoreOperator::CoreOperator(const CoreOperator &op)
 }
 */
 
-void CoreOperator::createCoreOperator(int row, int col, bool management)
+//Is it a good idea ? It should be created from traces ... ?
+void CoreOperator::createCoreOperator(int row, int col)
 {
     m_dof = nullptr;
     m_trial = nullptr;
-    m_operators.resize(0);
+    m_shape.set(1,1);
     setBlockSize(row, col);
-    m_id = Barman::addCoreOperator(this, management);
+    m_id = Barman::addCoreOperator(this);
     return;
 }
 
 
 void CoreOperator::setBlockSize(int nrow, int ncol){
-    m_blocks.resize(nrow);
-    for (int i = 0; i < nrow ; i ++)
-	m_blocks[i].resize(ncol, -1);
+    if( nrow > 1 || ncol > 1)
+    {
+	//So, this CoreOperator is a block
+	m_node.set_type("block");
+	m_node.set_operation("block");
+    }
+    if( nrow < 1 || ncol < 1)
+	return; //That's a joke ?
+    m_shape.set(nrow, ncol);
 }
 
 
 void CoreOperator::setBlock(int k, int l, CoreOperator *op){
+
+    //Check if we have the right;
+    if(whatIsMyType == "")
+    {
+	setBlockSize(k,l);//Set a new size and a Block structure.
+	m_node.set_type("block");
+	m_node.set_operation("block");
+    }
+    if(whatIsMyType != "block")
+    {
+	Message::Warning("Operator %d was not a block before ! Now it is...", m_id);
+	m_node.set_type("block");
+	m_node.set_type("operator");
+    }
     int nrow = 0, ncol = 0;
-    nrow = m_blocks.size();
-    if (nrow <=0)
+    nrow = m_shape.get_row();
+    ncol = m_shape.get_col();
+    if(nrow < k)
     {
-	Message::Error("Set size of operator first !");
-	return;
+	Message::Error("Changing size of Operator %d", m_id);
+	m_shape.set_row(k);
     }
-    ncol = m_blocks[0].size();
-    if(ncol <=0)
+    if(ncol < l)
     {
-	Message::Error("Set size of operator first !");
-	return;
+	Message::Error("Changing size of Operator %d", m_id);
+	m_shape.set_col(l);
     }
+    
+    m_node.setBlock
+
     m_blocks[k][l] = op->get_id();
 }
 

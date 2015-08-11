@@ -57,19 +57,20 @@ CoreOperator* Barman::get_CoreOperator_ptr(int id)
 }
 
 
-int Barman::addCoreOperator(CoreOperator *op, bool management)
+int Barman::CreateCoreOperator(int row, int col)
 {
     m_max_id++;
     int id = m_max_id;
-    Barman::element new_elem(op, id, management);
-    m_list_of_element.insert(m_list_of_element.end(), new_elem );
+    CoreOperator *coreop = new CoreOperator(id, row, col);
+    Barman::element new_elem(coreop, id);
+    m_list_of_element.insert(m_list_of_element.end(), new_elem);
     m_id_to_element[id] = &(m_list_of_element.back());
-    Message::Info("Barman: I successfully added this guy: %d [%p]", id, op);
+    Message::Info("Barman: I successfully created this guy: %d [%p]", id, op);
     new_elem.m__delete_ptr = false; //otherwise, trouble
     return id;
 }
 
-
+/*
 int Barman::removeCoreOperator(int op_id)
 {
     // check if an CoreOperator with this id exists
@@ -111,6 +112,37 @@ int Barman::removeCoreOperator(CoreOperator *op_ptr)
     }
     return -1;
 }
+*/
+
+int Barman::DecreaseNumberOfPointing(int op_id)
+{
+    // check if an CoreOperator with this id exists
+    std::map<int, Barman::element*>::iterator map_find;
+    map_find = m_id_to_element.find(op_id);
+    // if it does, decreases the number of pointing Operator to this CoreOperator
+    if (map_find != m_id_to_element.end()) {
+        // The value *(map_find->second) is an Barman::element
+        std::list<element>::iterator it_find;
+        it_find = find(m_list_of_element.begin(),
+                       m_list_of_element.end(),
+                       *(map_find->second));
+        if (it_find == m_list_of_element.end()) {
+        Message::Info("Barman: I do not find this guy: %d", op_id);
+            return -2;
+        }
+	int nPointer = it_find->DecreaseNumberOfPointing();
+	if( nPointer == 0)
+	{
+	    m_list_of_element.erase(it_find);
+	    m_id_to_element.erase(map_find);
+	    Message::Info("Barman: I kicked this guy: %d", op_id);
+	}
+        return nPointer;
+    }
+    Message::Info("Barman: I do not find this guy: %d", op_id);
+    return -1;
+}
+
 
 void Barman::Print()
 {

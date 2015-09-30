@@ -9,39 +9,27 @@ class Trace
 {
 protected:
     Geometry *m_geo;
-    int m_method;               //Which method of resolution
-    std::vector<int> m_indices; //indices of the unknown
-    int m_n;                    // number of unknown
-    std::string m_name;         // name
+    int m_method;               // method of resolution ?
+    std::string m_name;
+    std::string m_type;         // "elementary" | "block" | "undefined"
+
+    static std::string ELEMENTARY;
+    static std::string BLOCK;
+    static std::string UNDEFINED;
 
 private:
     //"Node" part
-    std::vector<Trace *> m_traces;
-public:
-Trace():Trace(0, "lol"){}
-    explicit Trace(int n):Trace(n, "lol"){}
-    explicit Trace(std::string name):Trace(0, name){}
-    explicit Trace(int n, std::string name){createTrace(n, name);}
+    std::vector<Trace*> m_traces;
 
-    virtual int getBlockSize(){return m_traces.size();}
-    virtual void Print(bool isEnd = true);
-    virtual void createTrace(int n, std::string name);
-    virtual bool isElementary(){return false;}
-    virtual void push_back(Trace *t);
+public:
+    Trace(std::string name = "default");
+    Trace(std::string name, Geometry* geo);
+
+    int getNumberOfTrace(){return m_traces.size();}
+    void Print(bool isRoot = true);
+    std::string getType(){return m_type;}
+    void push_back(Trace* t);
+    void setGeo(Geometry *geo);
+    void setMethod(int m){m_method = m;}
 };
 
-class TraceElementary:public Trace
-{
-public:
-    virtual int getBlockSize(){return 1;}
-    virtual void createTrace(int n, std::string name) =0;
-    virtual bool isElementary(){return true;}
-    virtual void push_back(Trace *t){return;}
-};
-
-class TraceElem:public TraceElementary
-{
-public:
-    TraceElem(std::string name){createTrace(0, name);}
-     void createTrace(int n, std::string name){m_n = n; m_name=name;}
-};

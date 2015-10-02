@@ -64,10 +64,9 @@ void Trace::Print(bool isRoot)
     }
     if (isBlock()) {
         std::cout<<"[";
-        int nt = getNumberOfTrace();
-        for (int i = 0; i < nt; i ++) {
-            m_traces[i]->Print(false);
-            if(i < nt-1)
+        for (int i=0; i<getNumberOfTrace(); i ++) {
+            getTrace(i)->Print(false);
+            if(i < getNumberOfTrace()-1)
                 std::cout << ", ";
         }
         std::cout << "]";
@@ -130,15 +129,15 @@ Trace* Trace::flatize()
         std::string name = m_name + "-flat";
         tmp = new Trace(name);
 
-        Trace *T, *t;
+        Trace *T;
         for (int i=0; i<getNumberOfTrace(); i++) {
-            T = m_traces[i];
+            T = getTrace(i);
             if (T->isBlock()) {
                 for (int j=0; j<T->getNumberOfTrace(); j++) {
                     tmp->extend(T->getTrace(j)->flatize());
                 }
             } else {
-                tmp->push_back(m_traces[i]);
+                tmp->push_back(getTrace(i));
             }
         }
     } else {
@@ -176,7 +175,7 @@ bool Trace::isSameStructure(Trace *t)
             return false;
         } else {
             for (int i=0; i<getNumberOfTrace(); i++) {
-                if (!m_traces[i]->isSameStructure(t->getTrace(i)))
+                if (!getTrace(i)->isSameStructure(t->getTrace(i)))
                     return false;
             }
             return true;

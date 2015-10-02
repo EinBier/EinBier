@@ -72,7 +72,7 @@ void Trace::Print(bool isRoot)
         }
         std::cout << "]";
     } else {
-        if (isDefined())
+        if (!isDefined())
             std::cout << "~";
         std::cout << m_name ;
         if (isRoot)

@@ -12,15 +12,14 @@ protected:
     Geometry *m_geo;
     int m_method;               // method of resolution ?
 
-    std::string m_type;         // "elementary" | "block" | "undefined"
 
-    static std::string ELEMENTARY;
-    static std::string BLOCK;
-    static std::string UNDEFINED;
-
-//private:
-public:
+private:
     std::vector<Trace*> m_traces;
+
+    bool isDefined();
+    bool isComparable(Trace*);
+    bool isSameStructure(Trace*);
+
 
 public:
     Trace(std::string name = "default");
@@ -30,17 +29,18 @@ public:
     int getNumberOfTrace(){return m_traces.size();}
     void Print(bool isRoot = true);
 
+    bool isBlock();
+
     void push_back(Trace* t);
+    Trace * getTrace(int);
 
     void setGeometry(Geometry *geo);
     void setMethod(int m){m_method = m;}
 
-    std::string getType(){return m_type;}
+    std::string getType();
 
     void extend(Trace*);
     Trace* flatize();
-    bool isComparable(Trace*);
-    bool isSameStructure(Trace*);
     int compare(Trace*);
 };
 

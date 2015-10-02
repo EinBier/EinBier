@@ -6,100 +6,136 @@
 #include<iostream>
 
 
-std::string Trace::ELEMENTARY = "elementary";
-std::string Trace::BLOCK = "block";
-std::string Trace::UNDEFINED = "undefined";
-
-Trace::Trace(std::string name){
+Trace::Trace(std::string name)
+{
     m_name = name;
     m_geo = nullptr;
     m_method = -1;
     m_traces.resize(0);
-    m_type = Trace::UNDEFINED;
     std::cout << "Trace " << name << " is initialized." << std::endl;
 }
 
-Trace::Trace(std::string name, Geometry* geo) : Trace(name){
+Trace::Trace(std::string name, Geometry* geo) : Trace(name)
+{
     setGeometry(geo);
 }
 
-Trace::Trace(std::string name, Geometry* geo, int method) : Trace(name, geo){
+Trace::Trace(std::string name, Geometry* geo, int method) : Trace(name, geo)
+{
     m_method = method;
+}
+
+bool Trace::isBlock()
+{
+    if (getNumberOfTrace() > 0)
+        return true;
+    else
+        return false;
+}
+
+bool Trace::isDefined()
+{
+    if (m_geo != nullptr)
+        return true;
+    else
+        return false;
+}
+
+
+std::string Trace::getType()
+{
+    if (isBlock())
+        return "block";
+    else if (isDefined())
+        return "elementary";
+    else
+        return "undefined";
 }
 
 
 void Trace::Print(bool isRoot)
 {
-    if(isRoot){
+    if (isRoot) {
         std::cout << "Trace: " << m_name << std::endl;
         std::cout << "\tGeometry: " << m_geo << std::endl;
         std::cout << "\tMethod: " << m_method << std::endl;
-        std::cout << "\tType: " << m_type << std::endl;
+        std::cout << "\tType: " << getType() << std::endl;
         std::cout << m_name << " = ";
     }
-    if(getType() == Trace::BLOCK){
+    if (isBlock()) {
         std::cout<<"[";
         int nt = getNumberOfTrace();
-        for (int i = 0; i < nt; i ++){
+        for (int i = 0; i < nt; i ++) {
             m_traces[i]->Print(false);
             if(i < nt-1)
                 std::cout << ", ";
         }
         std::cout << "]";
     } else {
-        if(getType() == Trace::UNDEFINED)
+        if (isDefined())
             std::cout << "~";
         std::cout << m_name ;
-        if(isRoot)
+        if (isRoot)
             std::cout << " -- obvious, right ? :-)";
     }
-    if(isRoot)
+    if (isRoot)
         std::cout << std::endl;
 }
 
 
-void Trace::push_back(Trace* t){
-    if(getType() == Trace::ELEMENTARY)
-    {
-        Message::Error("This Trace is %s.", Trace::ELEMENTARY.c_str());
+void Trace::push_back(Trace* t)
+{
+    if (isDefined()) {
+        Message::Error("This Trace owns a Geometry. Cannot be concatenated.");
         return;
     }
     m_traces.push_back(t);
-    m_type = Trace::BLOCK;
 }
 
-void Trace::setGeometry(Geometry *geo){
-    if(getType() != Trace::BLOCK){
-        m_geo = geo;
-        m_type = Trace::ELEMENTARY;
+Trace* Trace::getTrace(int i)
+{
+    if (i < getNumberOfTrace()) {
+        return m_traces[i];
     } else {
-        Message::Error("This Trace is %s.", Trace::BLOCK.c_str());
+        Message::Error("You are trying to access to an undefined memory block.");
+        return nullptr;
     }
-    return;
 }
 
-void Trace::extend(Trace *t){
-    if(t->getType() == Trace::BLOCK){
-        for(int i=0; i<t->getNumberOfTrace(); i++)
-            push_back(t->m_traces[i]);
+void Trace::setGeometry(Geometry *geo)
+{
+    if (!isBlock()) {
+        m_geo = geo;
+    } else {
+        Message::Error("This Trace is block. Cannot own a geometry.");
+        return;
+    }
+}
+
+void Trace::extend(Trace *t)
+{
+    if (t->isBlock()) {
+        for (int i=0; i<t->getNumberOfTrace(); i++)
+            push_back(t->getTrace(i));
     } else {
         push_back(t);
     }
 }
 
-Trace* Trace::flatize(){
+Trace* Trace::flatize()
+{
     Trace *tmp;
 
-    if(getType() == Trace::BLOCK){
+    if (isBlock()) {
         std::string name = m_name + "-flat";
         tmp = new Trace(name);
 
         Trace *T, *t;
-        for(int i=0; i<getNumberOfTrace(); i++){
+        for (int i=0; i<getNumberOfTrace(); i++) {
             T = m_traces[i];
-            if(T->getType() == Trace::BLOCK){
-                for(int j=0; j<T->getNumberOfTrace(); j++){
-                    tmp->extend(T->m_traces[j]->flatize());
+            if (T->isBlock()) {
+                for (int j=0; j<T->getNumberOfTrace(); j++) {
+                    tmp->extend(T->getTrace(j)->flatize());
                 }
             } else {
                 tmp->push_back(m_traces[i]);
@@ -112,16 +148,16 @@ Trace* Trace::flatize(){
     return tmp;
 }
 
-bool Trace::isComparable(Trace *q){
-    if(getType() == Trace::BLOCK
-       && q->getType() == Trace::BLOCK){
+bool Trace::isComparable(Trace *q)
+{
+    if (isBlock() && q->isBlock()) {
         Trace *T = this->flatize();
         Trace *Q = q->flatize();
-        if(T->getNumberOfTrace() != Q->getNumberOfTrace()){
+        if (T->getNumberOfTrace() != Q->getNumberOfTrace()) {
             return false;
         } else {
-            for(int i=0;i<T->getNumberOfTrace();i++){
-                if(T->m_traces[i] != Q->m_traces[i])
+            for (int i=0;i<T->getNumberOfTrace();i++) {
+                if (T->getTrace(i) != Q->getTrace(i))
                     return false;
             }
         }
@@ -133,14 +169,14 @@ bool Trace::isComparable(Trace *q){
     }
 }
 
-bool Trace::isSameStructure(Trace *t){
-    if(getType() == Trace::BLOCK
-       && t->getType() == Trace::BLOCK){
-        if(getNumberOfTrace() != t->getNumberOfTrace()){
+bool Trace::isSameStructure(Trace *t)
+{
+    if (isBlock() && t->isBlock()) {
+        if (getNumberOfTrace() != t->getNumberOfTrace()) {
             return false;
         } else {
-            for(int i=0; i<getNumberOfTrace(); i++){
-                if(!m_traces[i]->isSameStructure(t->m_traces[i]))
+            for (int i=0; i<getNumberOfTrace(); i++) {
+                if (!m_traces[i]->isSameStructure(t->getTrace(i)))
                     return false;
             }
             return true;
@@ -152,8 +188,9 @@ bool Trace::isSameStructure(Trace *t){
     }
 }
 
-int Trace::compare(Trace *t){
-    if(!isComparable(t)){
+int Trace::compare(Trace *t)
+{
+    if (!isComparable(t)) {
         return 0;
     } else {
         if (this == t) {

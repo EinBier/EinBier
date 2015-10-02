@@ -63,11 +63,6 @@ int main(int argc, char *argv[])
     MM.push_back(&M);
     MM.push_back(&a);
 
-    std::cout << std::endl;
-    LL.Print();
-    MM.Print();
-    std::cout << std::endl;
-    std::cout << "comparable ? " << LL.isComparable(&MM) << std::endl;
 
     std::cout << std::endl;
     Trace *ll = LL.flatize();

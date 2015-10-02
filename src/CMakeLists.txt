@@ -31,6 +31,6 @@ add_executable(EinBier
 EinBier.cpp)
 target_link_libraries(EinBier ${TARGET_LINK_LIB})
 
-add_executable(Bert
-Bert.cpp)
-target_link_libraries(Bert ${TARGET_LINK_LIB})
+add_executable(testTrace
+testTrace.cpp)
+target_link_libraries(testTrace ${TARGET_LINK_LIB})

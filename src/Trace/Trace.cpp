@@ -84,7 +84,10 @@ void Trace::Print(bool isRoot)
 
 void Trace::push_back(Trace* t)
 {
-    if (isDefined()) {
+    if (this == t) {
+        Message::Error("Impossible, circular building.");
+        return;
+    } else if (isDefined()) {
         Message::Error("This Trace owns a Geometry. Cannot be concatenated.");
         return;
     }

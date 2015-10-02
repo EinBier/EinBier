@@ -40,8 +40,15 @@ int main(int argc, char *argv[])
     Trace w("w");
 
     Trace P("P");
-    P.push_back(&u);
-    P.push_back(&v);
+    P += &u;
+    P += &v;
+    // P.push_back(&u);
+    // P.push_back(&v);
+
+    P.push_back(&P);
+
+    Trace *V = P[1];
+    V->Print();
 
     Trace Q("Q");
     Q.push_back(&v);

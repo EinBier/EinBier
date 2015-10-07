@@ -40,7 +40,7 @@ public:
     std::string getType();
 
     void extend(Trace*);
-    Trace* flatize();
+    Trace flatize();
     int compare(Trace*);
 
     bool operator==(Trace *t){return isComparable(t);}

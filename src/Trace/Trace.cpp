@@ -124,42 +124,38 @@ void Trace::extend(Trace *t)
     }
 }
 
-Trace* Trace::flatize()
+Trace Trace::flatize()
 {
-    Trace *tmp;
-
     if (isBlock()) {
         std::string name = m_name + "-flat";
-        tmp = new Trace(name);
+        Trace tmp(name);
 
         Trace *T;
         for (int i=0; i<getNumberOfTrace(); i++) {
             T = getTrace(i);
             if (T->isBlock()) {
-                for (int j=0; j<T->getNumberOfTrace(); j++) {
-                    tmp->extend(T->getTrace(j)->flatize());
-                }
+                Trace t = T->flatize();
+                tmp.extend(&t);
             } else {
-                tmp->push_back(getTrace(i));
+                tmp.extend(T);
             }
         }
+        return tmp;
     } else {
-        tmp = this;
+        return *this;
     }
-
-    return tmp;
 }
 
 bool Trace::isComparable(Trace *q)
 {
     if (isBlock() && q->isBlock()) {
-        Trace *T = this->flatize();
-        Trace *Q = q->flatize();
-        if (T->getNumberOfTrace() != Q->getNumberOfTrace()) {
+        Trace T = this->flatize();
+        Trace Q = q->flatize();
+        if (T.getNumberOfTrace() != Q.getNumberOfTrace()) {
             return false;
         } else {
-            for (int i=0;i<T->getNumberOfTrace();i++) {
-                if (T->getTrace(i) != Q->getTrace(i))
+            for (int i=0; i<T.getNumberOfTrace(); i++) {
+                if (T.getTrace(i) != Q.getTrace(i))
                     return false;
             }
         }

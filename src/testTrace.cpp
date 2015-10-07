@@ -70,20 +70,41 @@ int main(int argc, char *argv[])
     MM.push_back(&M);
     MM.push_back(&a);
 
+    Message::Debug("u");
+    Trace UU = u.flatize();
+    UU.Print();
+
+    Message::Debug("Deb");
+
+
+    LL.Print();
 
     std::cout << std::endl;
-    Trace *ll = LL.flatize();
-    Trace *mm = MM.flatize();
+    Trace ll = LL.flatize();
+
+    std::cout << std::endl;
+
+    Trace mm = MM.flatize();
     std::cout << std::endl;
     LL.Print();
-    ll->Print();
-    mm->Print();
+    Message::Debug("kikool!!");
+    ll.Print();
+    Message::Debug("end!!");
+
+    mm.Print();
 
     std::cout << std::endl;
-    std::cout << "2= " << ll->compare(mm) << std::endl;
+    std::cout << "2= " << ll.compare(&mm) << std::endl;
     std::cout << "3= " << LL.compare(&MM) << std::endl;
 
 
+    Trace R("R");
+    R += &LL;
+    R += &u;
+    R += &MM;
+    R.Print();
+    Trace rr = R.flatize();
+    rr.Print();
 
 
 

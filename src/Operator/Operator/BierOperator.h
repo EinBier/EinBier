@@ -12,6 +12,9 @@ class BierOperator : public Bier {
 
     class Node;
 
+protected:
+    std::string m_name;
+
 private:
     Trace* m_test;
     Trace* m_trial;
@@ -36,7 +39,7 @@ public:
     static std::string BINARY;
 
 
-    BierOperator();
+    BierOperator(std::string name = "default");
     ~BierOperator();
 
     void Print();

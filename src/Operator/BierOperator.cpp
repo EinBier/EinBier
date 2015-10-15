@@ -7,7 +7,10 @@
 
 #include <iostream>
 
-BierOperator::BierOperator() {
+BierOperator::BierOperator(std::string name) {
+
+    m_name = name,
+
     m_test = nullptr;
     m_trial = nullptr;
 
@@ -21,11 +24,11 @@ BierOperator::BierOperator() {
 BierOperator::~BierOperator() {
     if (m_del_test) {
         delete m_test;
-        Message::Info("Delete Test.");
+        Message::Info("Delete Trace test of %s.", m_name.c_str());
     }
     if (m_del_trial) {
         delete m_trial;
-        Message::Info("Delete Trial.");
+        Message::Info("Delete Trace trial of %s.", m_name.c_str());
     }
 }
 
@@ -37,29 +40,44 @@ void BierOperator::setTrace(Trace* test, Trace* trial) {
     if (trial == nullptr) {
         Message::Error("Trace Trial is not defined.");
     }
+
+    m_offset_test.resize(2);
     if (test->isBlock()) {
         m_test = new Trace("test");
         m_del_test = true;
         *m_test = test->flatize();
+        // NOTE:
+        //   m_test->getSize() calls flatize() then getNumberOfTrace()
+        //   therefore, let avoid an unnecessary call to flatize()
+        //   a bit less consuming
+        m_offset_test[1] = m_test->getNumberOfTrace();
     } else {
         m_test = test;
+        // NOTE: getSize() returns 1 without doing more
+        m_offset_test[1] = m_test->getSize();
     }
 
+    m_offset_trial.resize(2);
     if (trial->isBlock()) {
         m_trial = new Trace("trial");
         m_del_trial = true;
         *m_trial = trial->flatize();
+        m_offset_trial[1] = m_trial->getNumberOfTrace();
     } else {
         m_trial = trial;
+        m_offset_trial[1] = m_trial->getSize();
     }
-    // type = BELEM
 
+    // type = BELEM
 }
 
 void BierOperator::Print() {
-    Message::Info("BierOperator: %d", m_id);
-    Message::Info("       Size : %d x %d", getSize().get_row(), getSize().get_col());
-    Message::Info("       Shape : %d x %d", m_Shape.get_row(), m_Shape.get_col());
+    Shape size = getSize();
+
+    Message::Info("BierOperator: %s (aka: %d)", m_name.c_str(), m_id);
+    Message::Info("       Size : %d x %d", size[0], size[1]);
+    Message::Info("      Shape : %d x %d", m_Shape[0], m_Shape[1]);
+
     if(m_test != nullptr)
         m_test->Print();
     if(m_trial != nullptr)
@@ -68,12 +86,16 @@ void BierOperator::Print() {
 
 
 Shape BierOperator::getSize() {
-    Shape s;
-    if (m_test != nullptr)
-        s.set_row(m_test->getSize());
-    if (m_trial != nullptr)
-        s.set_col(m_trial->getSize());
-    return s;
+    int r=0 , c=0;
+    if (m_test != nullptr) {
+        int L = m_offset_test.size() - 1;
+        r = m_offset_test[L];
+    }
+    if (m_trial != nullptr) {
+        int L = m_offset_trial.size() - 1;
+        c = m_offset_trial[L];
+    }
+    return Shape(r, c);
 }
 
 Shape BierOperator::getShape() {
@@ -81,7 +103,7 @@ Shape BierOperator::getShape() {
 }
 
 Trace BierOperator::getSubTrace(Trace* t, int i, std::vector<int> offset) {
-    Trace tmp;
+    Trace tmp("tmp-SubTrace");
     if (i<offset.size()) {
         int ii = offset[i];
         int nelem = offset[i+1] - offset[i];
@@ -105,8 +127,8 @@ void BierOperator::setBlock(int i, int j, BierOperator *A) {
 
     Shape s = A->getSize();
 
-    Trace test = getSubTrace(m_test, s.get_row(), m_offset_test);
-    Trace trial = getSubTrace(m_trial, s.get_col(), m_offset_trial);
+    Trace test = getSubTrace(m_test, s[0], m_offset_test);
+    Trace trial = getSubTrace(m_trial, s[1], m_offset_trial);
 
     bool check_test = true;
     bool check_trial = true;
@@ -122,35 +144,53 @@ void BierOperator::setBlock(int i, int j, BierOperator *A) {
 
     if (!check_test || !check_trial) {
         Message::Error("Block badly sized.");
+        int r = test.getNumberOfTrace();
+        int c = trial.getNumberOfTrace();
+        Message::Error(" size(Input)= %dx%d != %dx%d =size(Acceptable)",
+                       s[0], s[1], r, c);
         return;
     }
 
     if (i >= m_offset_test.size()-1) {
-        m_offset_test.resize(i+1, 0);
-        for(int k=i+1; k<m_offset_test.size(); k++)
-            m_offset_test[k] += A->getSize().get_row();
+        int L = m_offset_test.size() - 1;
+        m_offset_test.resize(i+2, m_offset_test[L]);
+
+        int r = A->getSize()[0];
+        L = m_offset_test.size() - 1;
+        for(int k=i+1; k<=L; k++)
+            m_offset_test[k] += r;
+        m_Shape.set_row(i+1);
     }
     if (j >= m_offset_trial.size()-1) {
-        m_offset_trial.resize(i+1, 0);
-        for(int k=i+1; k<m_offset_trial.size(); k++)
-            m_offset_trial[k] += A->getSize().get_col();
+        int L = m_offset_trial.size() - 1;
+        m_offset_trial.resize(i+2, m_offset_trial[L]);
+
+        int r = A->getSize()[0];
+        L = m_offset_trial.size() - 1;
+        for(int k=i+1; k<=L; k++)
+            m_offset_trial[k] += r;
+        m_Shape.set_col(i+1);
     }
+
+    Shape sizeA = A->getSize();
 
     Trace *testA = A->getTraceTest();
     if (testA->isBlock()) {
-        for (int k=A->getSize().get_row()-1; k>0; k--) {
-            m_test->insert(m_offset_test[i], testA->getTrace(j));
+        for (int k=sizeA[0]-1; k>=0; k--) {
+            m_test->insert(m_offset_test[i], testA->getTrace(k));
         }
     } else {
         m_test->insert(m_offset_test[i], testA);
     }
+
     Trace *trialA = A->getTraceTrial();
     if (trialA->isBlock()) {
-        for (int k=A->getSize().get_row()-1; k>0; k--) {
-            m_trial->insert(m_offset_trial[i], trialA->getTrace(j));
+        for (int k=sizeA[1]-1; k>=0; k--) {
+            m_trial->insert(m_offset_trial[i], trialA->getTrace(k));
         }
     } else {
         m_trial->insert(m_offset_trial[i], trialA);
     }
 
+    Message::Debug("(BierOperator) bye.");
 }

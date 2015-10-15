@@ -40,3 +40,7 @@ target_link_libraries(testTrace ${TARGET_LINK_LIB})
 add_executable(testBier
 testBier.cpp)
 target_link_libraries(testBier ${TARGET_LINK_LIB})
+
+add_executable(testBierOp
+testBierOp.cpp)
+target_link_libraries(testBierOp ${TARGET_LINK_LIB})

@@ -210,8 +210,8 @@ int Trace::compare(Trace *t)
 }
 
 int Trace::getSize() {
-    Trace t = flatize();
     if (isBlock()) {
+        Trace t = flatize();
         return t.getNumberOfTrace();
     } else {
         return 1;

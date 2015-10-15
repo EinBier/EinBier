@@ -18,9 +18,8 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake-modules/ )
 project(EinBier CXX C)
 # ==============
 
-if(CMAKE_COMPILER_IS_GNUCXX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif(CMAKE_COMPILER_IS_GNUCXX)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 
 #should be mandatory ?
 option(ENABLE_PETSC "Compile with PETSc (Mat/Vec+LinSol)" ON)

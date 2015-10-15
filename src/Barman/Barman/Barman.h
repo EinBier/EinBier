@@ -1,104 +1,100 @@
 #pragma once
 
-#include<Common/Message.h>
-
-#include<Operator/CoreOperator.h> // for the delete
-
 #include<string>
 #include <map>
 #include <list>
 
-/*class Barman
-The Barman is the boss: he manages every CoreOperator.
-Whenever an CoreOperator is created, it is recorded by the Barman
-The Barman can also kick every CoreOperator he wants
-Before closing a program, do not forget do clean the tavern by calling Barman::Clear();
-Note: Barman is not instanciable. He is everywhere. No need to create him.
- */
+#include<Common/Message.h>
+#include<Barman/Bier.h>
+
 
 class Barman
 {
-// This is the container of an CoreOperator in the handler
-public:
-    struct element {
-        CoreOperator* m__ptr;   // pointer to the CoreOperator
-        int m__id;          // id of the CoreOperator
-	bool m__delete_ptr; // false if this element must NOT destroy the associated CoreOperator
-        int m__pointing;    // number of objects pointing at this operator
-	
-        // constructor
-    element():element(nullptr, -1, false){}
-    element(CoreOperator *ptr, int id, bool delete_ptr):
-	m__ptr(pr), m__id(id), m__delete_ptr(delete_ptr), m__pointing(1) {}
-	
-        // destructor
-        ~element() { if(m__delete_ptr) {delete m__ptr;} }
-        // copy constructor (useless I think)
-        element(const element& rhs) {
-            m__ptr = rhs.m__ptr;
-            m__id = rhs.m__id;
-            m__delete_ptr = rhs.m__delete_ptr;
-	    m__pointing = rhs.m__pointing;
-        }
-	
-        // overload the == operator (according to the id)
-        bool operator==(const element& rhs) const {
-            return (m__id == rhs.m__id);
-        }
-	
-        // overload the < operator (according to the id)
-        bool operator<(const element& rhs) const {
-            return (m__id < rhs.m__id);
-        }
-	
-        // copy operator
-        element& operator=(const element& rhs) {
-            m__ptr = rhs.m__ptr;
-            m__id = rhs.m__id;
-            m__pointing = rhs.m__pointing;
-            return *this;
-        }
-	    
-	//Reduce the number of pointing of 1 and return the number of pointing
-	    int DecreaseNumberOfPointing(){m__pointing--; return m__pointing;}
+    class Element;
 
-	void Print(){
-	    Message::Debug("Printing Element");
-	    Message::Info("m__ptr         = %p", m__ptr);
-	    Message::Info("m__id          = %d", m__id);
-	    Message::Info("m__delete_ptr  = %d", m__delete_ptr);
-	}
-    };
-    
 private:
     static int m_max_id;
-    /**@brief contains all the instances of the element objects (pointers to CoreOperator) */
-    static std::list<element> m_list_of_element;
-    static std::map<int, element*> m_id_to_element;
-    static std::map<element*, int> m_element_to_id; //For reverse search (works ??)
+    /**@brief contains all the instances of the element objects (pointers to Bier) */
+    static std::list<Element> m_list_of_element;
+    static std::map<int, Element*> m_id_to_element;
 
-// Remove a CoreOperator in the Barman. Warning, this DESTROYS the CoreOperator.
+
+// Remove a Bier in the Barman. Warning, this DESTROYS the Bier.
 // Return 0 (ok) or 1 (error)
-//    static int removeCoreOperator(int op_id);
-//    static int removeCoreOperator(CoreOperator *op_ptr);
+//    static int removeBier(int op_id);
+//    static int removeBier(Bier *op_ptr);
 
 public:
     Barman(){}
     ~Barman(){}
     static void Init();
     static void Clear();
-// Add an CoreOperator to the Barman.
+// Add an Bier to the Barman.
 // Return the id of the operator (will be set to the operator)
 // destroyIt precises whether the Barman must destroy it or not
-    static int CreateCoreOperator(CoreOperator *op, int row, int col);
-//Return the id of an CoreOperator (in fact, its pointer)
+//Return the id of an Bier (in fact, its pointer)
 //return -1 if not found
-    static int getIdOfCoreOperator(CoreOperator *op);
-//Return the pointer to CoreOperator
-    static CoreOperator* get_CoreOperator_ptr(int id);
-//Check if an operator already exist (in fact, check the pointers!!)
-    static bool doesCoreOperatorExists(CoreOperator *op);
+    static int getIdOfBier(Bier *op);
+    static Bier* get_Bier_ptr(int id);
+    static bool doesBierExists(Bier *op);
     static void Print();
+    static int addBier(Bier*, bool);
+
 
     int DecreaseNumberOfPointing(int id);
 };
+
+
+class Barman::Element {
+    public:
+        Bier* m_ptr;   // pointer to the Bier
+        int m_id;          // id of the Bier
+        bool m_delete_ptr; // false if this element must NOT destroy the associated Bier
+        int m_pointing;    // number of objects pointing at this operator
+
+        // constructor
+    Element():Element(nullptr, -1, false) {}
+    Element(Bier *b):Element(b, -1, false) {}
+    Element(Bier *b, int id):Element(b, id, false) {}
+    Element(Bier *ptr, int id, bool delete_ptr):
+        m_ptr(ptr), m_id(id), m_delete_ptr(delete_ptr), m_pointing(1) {}
+
+        // destructor
+        ~Element() { if(m_delete_ptr) {delete m_ptr;} }
+        // copy constructor (useless I think)
+        Element(const Element& rhs) {
+            m_ptr = rhs.m_ptr;
+            m_id = rhs.m_id;
+            m_delete_ptr = rhs.m_delete_ptr;
+            m_pointing = rhs.m_pointing;
+        }
+
+        // overload the == operator (according to the id)
+        bool operator==(const Element& rhs) const {
+            return (m_id == rhs.m_id);
+        }
+
+        // overload the < operator (according to the id)
+        bool operator<(const Element& rhs) const {
+            return (m_id < rhs.m_id);
+        }
+
+        // copy operator
+        Element& operator=(const Element& rhs) {
+            m_ptr = rhs.m_ptr;
+            m_id = rhs.m_id;
+            m_pointing = rhs.m_pointing;
+            return *this;
+        }
+
+        //Reduce the number of pointing of 1 and return the number of pointing
+        int DecreaseNumberOfPointing(){m_pointing--; return m_pointing;}
+
+        void Print(){
+            Message::Debug("Printing Element");
+            Message::Info("m_ptr         = %p", m_ptr);
+            Message::Info("m_id          = %d", m_id);
+            Message::Info("m_delete_ptr  = %d", m_delete_ptr);
+        }
+    };
+

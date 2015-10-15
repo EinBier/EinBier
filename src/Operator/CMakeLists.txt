@@ -3,10 +3,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Common)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Trace)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Operator)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Barman)
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Barman)
 
 add_library(Operator
-Operator.cpp
 BierOperator.cpp)
 
 target_link_libraries (Operator Common Trace ${PETSC_LIBRARIES})

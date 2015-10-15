@@ -94,6 +94,14 @@ void Trace::push_back(Trace* t)
     m_traces.push_back(t);
 }
 
+void Trace::insert(int i, Trace* t)
+{
+    std::vector<Trace*>::iterator it = m_traces.begin();
+    it +=i;
+    m_traces.insert(it, t);
+}
+
+
 Trace* Trace::getTrace(int i)
 {
     if (i < getNumberOfTrace()) {
@@ -200,3 +208,13 @@ int Trace::compare(Trace *t)
         }
     }
 }
+
+int Trace::getSize() {
+    Trace t = flatize();
+    if (isBlock()) {
+        return t.getNumberOfTrace();
+    } else {
+        return 1;
+    }
+}
+

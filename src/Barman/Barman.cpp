@@ -39,7 +39,7 @@ int Barman::getIdOfBier(Bier *op)
     //Find the Element in the list
     std::list<Barman::Element>::iterator it_find;
     it_find = std::find(m_list_of_element.begin(), m_list_of_element.end(), el);
-    if(it_find != m_list_of_element.end())
+    if (it_find != m_list_of_element.end())
         return it_find->m_id;
     else
         return -1;
@@ -47,13 +47,12 @@ int Barman::getIdOfBier(Bier *op)
 
 Bier* Barman::get_Bier_ptr(int id)
 {
-    if ( m_id_to_element.find(id) == m_id_to_element.end() )
-	return nullptr;
-    else
-    {
-	Barman::Element *el = nullptr;
-	el = m_id_to_element[id];
-	return el->m_ptr;
+    if (m_id_to_element.find(id) == m_id_to_element.end()) {
+        return nullptr;
+    } else {
+        Barman::Element *el = nullptr;
+        el = m_id_to_element[id];
+        return el->m_ptr;
     }
 }
 
@@ -126,16 +125,15 @@ int Barman::DecreaseNumberOfPointing(int op_id)
                        m_list_of_element.end(),
                        *(map_find->second));
         if (it_find == m_list_of_element.end()) {
-        Message::Info("Barman: I do not find this guy: %d", op_id);
+            Message::Info("Barman: I do not find this guy: %d", op_id);
             return -2;
         }
-	int nPointer = it_find->DecreaseNumberOfPointing();
-	if( nPointer == 0)
-	{
-	    m_list_of_element.erase(it_find);
-	    m_id_to_element.erase(map_find);
-	    Message::Info("Barman: I kicked this guy: %d", op_id);
-	}
+        int nPointer = it_find->DecreaseNumberOfPointing();
+        if (nPointer == 0) {
+            m_list_of_element.erase(it_find);
+            m_id_to_element.erase(map_find);
+            Message::Info("Barman: I kicked this guy: %d", op_id);
+        }
         return nPointer;
     }
     Message::Info("Barman: I do not find this guy: %d", op_id);
@@ -146,15 +144,13 @@ int Barman::DecreaseNumberOfPointing(int op_id)
 void Barman::Print()
 {
     int n_operator = m_list_of_element.size();
-    if(n_operator == 0)
-	Message::Info("The tavern is empty!");
-    else
-    {
-	Message::Info("Clients in the tavern:");
-	for(std::map < int, Barman::Element* >::const_iterator it = m_id_to_element.begin();
-	    it != m_id_to_element.end(); ++it)
-	{
-	    Message::Info("Map(id,ptr,bool):%d %p %d",it->first, it->second->m_ptr, it->second->m_delete_ptr);
-	}
+    if (n_operator == 0) {
+        Message::Info("The tavern is empty!");
+    } else {
+        Message::Info("Clients in the tavern:");
+        for (std::map<int, Barman::Element*>::const_iterator it = m_id_to_element.begin();
+             it != m_id_to_element.end(); ++it) {
+            Message::Info("Map(id,ptr,bool):%d %p %d",it->first, it->second->m_ptr, it->second->m_delete_ptr);
+        }
     }
 }

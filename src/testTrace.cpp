@@ -33,11 +33,13 @@ int main(int argc, char *argv[])
     PetscErrorCode ierr;
 #endif
 
+    Message::setDebug();
     Trace a("a");
 
     Trace u("u");
     Trace v("v");
     Trace w("w");
+    Message::unsetDebug();
 
     Trace P("P");
     P += &u;
@@ -69,6 +71,8 @@ int main(int argc, char *argv[])
     Trace MM("MM");
     MM.push_back(&M);
     MM.push_back(&a);
+
+    Message::setDebug();
 
     Message::Debug("u");
     Trace UU = u.flatize();

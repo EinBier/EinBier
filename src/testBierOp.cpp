@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
     PetscErrorCode ierr;
 #endif
 
+    Message::setDebug();
     Barman::Init();
 
     Bier WhyWithoutIsItNotWorking;

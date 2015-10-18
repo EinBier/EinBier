@@ -19,17 +19,20 @@ BierOperator::BierOperator(std::string name) {
 
     m_offset_test.resize(1, 0);
     m_offset_trial.resize(1, 0);
+
+    Message::Debug("BierOperator %s {aka: %d} (initialized)", m_name.c_str(), m_id);
 }
 
 BierOperator::~BierOperator() {
     if (m_del_test) {
         delete m_test;
-        Message::Info("Delete Trace test of %s.", m_name.c_str());
+        Message::Debug("BierOperator %s Trace test deleted", m_name.c_str());
     }
     if (m_del_trial) {
         delete m_trial;
-        Message::Info("Delete Trace trial of %s.", m_name.c_str());
+        Message::Debug("BierOperator %s Trace trial deleted", m_name.c_str());
     }
+    Message::Debug("BierOperator %s (destroyed)", m_name.c_str());
 }
 
 
@@ -74,7 +77,7 @@ void BierOperator::setTrace(Trace* test, Trace* trial) {
 void BierOperator::Print() {
     Shape size = getSize();
 
-    Message::Info("BierOperator: %s (aka: %d)", m_name.c_str(), m_id);
+    Message::Info("BierOperator: %s {aka: %d}", m_name.c_str(), m_id);
     Message::Info("       Size : %d x %d", size[0], size[1]);
     Message::Info("      Shape : %d x %d", m_Shape[0], m_Shape[1]);
 
@@ -191,6 +194,4 @@ void BierOperator::setBlock(int i, int j, BierOperator *A) {
     } else {
         m_trial->insert(m_offset_trial[i], trialA);
     }
-
-    Message::Debug("(BierOperator) bye.");
 }

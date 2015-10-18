@@ -12,7 +12,7 @@ Trace::Trace(std::string name)
     m_geo = nullptr;
     m_method = -1;
     m_traces.resize(0);
-    std::cout << "Trace " << name << " is initialized." << std::endl;
+    Message::Debug("Trace %s (initialized)", name.c_str());
 }
 
 Trace::Trace(std::string name, Geometry* geo) : Trace(name)
@@ -23,6 +23,11 @@ Trace::Trace(std::string name, Geometry* geo) : Trace(name)
 Trace::Trace(std::string name, Geometry* geo, int method) : Trace(name, geo)
 {
     m_method = method;
+}
+
+Trace::~Trace()
+{
+    Message::Debug("Trace %s (destroyed)", m_name.c_str());
 }
 
 bool Trace::isBlock()
@@ -56,29 +61,29 @@ std::string Trace::getType()
 void Trace::Print(bool isRoot)
 {
     if (isRoot) {
-        std::cout << "Trace: " << m_name << std::endl;
-        std::cout << "\tGeometry: " << m_geo << std::endl;
-        std::cout << "\tMethod: " << m_method << std::endl;
-        std::cout << "\tType: " << getType() << std::endl;
-        std::cout << m_name << " = ";
+        Message::Info("Trace: %s", m_name.c_str());
+        Message::Info("    Geometry: %s", m_geo);
+        Message::Info("    Method  : %d", m_method);
+        Message::Info("    Type    : %s", getType().c_str());
+        Message::Print("%s = ", m_name.c_str());
     }
     if (isBlock()) {
         std::cout<<"[";
         for (int i=0; i<getNumberOfTrace(); i ++) {
             getTrace(i)->Print(false);
             if(i < getNumberOfTrace()-1)
-                std::cout << ", ";
+                Message::Print(0, ", ");
         }
-        std::cout << "]";
+        Message::Print(0, "]");
     } else {
         if (!isDefined())
-            std::cout << "~";
+            Message::Print(0, "~");
         std::cout << m_name ;
         if (isRoot)
-            std::cout << " -- obvious, right ? :-)";
+            Message::Print(0, " -- obvious, right ? :-)");
     }
     if (isRoot)
-        std::cout << std::endl;
+        Message::Print(0, "\n");
 }
 
 

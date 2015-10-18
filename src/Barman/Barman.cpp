@@ -17,13 +17,14 @@ std::map<int, Barman::Element*> Barman::m_id_to_element;
 //Function quite useless, now...
 void Barman::Init()
 {
-    Message::Info("Welcome to the tavern, Bro'!");
+    Message::Debug("Welcome to the tavern: barman initialized.");
 }
 
 void Barman::Clear()
 {
     m_id_to_element.clear();
     m_list_of_element.clear();
+    Message::Debug("Barman says 'All the Biers are cleared'.");
 }
 
 
@@ -62,7 +63,7 @@ int Barman::addBier(Bier* b, bool in_charge) {
     Barman::Element new_elem(b, id, in_charge);
     m_list_of_element.insert(m_list_of_element.end(), new_elem);
     m_id_to_element[id] = &(m_list_of_element.back());
-    Message::Info("Barman: I successfully created this guy: %d [%p]", id, b);
+    Message::Debug("Barman says 'Bier %d added'.", id, b);
     new_elem.m_delete_ptr = false; //otherwise, trouble
 
     return id;
@@ -125,18 +126,18 @@ int Barman::DecreaseNumberOfPointing(int op_id)
                        m_list_of_element.end(),
                        *(map_find->second));
         if (it_find == m_list_of_element.end()) {
-            Message::Info("Barman: I do not find this guy: %d", op_id);
+            Message::Debug("Barman says 'where is %d ?'", op_id);
             return -2;
         }
         int nPointer = it_find->DecreaseNumberOfPointing();
         if (nPointer == 0) {
             m_list_of_element.erase(it_find);
             m_id_to_element.erase(map_find);
-            Message::Info("Barman: I kicked this guy: %d", op_id);
+            Message::Debug("Barman says 'Bier %d is erased'.", op_id);
         }
         return nPointer;
     }
-    Message::Info("Barman: I do not find this guy: %d", op_id);
+    Message::Debug("Barman says 'where is %d ?'", op_id);
     return -1;
 }
 
@@ -145,12 +146,16 @@ void Barman::Print()
 {
     int n_operator = m_list_of_element.size();
     if (n_operator == 0) {
-        Message::Info("The tavern is empty!");
+        Message::Info("Barman says 'The tavern is empty!'");
     } else {
-        Message::Info("Clients in the tavern:");
+        Message::Info("Barman says 'Biers in the fridge...'");
+        Message::Print("  id:");
         for (std::map<int, Barman::Element*>::const_iterator it = m_id_to_element.begin();
              it != m_id_to_element.end(); ++it) {
-            Message::Info("Map(id,ptr,bool):%d %p %d",it->first, it->second->m_ptr, it->second->m_delete_ptr);
+            Message::Print(0, " %d", it->first);
+            if (it->second->m_delete_ptr)
+                Message::Print(0, ":(in charge)");
         }
+        Message::Print(0, "\n");
     }
 }

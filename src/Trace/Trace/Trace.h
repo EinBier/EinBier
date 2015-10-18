@@ -26,6 +26,8 @@ public:
     Trace(std::string name, Geometry* geo);
     Trace(std::string name, Geometry* geo, int method);
 
+    ~Trace();
+
     int getNumberOfTrace(){return m_traces.size();}
     void Print(bool isRoot = true);
 

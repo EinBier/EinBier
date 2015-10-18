@@ -29,11 +29,14 @@ int Message::m_verbosity = 4;
 int Message::m_myRank = 0;
 int Message::m_nb_proc = 1;
 int Message::m_nb_threads = 1;
+bool Message::m_debug = false;
+
 //PARAMETERS
 //==============
 //-------
 void Message::Initialize(int argc, char *argv[])
 {
+
 #if defined(HAVE_MPI)
     MPI_Init(&argc, &argv);
     //MPI_Init(&argc, &argv);
@@ -42,10 +45,12 @@ void Message::Initialize(int argc, char *argv[])
     if(m_myRank == 0)
         Message::Info("Launched with MPI (%d processes)", m_nb_proc);
 #endif
+
 #if defined(HAVE_PETSC)
     PetscInitialize(&argc, &argv, PETSC_NULL, PETSC_NULL);
     Message::InfoRoot("Launched with PETSc (%d processes)", m_nb_proc);
 #endif
+
 #if defined(HAVE_OMP)
 #pragma omp parallel
     {
@@ -53,6 +58,10 @@ void Message::Initialize(int argc, char *argv[])
     }
     Message::Info("Launched with OpenMP (%d threads)", m_nb_threads);
 #endif
+
+    // Not sure that this parsing should be here ?
+    // because it is not about Message, isn't it ?
+    //
     //Parsing eventual options...
     int i = 1;
     bool showHelp = 0;
@@ -64,7 +73,7 @@ void Message::Initialize(int argc, char *argv[])
             } else if (!strcmp(argv[i] + 1, "v")) {
                 m_verbosity = atoi(argv[i+1]);
                 i += 2;
-                Message::InfoRoot("Verbosity set to: %d",m_verbosity);
+                Message::InfoRoot("Verbosity set to: %d", m_verbosity);
             } else {
                 Warning("What the hell is this option (skipped) ? (%s)", argv[i] + 1);
                 i++;
@@ -80,6 +89,49 @@ void Message::Initialize(int argc, char *argv[])
         Message::Finalize(EXIT_SUCCESS);
     }
 }
+
+void Message::Print(const char *format, ...)
+{
+    char str[1024];
+    va_list args;
+    va_start (args, format);
+    vsnprintf (str, 1024, format, args);
+    va_end (args);
+    Print(1, 0, str);
+}
+void Message::Print(int withInfo, const char *format, ...)
+{
+    char str[1024];
+    va_list args;
+    va_start (args, format);
+    vsnprintf (str, 1024, format, args);
+    va_end (args);
+    Print(withInfo, 0, str);
+}
+//with verbosity
+void Message::Print(int withInfo, int level, const char *format, ...)
+{
+    if (level > m_verbosity)
+        return;
+    char str[1024];
+    va_list args;
+    va_start (args, format);
+    vsnprintf (str, 1024, format, args);
+    va_end (args);
+#if defined (HAVE_MPI)
+    if (withInfo)
+        fprintf(stdout, "Info[%d] : %s", m_myRank, str);
+    else
+        fprintf(stdout, "[%d]: %s", m_myRank, str);
+#else
+    if (withInfo)
+        fprintf(stdout, "Info : %s", str);
+    else
+        fprintf(stdout, "%s", str);
+#endif
+    return;
+}
+
 
 //Info...
 void Message::Info(const char *format, ...)
@@ -204,6 +256,8 @@ void Message::Debug(const char *format, ...)
 
 void Message::Debug(int level, const char *format, ...)
 {
+    if (!m_debug)
+        return;
     if (level > m_verbosity)
         return;
     char str[1024];

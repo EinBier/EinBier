@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 class Shape {
 
 private:
@@ -45,9 +47,11 @@ public:
             return get_row();
         else if (i == 1)
             return get_col();
-        else
+        else {
+            std::runtime_error("Ouch!");
             return -42;
         // WARNING: nothing to prevent it is wrong. Add Message:: ?
+        }
     }
 
 };

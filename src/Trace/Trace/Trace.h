@@ -50,7 +50,7 @@ public:
     int getSize();
 
     bool operator==(Trace *t){return isComparable(t);}
+    bool operator!=(Trace *t){return !isComparable(t);}
     void operator+=(Trace *t){push_back(t);}
-    Trace* operator[](int i){getTrace(i);}
+    Trace* operator[](int i){return getTrace(i);}
 };
-

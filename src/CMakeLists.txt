@@ -44,3 +44,7 @@ target_link_libraries(testBier ${TARGET_LINK_LIB})
 add_executable(testBierOp
 testBierOp.cpp)
 target_link_libraries(testBierOp ${TARGET_LINK_LIB})
+
+add_executable(testNode
+testNode.cpp)
+target_link_libraries(testNode ${TARGET_LINK_LIB})

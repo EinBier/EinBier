@@ -7,15 +7,58 @@
 #include<vector>
 #include<string>
 
+class BNode {
+
+private:
+
+    // "", "unary", "binary", "block"
+	std::string m_type;
+
+    // "", "+" "-" "*"
+	std::string m_operation;
+    int m_OpIdR;
+    int m_OpIdL;
+
+	//double should be changed to EinBierScalar
+    double m_scalar;
+
+    // Block
+    std::vector<int> m_OpIds;
+	std::vector<Shape> m_indices;
+
+
+public:
+    BNode();
+
+	void reset();
+
+    std::string getType() {return m_type;}
+
+    // Binary: A+B or A-B
+    void set(int OpIdL, std::string operation, int OpIdR);
+
+    // Scalar: 2*A or A*2
+    void set(double scalar, int OpIdR);
+
+    // Unary: -A or +A
+    void set(std::string operation, int OpId);
+
+    // Block
+    void set(int row, int col, int OpId);
+    int getBlock(int i, int j);
+};
+
+///////////////////////////////////////////
+// ************************************* //
+///////////////////////////////////////////
 
 class BierOperator : public Bier {
-
-    class Node;
 
 protected:
     std::string m_name;
 
 private:
+    BNode m_node;
     Trace* m_test;
     Trace* m_trial;
 
@@ -38,8 +81,7 @@ public:
     static std::string UNARY;
     static std::string BINARY;
 
-
-    BierOperator(std::string name = "default");
+    BierOperator(std::string name = "default", bool in_charge = false);
     ~BierOperator();
 
     void Print();
@@ -56,4 +98,5 @@ public:
     Shape getShape();
     Shape getSize();
 
+    BNode* getNode() {return &m_node;}
 };

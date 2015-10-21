@@ -13,4 +13,5 @@ protected:
 public:
     virtual ~Bier();
     Bier(bool in_charge = false);
+    int getId(){return m_id;}
 };

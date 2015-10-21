@@ -3,16 +3,30 @@
 #include<vector>
 #include<string>
 
-class Operator
-{
+#include <Trace/Trace.h>
+#include <Operator/BierOperator.h>
+
+
+class Operator {
+
 private:
-    int m_id; // The id of the pointed CoreOperator
+    int m_id;
+
 public:
-//Should be :
-//    explicit Operator(Trace* dof, Trace* test);
-    explicit Operator();
-    explicit Operator(int row, int col);
-//    explicit Operator(const Operator &op);
+    Operator(std::string name = "default");
     ~Operator();
 
+    BierOperator* getBierOp();
+    void Print();
+
+    void setTrace(Trace*, Trace*);
+    void setBlock(int, int, Operator&);
+
+    Operator operator+();
+    Operator operator-();
+    Operator operator*(double scalar);
 };
+
+Operator operator*(double, Operator);
+Operator operator+(Operator, Operator);
+Operator operator-(Operator, Operator);

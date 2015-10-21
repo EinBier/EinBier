@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include<Common/Message.h>
 #include <Common/Shape.h>
 
@@ -5,9 +7,16 @@
 
 #include <Operator/BierOperator.h>
 
-#include <iostream>
+std::string BierOperator::ELEMENTARY = "elementary";
+std::string BierOperator::BLOCK = "block";
+std::string BierOperator::BELEM = "belem";
+std::string BierOperator::UNDEFINED = "undefined";
 
-BierOperator::BierOperator(std::string name) {
+std::string BierOperator::UNARY = "unary";
+std::string BierOperator::BINARY = "binary";
+
+
+BierOperator::BierOperator(std::string name, bool in_charge) : Bier(in_charge) {
 
     m_name = name,
 
@@ -80,11 +89,23 @@ void BierOperator::Print() {
     Message::Info("BierOperator: %s {aka: %d}", m_name.c_str(), m_id);
     Message::Info("       Size : %d x %d", size[0], size[1]);
     Message::Info("      Shape : %d x %d", m_Shape[0], m_Shape[1]);
+    Message::Info("       Type : %s", m_node.getType().c_str());
 
     if(m_test != nullptr)
         m_test->Print();
     if(m_trial != nullptr)
         m_trial->Print();
+
+    if (m_node.getType() == BierOperator::BLOCK) {
+        for (int i=0; i<m_Shape[0]; i++) {
+            Message::Print(" [ ");
+            for (int j=0; j<m_Shape[1]; j++) {
+                int id = m_node.getBlock(i, j);
+                Message::Print(0, " %d ", id);
+            }
+            Message::Print(0, " ] \n");
+        }
+    }
 }
 
 
@@ -154,6 +175,10 @@ void BierOperator::setBlock(int i, int j, BierOperator *A) {
         return;
     }
 
+    // Block accepted !!
+
+    m_node.set(i, j, A->getId());
+
     if (i >= m_offset_test.size()-1) {
         int L = m_offset_test.size() - 1;
         m_offset_test.resize(i+2, m_offset_test[L]);
@@ -194,4 +219,85 @@ void BierOperator::setBlock(int i, int j, BierOperator *A) {
     } else {
         m_trial->insert(m_offset_trial[i], trialA);
     }
+}
+
+
+
+
+
+///////////////////////////////////////////
+// ************************************* //
+///////////////////////////////////////////
+
+BNode::BNode() {
+    reset();
+}
+
+void BNode::reset(){
+    m_type = BierOperator::UNDEFINED;
+
+    m_operation = "";
+    m_OpIdR = -1;
+    m_OpIdL = -1;
+
+    m_scalar = 0.;
+
+    m_OpIds.resize(0);
+    m_indices.resize(0);
+}
+
+
+// Binary: A+B or A-B
+void BNode::set(int OpIdL, std::string operation, int OpIdR) {
+    if (operation != "+" && operation != "-") {
+        Message::Error("Operation not supported.");
+        return;
+    }
+    reset();
+    m_type =  BierOperator::BINARY;
+    m_operation = operation;
+    m_OpIdL = OpIdL;
+    m_OpIdR = OpIdR;
+}
+
+// Scalar: 2*A or A*2
+void BNode::set(double scalar, int OpIdR) {
+    reset();
+    m_type =  BierOperator::UNARY;
+    m_operation = "*";
+    m_OpIdR = OpIdR;
+    m_scalar = scalar;
+}
+
+
+// Unary: -A or +A
+void BNode::set(std::string operation, int OpId) {
+    if (operation != "+" && operation != "-") {
+        Message::Error("Operation not supported.");
+        return;
+    }
+    reset();
+    m_type =  BierOperator::UNARY;
+    m_operation = operation;
+    m_OpIdR = OpId;
+}
+
+// Block
+void BNode::set(int row, int col, int OpId) {
+    if (m_type !=  BierOperator::UNDEFINED && m_type !=  BierOperator::BLOCK) {
+        Message::Error("Incompatible type.");
+        return;
+    }
+    m_type =  BierOperator::BLOCK;
+    m_OpIds.push_back(OpId);
+    m_indices.push_back(Shape(row, col));
+}
+
+int BNode::getBlock(int i, int j) {
+    Shape ij(i, j);
+    for (int ii=0; ii<m_OpIds.size(); ii++) {
+        if (ij == m_indices[ii])
+            return m_OpIds[ii];
+    }
+    return -1;
 }

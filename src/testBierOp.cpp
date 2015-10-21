@@ -34,8 +34,6 @@ int main(int argc, char *argv[])
     Message::setDebug();
     Barman::Init();
 
-    Bier WhyWithoutIsItNotWorking;
-
     BierOperator A("A");
     A.Print();
     Message::Info("--");

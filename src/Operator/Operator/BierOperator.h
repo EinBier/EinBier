@@ -3,6 +3,7 @@
 #include<Common/Shape.h>
 #include<Barman/Bier.h>
 #include<Trace/Trace.h>
+#include<Matrix/Matrix.h>
 
 #include<vector>
 #include<string>
@@ -71,6 +72,8 @@ private:
 
     bool m_del_test;
     bool m_del_trial;
+
+    Matrix *m_mat;
 
 public:
     static std::string ELEMENTARY;

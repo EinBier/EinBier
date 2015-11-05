@@ -11,7 +11,7 @@
 #include <math.h>
 #include <algorithm> //for remove_if, isspace
 
-#include <Common/Message.h>1
+#include <Common/Message.h>
 
 #if defined(HAVE_PETSC)
 #include <petsc.h>

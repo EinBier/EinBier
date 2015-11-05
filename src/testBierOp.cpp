@@ -8,6 +8,7 @@
 #include <Barman/Bier.h>
 
 #include <Operator/BierOperator.h>
+#include <Operator/Operator.h>
 #include <Trace/Trace.h>
 
 #if defined(HAVE_MPI)
@@ -59,6 +60,12 @@ int main(int argc, char *argv[])
     C.Print();
 
     C.setBlock(0,1,&A);
+
+    Operator a, b, c, d;
+    c = a + b;
+
+    a.setTrace(&u, &u);
+    d = a + c;
 
 
     Message::Info("###END");

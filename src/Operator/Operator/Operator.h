@@ -25,6 +25,8 @@ public:
     Operator operator+();
     Operator operator-();
     Operator operator*(double scalar);
+
+    void assemble();
 };
 
 Operator operator*(double, Operator);

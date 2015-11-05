@@ -39,6 +39,10 @@ void Operator::Print() {
 void Operator::setTrace(Trace* u, Trace* v) {
     BierOperator *b = getBierOp();
     b->setTrace(u, v);
+
+    if ( (!u->isBlock() && u->isDefined())
+         && (!v->isBlock() && v->isDefined()) )
+        b->getNode()->setElementary();
 }
 
 void Operator::setBlock(int i, int j, Operator& A) {
@@ -85,6 +89,15 @@ Operator operator+(Operator A, Operator B) {
     BierOperator *b = B.getBierOp();
     BierOperator *c = C.getBierOp();
 
+    if (a->getTraceTest() == nullptr) {
+        Message::Warning("Trace Test is not initialized. (at least)");
+        return C;
+    }
+    if (a->getTraceTrial() == nullptr) {
+        Message::Warning("Trace Trial is not initialized. ");
+        return C;
+    }
+
     if (*(a->getTraceTest()) != b->getTraceTest()
         || *(a->getTraceTrial()) != b->getTraceTrial()) {
         Message::Error("Incompatible Traces");
@@ -112,4 +125,10 @@ Operator operator-(Operator A, Operator B) {
     c->getNode()->set(a->getId(), "-", b->getId());
     c->setTrace(a->getTraceTest(), a->getTraceTrial());
     return  C;
+}
+
+void Operator::assemble() {
+    Message::Debug("Operator assembling...");
+    BierOperator *b = getBierOp();
+    b->assemble();
 }

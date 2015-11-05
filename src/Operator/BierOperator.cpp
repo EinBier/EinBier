@@ -7,6 +7,11 @@
 
 #include <Operator/BierOperator.h>
 
+#include <Matrix/Matrix.h>
+#include <Barman/Barman.h>
+
+//#include <petsc.h>
+
 std::string BierOperator::ELEMENTARY = "elementary";
 std::string BierOperator::BLOCK = "block";
 std::string BierOperator::BELEM = "belem";
@@ -29,6 +34,9 @@ BierOperator::BierOperator(std::string name, bool in_charge) : Bier(in_charge) {
     m_offset_test.resize(1, 0);
     m_offset_trial.resize(1, 0);
 
+    m_mat = nullptr;
+    m_isassemble = false;
+
     Message::Debug("BierOperator %s {aka: %d} (initialized)", m_name.c_str(), m_id);
 }
 
@@ -40,6 +48,10 @@ BierOperator::~BierOperator() {
     if (m_del_trial) {
         delete m_trial;
         Message::Debug("BierOperator %s Trace trial deleted", m_name.c_str());
+    }
+    if (m_mat != nullptr) {
+        delete m_mat;
+        Message::Debug("BierOperator %s Matrix deleted", m_name.c_str());
     }
     Message::Debug("BierOperator %s (destroyed)", m_name.c_str());
 }
@@ -233,7 +245,7 @@ BNode::BNode() {
     reset();
 }
 
-void BNode::reset(){
+void BNode::reset() {
     m_type = BierOperator::UNDEFINED;
 
     m_operation = "";
@@ -244,6 +256,11 @@ void BNode::reset(){
 
     m_OpIds.resize(0);
     m_indices.resize(0);
+}
+
+void  BNode::setElementary()
+{
+    m_type = BierOperator::ELEMENTARY;
 }
 
 
@@ -300,4 +317,78 @@ int BNode::getBlock(int i, int j) {
             return m_OpIds[ii];
     }
     return -1;
+}
+
+Scalar BierOperator::getValue(int i, int j)
+{
+    // i, j are local to this operator
+
+    if (m_mat != nullptr && m_isassemble)
+        return m_mat->getValue(i, j);
+
+    BNode *node = getNode();
+    std::string type = node->getType();
+
+    Message::Debug("BierOperator %s getValue type:%s", m_name.c_str(), type.c_str());
+
+    if (type == BierOperator::ELEMENTARY) {
+        Message::Debug("Computing %s", m_name.c_str());
+        return compute_tmp(i, j);
+    } else if (type == BierOperator::UNARY) {
+
+        std::string op = node->getOperation();
+        BierOperator *A = dynamic_cast<BierOperator*> (Barman::get_Bier_ptr(node->getOpIdR()));
+
+        if (op == "+")
+            return A->getValue(i, j);
+         else if (op == "-")
+             return -A->getValue(i, j);
+         else if (op == "*")
+             return node->getScalar() * A->getValue(i, j);
+
+
+    } else if (type == BierOperator::BINARY) {
+
+        std::string op = node->getOperation();
+        BierOperator *A = dynamic_cast<BierOperator*> (Barman::get_Bier_ptr(node->getOpIdR()));
+        BierOperator *B = dynamic_cast<BierOperator*> (Barman::get_Bier_ptr(node->getOpIdL()));
+
+        if (op == "+")
+            return A->getValue(i, j) + B->getValue(i, j);
+         else if (op == "-")
+            return A->getValue(i, j) - B->getValue(i, j);
+
+
+    } else
+        return 0.;
+}
+
+void BierOperator::assemble()
+{
+
+    Message::Debug("BierOperator %s assembling...", m_name.c_str());
+    int Row = 2;
+    Int Col = 2;
+    m_mat = new Matrix;
+    m_mat->setSize(Row, Col);
+    for (int i=0; i<Row; i++) {
+        for (int j=0; j<Col; j++) {
+            Scalar d = getValue(i, j);
+            m_mat->setValue(i, j, d);
+        }
+    }
+    m_mat->assemble();
+    m_isassemble = true;
+    Message::Debug("BierOperator %s assembled", m_name.c_str());
+    m_mat->Print();
+}
+
+
+
+Scalar compute_tmp(int i, int j)
+{
+    if (i == j)
+        return 1.;
+    else
+        return 0.;
 }

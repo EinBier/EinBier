@@ -16,7 +16,6 @@ protected:
 private:
     std::vector<Trace*> m_traces;
 
-    bool isDefined();
     bool isComparable(Trace*);
     bool isSameStructure(Trace*);
 
@@ -31,6 +30,7 @@ public:
     int getNumberOfTrace(){return m_traces.size();}
     void Print(bool isRoot = true);
 
+    bool isDefined();
     bool isBlock();
 
     void push_back(Trace* t);

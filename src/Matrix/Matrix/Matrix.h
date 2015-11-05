@@ -1,9 +1,10 @@
 #pragma once
 
+#include <Common/Type.h>
+
 #if defined(HAVE_PETSC)
 #include <petsc.h>
 #endif
-
 
 
 class Matrix
@@ -18,7 +19,9 @@ public:
     ~Matrix();
     Mat* getMat(){return &m_mat;}
     void setSize(int row, int col);
-    void setValue(int i, int j, double r);
+    void setValue(int i, int j, Scalar);
     void assemble();
     void Print();
+
+    Scalar getValue(int i, int j);
 };

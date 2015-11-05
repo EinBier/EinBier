@@ -1,8 +1,10 @@
 #pragma once
 
+#include<Common/Type.h>
 #include<Common/Shape.h>
 #include<Barman/Bier.h>
 #include<Trace/Trace.h>
+
 #include<Matrix/Matrix.h>
 
 #include<vector>
@@ -20,8 +22,7 @@ private:
     int m_OpIdR;
     int m_OpIdL;
 
-    //double should be changed to EinBierScalar
-    double m_scalar;
+    Scalar m_scalar;
 
     // Block
     std::vector<int> m_OpIds;
@@ -32,6 +33,7 @@ public:
     BNode();
 
     void reset();
+    void setElementary();
 
     std::string getType() {return m_type;}
 
@@ -47,6 +49,11 @@ public:
     // Block
     void set(int row, int col, int OpId);
     int getBlock(int i, int j);
+
+    std::string getOperation() {return m_operation;}
+    int getOpIdR() {return m_OpIdR;}
+    int getOpIdL() {return m_OpIdL;}
+    Scalar getScalar() {return m_scalar;}
 };
 
 ///////////////////////////////////////////
@@ -74,6 +81,7 @@ private:
     bool m_del_trial;
 
     Matrix *m_mat;
+    bool m_isassemble;
 
 public:
     static std::string ELEMENTARY;
@@ -102,4 +110,10 @@ public:
     Shape getSize();
 
     BNode* getNode() {return &m_node;}
+
+    Scalar getValue(int, int);
+    void assemble();
+
 };
+
+Scalar compute_tmp(int, int);

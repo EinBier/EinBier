@@ -20,18 +20,18 @@ private:
     int m_OpIdR;
     int m_OpIdL;
 
-	//double should be changed to EinBierScalar
+    //double should be changed to EinBierScalar
     double m_scalar;
 
     // Block
     std::vector<int> m_OpIds;
-	std::vector<Shape> m_indices;
+    std::vector<Shape> m_indices;
 
 
 public:
     BNode();
 
-	void reset();
+    void reset();
 
     std::string getType() {return m_type;}
 

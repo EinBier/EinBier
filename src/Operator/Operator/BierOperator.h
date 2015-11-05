@@ -70,6 +70,9 @@ private:
     Trace* m_test;
     Trace* m_trial;
 
+    Scalar m_k;
+    std::string m_operator;
+
     Shape m_Shape;
 
     // offset starts at 0
@@ -100,6 +103,8 @@ public:
     Trace getSubTrace(Trace*, int, std::vector<int>);
     Trace* getTraceTest() {return m_test;}
     Trace* getTraceTrial() {return m_trial;}
+
+    void setOperator(std::string op, Scalar k);
 
     void setTrace(Trace*, Trace*);
     void setBlock(int, int, BierOperator *);

@@ -10,17 +10,19 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Method)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Matrix)
  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Barman)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Operator)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/FunctionSpace)
 
 #Build subdirectories
 add_subdirectory(Common)
 add_subdirectory(Geometry)
+add_subdirectory(FunctionSpace)
 add_subdirectory(Trace)
 add_subdirectory(Matrix)
 add_subdirectory(Barman)
 add_subdirectory(Operator)
 
 #unsure if this is good
-set(TARGET_LINK_LIB Common Geometry Trace Matrix Barman Operator)
+set(TARGET_LINK_LIB Common Geometry FunctionSpace Trace Matrix Barman Operator)
 
 if(HAVE_MPI)
     set(${TARGET_LINK_LIB} ${TARGET_LINK_LIB}  ${MPI_CXX_LIBRARIES})

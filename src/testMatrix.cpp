@@ -13,6 +13,9 @@
 #include <Operator/Operator.h>
 #include <Matrix/Matrix.h>
 
+#include <FunctionSpace/FunctionSpace.h>
+
+
 #if defined(HAVE_MPI)
 #include <mpi.h>
 #endif
@@ -37,40 +40,46 @@ int main(int argc, char *argv[])
     Message::setDebug();
     Barman::Init();
 
-    Matrix M;
-    int row = 4;
-    int col = 6;
-    M.setSize(row, col);
-    for (int i = 0; i < row; i++)
-    	M.setValue(i, i, 1.);
-    M.assemble();
-    M.Print();
+    // Matrix M;
+    // int row = 4;
+    // int col = 6;
+    // M.setSize(row, col);
+    // for (int i = 0; i < row; i++)
+    // 	M.setValue(i, i, 1.);
+    // M.assemble();
+    // M.Print();
 
-    Scalar d = M.getValue(1, 1);
-    Message::Info("(1,1)= %g", d);
-    d = M.getValue(0, 0);
-    Message::Info("(0,0)= %g", d);
+    // Scalar d = M.getValue(1, 1);
+    // Message::Info("(1,1)= %g", d);
+    // d = M.getValue(0, 0);
+    // Message::Info("(0,0)= %g", d);
 
 
     Operator A("A");
     Operator B("B");
     Operator C("C");
 
+    Dummy fs;
+
     Trace u;
     Geometry geo;
     u.setGeometry(&geo);
+    u.setFunctionSpace(&fs);
+
     A.setTrace(&u, &u);
     B.setTrace(&u, &u);
 
+    A.setOperator("Id", 0);
+
     A.assemble();
 
-    Message::Info("\n--\n");
+    // Message::Info("\n--\n");
 
-    C = A + B + 2*A;
-    C.assemble();
-
-    // C = (2*A  + B)*3 + A + 2*B;
+    // C = A + B + 2*A;
     // C.assemble();
+
+    // // C = (2*A  + B)*3 + A + 2*B;
+    // // C.assemble();
 
 
     Message::Info("###END");

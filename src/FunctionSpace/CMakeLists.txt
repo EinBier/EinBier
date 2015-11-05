@@ -6,7 +6,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Trace)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Method)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/FunctionSpace)
 
-add_library(Trace
-Trace.cpp)
+add_library(FunctionSpace
+FunctionSpace.cpp)
 
-target_link_libraries (Trace Geometry FunctionSpace ${PETSC_LIBRARIES})
+target_link_libraries (FunctionSpace Geometry ${PETSC_LIBRARIES})

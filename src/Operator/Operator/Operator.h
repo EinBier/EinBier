@@ -3,6 +3,7 @@
 #include<vector>
 #include<string>
 
+#include <Common/Type.h>
 #include <Trace/Trace.h>
 #include <Operator/BierOperator.h>
 
@@ -27,6 +28,8 @@ public:
     Operator operator*(double scalar);
 
     void assemble();
+
+    void setOperator(std::string, Scalar);
 };
 
 Operator operator*(double, Operator);

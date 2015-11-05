@@ -10,8 +10,12 @@ Trace::Trace(std::string name)
 {
     m_name = name;
     m_geo = nullptr;
-    m_method = -1;
     m_traces.resize(0);
+
+    m_method = -1;
+
+    m_fs = nullptr;
+
     Message::Debug("Trace %s (initialized)", name.c_str());
 }
 
@@ -223,3 +227,18 @@ int Trace::getSize() {
     }
 }
 
+Scalar Trace::getValue(Scalar k, int i, int j, std::string type, Trace *test)
+{
+    if (type == "SL")
+        return m_fs->SL(k, i, j, test);
+    if (type == "DL")
+        return m_fs->DL(k, i, j, test);
+    if (type == "AL")
+        return m_fs->AL(k, i, j, test);
+    if (type == "HL")
+        return m_fs->HL(k, i, j, test);
+
+    if (type == "Id")
+        return m_fs->Id(i, j, test);
+
+}

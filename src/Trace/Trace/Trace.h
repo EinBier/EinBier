@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Geometry/Geometry.h>
-#include <Method/Method_ENUM.h>
+#include <FunctionSpace/FunctionSpace.h>
 #include <vector>
 #include <string>
 
@@ -10,7 +10,9 @@ class Trace
 protected:
     std::string m_name;
     Geometry *m_geo;
-    int m_method;               // method of resolution ?
+    FunctionSpace* m_fs;
+
+    int m_method;
 
 
 private:
@@ -39,7 +41,7 @@ public:
     void setTrace(int);
 
     void setGeometry(Geometry *geo);
-    void setMethod(int m){m_method = m;}
+    void setFunctionSpace(FunctionSpace *fs){m_fs = fs;}
 
     std::string getType();
 
@@ -53,4 +55,6 @@ public:
     bool operator!=(Trace *t){return !isComparable(t);}
     void operator+=(Trace *t){push_back(t);}
     Trace* operator[](int i){return getTrace(i);}
+
+    Scalar getValue(Scalar k, int i, int j, std::string type, Trace *test);
 };

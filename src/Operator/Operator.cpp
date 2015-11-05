@@ -132,3 +132,9 @@ void Operator::assemble() {
     BierOperator *b = getBierOp();
     b->assemble();
 }
+
+void Operator::setOperator(std::string op, Scalar k)
+{
+    BierOperator *b = getBierOp();
+    b->setOperator(op, k);
+}

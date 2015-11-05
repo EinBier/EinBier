@@ -333,7 +333,7 @@ Scalar BierOperator::getValue(int i, int j)
 
     if (type == BierOperator::ELEMENTARY) {
         Message::Debug("Computing %s", m_name.c_str());
-        return compute_tmp(i, j);
+        return m_trial->getValue(m_k, i, j, m_operator, m_test);
     } else if (type == BierOperator::UNARY) {
 
         std::string op = node->getOperation();
@@ -383,7 +383,12 @@ void BierOperator::assemble()
     m_mat->Print();
 }
 
-
+void BierOperator::setOperator(std::string op, Scalar k)
+{
+    // TODO: check ?
+    m_k = k;
+    m_operator = op;
+}
 
 Scalar compute_tmp(int i, int j)
 {
@@ -392,3 +397,4 @@ Scalar compute_tmp(int i, int j)
     else
         return 0.;
 }
+
